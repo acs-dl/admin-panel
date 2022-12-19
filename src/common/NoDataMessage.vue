@@ -1,48 +1,54 @@
 <template>
   <div class="no-data-message">
     <icon class="no-data-message__icon" :name="iconName" />
-    <span class="no-data-message__message">
+    <h3 v-if="title" class="no-data-message__title">
+      {{ title }}
+    </h3>
+    <span v-if="message" class="no-data-message__message">
       {{ message }}
     </span>
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { Icon } from '@/common'
-
-import { defineComponent, PropType } from 'vue'
 import { ICON_NAMES } from '@/enums'
 
-export default defineComponent({
-  name: 'no-data-message',
-  components: { Icon },
-  props: {
-    iconName: {
-      type: String as PropType<ICON_NAMES>,
-      default: ICON_NAMES.archive,
-    },
-    message: {
-      type: String,
-      required: true,
-    },
+withDefaults(
+  defineProps<{
+    message: string
+    title: string
+    iconName?: ICON_NAMES
+  }>(),
+  {
+    message: '',
+    title: '',
+    iconName: ICON_NAMES.noData,
   },
-})
+)
 </script>
 
 <style lang="scss" scoped>
 .no-data-message {
   display: grid;
   place-items: center;
-  grid-gap: toRem(12);
+  grid-gap: toRem(10);
 }
 
 .no-data-message__icon {
-  color: var(--text-primary-light);
-  font-size: toRem(48);
+  width: toRem(300);
+  height: toRem(250);
 }
 
 .no-data-message__message {
-  color: var(--text-primary-light);
+  font-weight: 500;
+  font-size: toRem(14);
+  color: var(--text-secondary-main);
+}
+
+.no-data-message__title {
+  font-weight: 500;
   font-size: toRem(18);
+  color: var(--text-secondary-main);
 }
 </style>

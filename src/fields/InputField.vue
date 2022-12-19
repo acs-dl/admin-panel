@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { Icon } from '@/common'
-
+import { Icon, AppButton } from '@/common'
+import { ICON_NAMES } from '@/enums'
 import { BN } from '@/utils'
 import { computed, getCurrentInstance, ref, useAttrs, useSlots } from 'vue'
 
 type INPUT_TYPES = 'text' | 'number' | 'password'
 
-type SCHEMES = 'primary' | 'secondary'
+type SCHEMES = 'primary' | 'primary-gray' | 'secondary'
 
 const props = withDefaults(
   defineProps<{
@@ -16,6 +16,9 @@ const props = withDefaults(
     placeholder?: string
     type?: INPUT_TYPES
     errorMessage?: string
+    iconLeft?: ICON_NAMES
+    iconRight?: ICON_NAMES
+    iconButton?: boolean
   }>(),
   {
     scheme: 'primary',
@@ -23,11 +26,15 @@ const props = withDefaults(
     label: '',
     placeholder: ' ',
     errorMessage: '',
+    iconLeft: undefined,
+    iconRight: undefined,
+    iconButton: false,
   },
 )
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: number | string): void
+  (e: 'icon-click'): void
 }>()
 
 const attrs = useAttrs()
@@ -72,6 +79,8 @@ const inputClasses = computed(() =>
       : []),
     ...(isDisabled.value ? ['input-field--disabled'] : []),
     ...(isReadonly.value ? ['input-field--readonly'] : []),
+    ...(props.iconLeft ? ['input-field--icon-left'] : []),
+    ...(props.iconRight ? ['input-field--icon-right'] : []),
     ...(props.errorMessage ? ['input-field--error'] : []),
     `input-field--${props.scheme}`,
   ].join(' '),
@@ -88,6 +97,9 @@ const normalizeNumber = (value: string) => {
   return isNaN(Number(value)) ? props.modelValue : value
 }
 
+const iconClick = () => {
+  emit('icon-click')
+}
 const normalizeRange = (value: string | number): string => {
   let result = value
 
@@ -114,6 +126,13 @@ const setHeightCSSVar = (element: HTMLElement) => {
       <div v-if="$slots.nodeLeft" class="input-field__node-left-wrp">
         <slot name="nodeLeft" />
       </div>
+      <app-button
+        v-if="iconLeft"
+        class="input-field__icon-button input-field__icon-button--left"
+        :icon-left="iconLeft"
+        @click="iconClick"
+      />
+
       <input
         class="input-field__input"
         :id="`input-field--${uid}`"
@@ -127,9 +146,12 @@ const setHeightCSSVar = (element: HTMLElement) => {
         :max="max"
         :disabled="isDisabled || isReadonly"
       />
-      <span
-        class="input-field__focus-indicator"
-        v-if="scheme === 'secondary'"
+
+      <app-button
+        v-if="iconRight"
+        class="input-field__icon-button input-field__icon-button--right"
+        :icon-right="iconRight"
+        @click="iconClick"
       />
       <label
         v-if="label"
@@ -310,6 +332,13 @@ $z-index-side-nodes: 1;
     @include field-border;
   }
 
+  .input-field--primary-gray & {
+    background: var(--background-primary-dark);
+    box-shadow: inset 0 0 0 toRem(50) var(--background-primary-dark);
+
+    @include field-border;
+  }
+
   .input-field--secondary & {
     position: relative;
     background: var(--field-bg-secondary);
@@ -354,6 +383,14 @@ $z-index-side-nodes: 1;
     }
   }
 
+  .input-field--icon-left & {
+    padding-left: toRem(47);
+  }
+
+  .input-field--icon-right & {
+    padding-right: toRem(47);
+  }
+
   .input-field--node-left & {
     padding-left: calc(var(--field-padding-left) * 3);
   }
@@ -376,6 +413,12 @@ $z-index-side-nodes: 1;
       0 0 0 toRem(1) var(--field-error);
   }
 
+  .input-field--error.input-field--primary-gray & {
+    border-color: var(--field-error);
+    box-shadow: inset 0 0 0 toRem(50) var(--background-primary-dark),
+      0 0 0 toRem(1) var(--field-error);
+  }
+
   .input-field--error.input-field--secondary & {
     border-color: var(--field-error);
     box-shadow: inset 0 0 0 toRem(50) var(--field-bg-secondary),
@@ -386,6 +429,13 @@ $z-index-side-nodes: 1;
     .input-field--primary & {
       box-sizing: border-box;
       box-shadow: inset 0 0 0 toRem(50) var(--field-bg-primary),
+        0 0 0 toRem(1) var(--field-border-focus);
+      border-color: var(--field-border-focus);
+    }
+
+    .input-field--primary-gray & {
+      box-sizing: border-box;
+      box-shadow: inset 0 0 0 toRem(50) var(--background-primary-dark),
         0 0 0 toRem(1) var(--field-border-focus);
       border-color: var(--field-border-focus);
     }
@@ -401,6 +451,26 @@ $z-index-side-nodes: 1;
     .input-field--primary & {
       border-color: var(--field-border-hover);
     }
+  }
+}
+
+.input-field__icon-button {
+  position: absolute;
+  height: 1.2em;
+  width: 1.2em;
+  top: 50%;
+  transform: translateY(-50%);
+
+  &--left {
+    left: toRem(19);
+  }
+
+  &--right {
+    right: toRem(19);
+  }
+
+  .input-field--icon-button & {
+    cursor: pointer;
   }
 }
 

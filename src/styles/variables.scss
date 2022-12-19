@@ -114,7 +114,7 @@
   /* paddings */
   --field-padding-top: #{toRem(14)};
   --field-padding-right: #{toRem(16)};
-  --field-padding-bottom: #{toRem(18)};
+  --field-padding-bottom: #{toRem(14)};
   --field-padding-left: #{toRem(14)};
   --field-padding:
     var(--field-padding-top)

@@ -1,6 +1,14 @@
-<script lang="ts" setup>
-import { AppNavbar } from '@/common'
+<template>
+  <div v-if="isAppInitialized" class="app__container">
+    <router-view v-slot="{ Component, route }">
+      <transition :name="route.meta.transition || 'fade'" mode="out-in">
+        <component class="app__main" :is="Component" />
+      </transition>
+    </router-view>
+  </div>
+</template>
 
+<script lang="ts" setup>
 import { ErrorHandler } from '@/helpers/error-handler'
 import { ref } from 'vue'
 import { useNotifications } from '@/composables'
@@ -20,27 +28,11 @@ const init = async () => {
 init()
 </script>
 
-<template>
-  <div v-if="isAppInitialized" class="app__container">
-    <app-navbar class="app__navbar" />
-    <router-view v-slot="{ Component, route }">
-      <transition :name="route.meta.transition || 'fade'" mode="out-in">
-        <component class="app__main" :is="Component" />
-      </transition>
-    </router-view>
-  </div>
-</template>
-
 <style lang="scss" scoped>
 .app__container {
   overflow: hidden;
   display: grid;
-  grid-template-rows: toRem(85) 1fr max-content;
   flex: 1;
-
-  @include respond-to(small) {
-    grid-template-rows: max-content 1fr max-content;
-  }
 }
 
 .app__main {
