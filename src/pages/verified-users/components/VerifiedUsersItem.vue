@@ -1,8 +1,15 @@
 <template>
   <div class="verified-users-list-item">
-    <span class="verified-users-list-item__text">
-      {{ user.name }}
-    </span>
+    <app-button
+      :class="[
+        'verified-users-list-item__text',
+        'verified-users-list-item__text--name',
+      ]"
+      to="/"
+      color="blue"
+      :text="user.name"
+      @click="removeUser"
+    />
     <span class="verified-users-list-item__text">
       {{ user.position }}
     </span>
@@ -12,7 +19,8 @@
 
     <div class="verified-users-list-item__buttons">
       <app-button
-        class="verified-users-list-item__delete-btn"
+        class="verified-users-list-item__btn"
+        color="error"
         :icon-left="$icons.trash"
         @click="removeUser"
       />
@@ -60,7 +68,7 @@ const removeUser = () => {
 .verified-users-list-item {
   display: grid;
   grid-column-gap: toRem(10);
-  grid-template-columns: repeat(3, minmax(toRem(100), 1fr)) toRem(150);
+  grid-template-columns: repeat(3, minmax(toRem(100), 1fr)) toRem(250);
   padding: toRem(24);
   align-items: center;
   max-height: toRem(72);
@@ -70,12 +78,16 @@ const removeUser = () => {
 }
 
 .verified-users-list-item__text {
-  font-weight: 500;
-  font-size: toRem(15);
-  color: var(--text-primary-main);
+  font-weight: 400;
+  font-size: toRem(16);
+  color: var(--text-secondary-light);
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+
+  &--name {
+    color: var(--primary-main);
+  }
 }
 
 .verified-users-list-item__buttons {
@@ -85,16 +97,7 @@ const removeUser = () => {
   padding: 0 toRem(20);
 }
 
-.verified-users-list-item__delete-btn {
+.verified-users-list-item__btn {
   font-size: toRem(16);
-  color: var(--error-main);
-
-  &:hover {
-    color: var(--error-dark);
-  }
-
-  &:active {
-    color: var(--error-light);
-  }
 }
 </style>

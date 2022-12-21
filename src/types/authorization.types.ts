@@ -9,7 +9,8 @@ export type AuthorizeUserResponse = {
 }
 
 export type RefreshAuthUserResponse = {
-  token: string
+  access: string
+  refresh: string
 }
 
 export type NonceMessageResponse = {

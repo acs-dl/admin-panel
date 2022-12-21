@@ -8,24 +8,20 @@
       </div>
       <div class="unverified-users-list__item">
         <span class="unverified-users-list__item-text">
-          {{ $t('unverified-users-list.position-text') }}
+          {{ $t('unverified-users-list.username-text') }}
         </span>
       </div>
       <div class="unverified-users-list__item">
         <span class="unverified-users-list__item-text">
-          {{ $t('unverified-users-list.telegram-text') }}
+          {{ $t('unverified-users-list.modules-text') }}
         </span>
       </div>
       <div class="unverified-users-list__item">
-        <select-field
-          v-model="selectValue"
-          :placeholder="'laceholder'"
-          :value-options="['1', '2', '3', '4', '5', '6', '7']"
-          :error-message="selectValue === '7' ? 'error for number 7' : ''"
-        />
+        <span class="unverified-users-list__item-text">
+          {{ $t('unverified-users-list.date-text') }}
+        </span>
       </div>
     </div>
-    <hr class="unverified-users-list__line" />
     <div class="unverified-users-list__content">
       <template v-if="isLoaded">
         <template v-if="isLoadFailed">
@@ -57,28 +53,12 @@
         <loader class="unverified-users-list__message" />
       </template>
     </div>
-    <hr class="unverified-users-list__line" />
-    <div class="unverified-users-list__footer">
-      <template v-if="isLoaded">
-        <!-- <table-navigation
-          v-if="countOfApys && pageCount > MIN_PAGE_AMOUNT"
-          class="unverified-users-list__navigation"
-          :page-limit="PAGE_LIMIT"
-          :current-page="currentPage"
-          :page-count="pageCount"
-          :total-amount="countOfApys"
-          @decrease-page-count="decreasePageCount"
-          @increase-page-count="increasePageCount"
-        /> -->
-      </template>
-    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { api } from '@/api'
-import { SelectField } from '@/fields'
 import { Loader, ErrorMessage, NoDataMessage } from '@/common'
 import { ErrorHandler } from '@/helpers'
 import { VerifiedUser } from '@/types'
@@ -86,7 +66,6 @@ import UnverifiedUsersItem from './UnverifiedUsersItem.vue'
 
 const isLoadFailed = ref(false)
 const isLoaded = ref(true)
-const selectValue = ref('')
 const verifiedUsers = ref<VerifiedUser[]>([])
 
 const getUserList = async () => {
@@ -94,18 +73,6 @@ const getUserList = async () => {
   isLoadFailed.value = false
   try {
     const { data } = await api.get<VerifiedUser[]>('/integrations/core/users')
-    // const { data } = await api.post('/integrations/core/users', {
-    //   data: {
-    //     type: 'users',
-    //     id: '2',
-    //     attributes: {
-    //       name: 'Valeriia',
-    //       surname: 'Dubina',
-    //       position: 'project-manager',
-    //     },
-    //   },
-    // })
-    // console.log(data)
     verifiedUsers.value = data
   } catch (e) {
     isLoadFailed.value = true
@@ -138,22 +105,12 @@ getUserList()
   padding: toRem(20) toRem(24);
   display: grid;
   align-items: center;
-  grid-template-columns: repeat(3, minmax(toRem(100), 4fr)) toRem(150);
-}
-
-.unverified-users-list__line {
-  margin: 0;
-  border: toRem(0.5) solid var(--text-quaternary-main);
+  grid-template-columns: repeat(4, minmax(toRem(50), 4fr)) toRem(155);
 }
 
 .unverified-users-list__item-text {
-  font-size: toRem(14);
-  font-weight: 500;
-}
-
-.unverified-users-list__footer {
-  display: flex;
-  justify-content: space-between;
+  font-size: toRem(16);
+  color: var(--text-primary-light);
 }
 
 .unverified-users-list__content {
@@ -161,9 +118,6 @@ getUserList()
 }
 
 .unverified-users-list__message {
-  position: absolute;
-  top: 50%;
-  right: 50%;
-  transform: translate(50%, -50%);
+  margin-top: toRem(50);
 }
 </style>

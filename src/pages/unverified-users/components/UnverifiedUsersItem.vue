@@ -9,10 +9,20 @@
     <span class="unverified-users-list-item__text">
       {{ user.telegram || $t('unverified-users-list-item.telegram') }}
     </span>
+    <span class="unverified-users-list-item__text">
+      {{ new Date().toDateString() }}
+    </span>
 
     <div class="unverified-users-list-item__buttons">
       <app-button
-        class="unverified-users-list-item__delete-btn"
+        class="unverified-users-list-item__btn"
+        color="blue"
+        :text="$t('unverified-users-list-item.verify-btn')"
+        @click="removeUser"
+      />
+      <app-button
+        class="unverified-users-list-item__btn"
+        color="error"
         :icon-left="$icons.trash"
         @click="removeUser"
       />
@@ -60,7 +70,7 @@ const removeUser = () => {
 .unverified-users-list-item {
   display: grid;
   grid-column-gap: toRem(10);
-  grid-template-columns: repeat(3, minmax(toRem(100), 1fr)) toRem(150);
+  grid-template-columns: repeat(4, minmax(toRem(50), 1fr)) toRem(155);
   padding: toRem(24);
   align-items: center;
   max-height: toRem(72);
@@ -70,9 +80,9 @@ const removeUser = () => {
 }
 
 .unverified-users-list-item__text {
-  font-weight: 500;
-  font-size: toRem(15);
-  color: var(--text-primary-main);
+  font-weight: 400;
+  font-size: toRem(16);
+  color: var(--text-secondary-light);
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -81,20 +91,11 @@ const removeUser = () => {
 .unverified-users-list-item__buttons {
   display: flex;
   gap: toRem(25);
-  justify-content: flex-end;
-  padding: 0 toRem(20);
+  justify-content: space-between;
 }
 
-.unverified-users-list-item__delete-btn {
+.unverified-users-list-item__btn {
   font-size: toRem(16);
-  color: var(--error-main);
-
-  &:hover {
-    color: var(--error-dark);
-  }
-
-  &:active {
-    color: var(--error-light);
-  }
+  font-weight: 400;
 }
 </style>

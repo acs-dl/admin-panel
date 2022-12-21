@@ -166,6 +166,7 @@ export enum ICON_NAMES {
   presentationChartLine = 'presentation-chart-line',
   printer = 'printer',
   puzzle = 'puzzle',
+  pyramid = 'pyramid',
   qrcode = 'qrcode',
   questionMarkCircle = 'question-mark-circle',
   receiptRefund = 'receipt-refund',

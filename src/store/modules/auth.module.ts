@@ -51,7 +51,8 @@ export const useAuthStore = defineStore('auth', {
           },
         },
       )
-      this.accessToken = parseJwt(data.token)
+      this.accessToken = parseJwt(data.access)
+      this.refreshToken = parseJwt(data.refresh)
     },
   },
 })

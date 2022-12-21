@@ -20,6 +20,7 @@
     "name-text": "Name",
     "position-text": "Position",
     "telegram-text": "Telegram",
+    "select-field-btn-text": "Filter by",
     "error-message": "Error while loading.",
     "no-data-title": "Nothing found",
     "no-data-message": "Users does not exist in the system."
@@ -29,8 +30,23 @@
   },
   "unverified-users": {
     "main-title": "Employee List",
-    "add-user-btn": "Add new member",
-    "unverified-users-link": "Unverified"
+    "add-user-btn": "Add new member"
+  },
+  "unverified-users-list": {
+    "name-text": "Name",
+    "username-text": "Username",
+    "modules-text": "Modules",
+    "date-text": "Date",
+    "error-message": "Error while loading.",
+    "no-data-title": "Nothing found",
+    "no-data-message": "Users does not exist in the system."
+  },
+  "unverified-users-list-item": {
+    "telegram": "No Info",
+    "verify-btn": "Verify"
+  },
+  "users-list-section": {
+    "navigation-text": "{currentPage} of {totalPage}"
   },
   "notification": {
     "default-title-success": "Success",

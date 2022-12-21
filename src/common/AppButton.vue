@@ -15,6 +15,8 @@ type COLORS =
   | 'success'
   | 'error'
   | 'warning'
+  | 'blue'
+  | 'gray'
   | 'info'
   | 'default'
 
@@ -194,7 +196,7 @@ const buttonClasses = computed(() =>
     --app-button-flat-text: var(--text-primary-main);
     --app-button-flat-text-hover: var(--text-primary-dark);
 
-    --app-button-flat-border: #{toRem(2)} solid var(--text-primary-light);
+    --app-button-flat-border: #{toRem(1)} solid var(--text-primary-light);
     --app-button-flat-border-hover: var(--app-button-flat-border);
     --app-button-flat-border-active: var(--app-button-flat-border);
 
@@ -213,9 +215,9 @@ const buttonClasses = computed(() =>
   &--success {
     --app-button-flat-text: var(--success-main);
     --app-button-flat-text-hover: var(--success-dark);
-    --app-button-flat-border: #{toRem(2)} solid var(--success-main);
-    --app-button-flat-border-hover: #{toRem(2)} solid var(--success-dark);
-    --app-button-flat-border-active: #{toRem(2)} solid var(--success-dark);
+    --app-button-flat-border: #{toRem(1)} solid var(--success-main);
+    --app-button-flat-border-hover: #{toRem(1)} solid var(--success-dark);
+    --app-button-flat-border-active: #{toRem(1)} solid var(--success-dark);
 
     --app-button-filled-bg: var(--success-main);
     --app-button-filled-bg-hover: var(--success-dark);
@@ -225,21 +227,25 @@ const buttonClasses = computed(() =>
   &--error {
     --app-button-flat-text: var(--error-main);
     --app-button-flat-text-hover: var(--error-dark);
-    --app-button-flat-border: #{toRem(2)} solid var(--error-main);
-    --app-button-flat-border-hover: #{toRem(2)} solid var(--error-dark);
-    --app-button-flat-border-active: #{toRem(2)} solid var(--error-dark);
+    --app-button-flat-border: #{toRem(1)} solid var(--error-main);
+    --app-button-flat-border-hover: #{toRem(1)} solid var(--error-dark);
+    --app-button-flat-border-active: #{toRem(1)} solid var(--error-dark);
 
     --app-button-filled-bg: var(--error-main);
     --app-button-filled-bg-hover: var(--error-dark);
     --app-button-filled-bg-active: var(--error-dark);
+
+    --app-button-text: var(--error-main);
+    --app-button-text-hover: var(--error-dark);
+    --app-button-text-active: var(--error-dark);
   }
 
   &--warning {
     --app-button-flat-text: var(--warning-main);
     --app-button-flat-text-hover: var(--warning-dark);
-    --app-button-flat-border: #{toRem(2)} solid var(--warning-dark);
-    --app-button-flat-border-hover: #{toRem(2)} solid var(--warning-dark);
-    --app-button-flat-border-active: #{toRem(2)} solid var(--warning-dark);
+    --app-button-flat-border: #{toRem(1)} solid var(--warning-dark);
+    --app-button-flat-border-hover: #{toRem(1)} solid var(--warning-dark);
+    --app-button-flat-border-active: #{toRem(1)} solid var(--warning-dark);
 
     --app-button-filled-bg: var(--warning-main);
     --app-button-filled-bg-hover: var(--warning-dark);
@@ -249,13 +255,25 @@ const buttonClasses = computed(() =>
   &--info {
     --app-button-flat-text: var(--info-main);
     --app-button-flat-text-hover: var(--info-dark);
-    --app-button-flat-border: #{toRem(2)} solid var(--info-main);
-    --app-button-flat-border-hover: #{toRem(2)} solid var(--info-dark);
-    --app-button-flat-border-active: #{toRem(2)} solid var(--info-dark);
+    --app-button-flat-border: #{toRem(1)} solid var(--info-main);
+    --app-button-flat-border-hover: #{toRem(1)} solid var(--info-dark);
+    --app-button-flat-border-active: #{toRem(1)} solid var(--info-dark);
 
     --app-button-filled-bg: var(--info-main);
     --app-button-filled-bg-hover: var(--info-dark);
     --app-button-filled-bg-active: var(--info-dark);
+  }
+
+  &--blue {
+    --app-button-text: var(--primary-main);
+    --app-button-text-hover: var(--primary-dark);
+    --app-button-text-active: var(--primary-dark);
+  }
+
+  &--gray {
+    --app-button-text: var(--primary-main);
+    --app-button-text-hover: var(--primary-dark);
+    --app-button-text-active: var(--primary-dark);
   }
 
   &--border-circle {
