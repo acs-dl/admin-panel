@@ -6,6 +6,48 @@
   "errors": {
     "default": "Something went wrong"
   },
+  "sidebar": {
+    "main-title": "Employee List",
+    "search-placeholder": "Search by name",
+    "verified-users-link": "Verified",
+    "unverified-users-link": "Unverified"
+  },
+  "verified-users": {
+    "main-title": "Employee List",
+    "add-user-btn": "Add new member"
+  },
+  "verified-users-list": {
+    "name-text": "Name",
+    "position-text": "Position",
+    "telegram-text": "Telegram",
+    "select-field-btn-text": "Filter by",
+    "error-message": "Error while loading.",
+    "no-data-title": "Nothing found",
+    "no-data-message": "Users does not exist in the system."
+  },
+  "verified-users-list-item": {
+    "telegram": "No Info"
+  },
+  "unverified-users": {
+    "main-title": "Employee List",
+    "add-user-btn": "Add new member"
+  },
+  "unverified-users-list": {
+    "name-text": "Name",
+    "username-text": "Username",
+    "modules-text": "Modules",
+    "date-text": "Date",
+    "error-message": "Error while loading.",
+    "no-data-title": "Nothing found",
+    "no-data-message": "Users does not exist in the system."
+  },
+  "unverified-users-list-item": {
+    "telegram": "No Info",
+    "verify-btn": "Verify"
+  },
+  "users-list-section": {
+    "navigation-text": "{currentPage} of {totalPage}"
+  },
   "notification": {
     "default-title-success": "Success",
     "default-title-error": "Error",
@@ -19,9 +61,14 @@
     "default-message-default": "Just a message"
   },
   "login-form": {
-    "login-lbl": "Login",
+    "login-lbl": "E-mail",
     "password-lbl": "Password",
     "login-success-msg": "Access granted",
+    "submit-btn": "Submit"
+  },
+  "login-page": {
+    "header-title": "Distributed Lab",
+    "login-title": "Log In",
     "submit-btn": "Submit"
   },
   "ui-kit-page": {

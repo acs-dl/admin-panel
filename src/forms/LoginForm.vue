@@ -2,22 +2,25 @@
   <form class="login-form" @submit.prevent="submit">
     <input-field
       v-model="form.login"
-      :label="$t('login-form.login-lbl')"
+      :placeholder="$t('login-form.login-lbl')"
       :error-message="getFieldErrorMessage('login')"
-      @blur="touchField('login')"
       :disabled="isFormDisabled"
+      @blur="touchField('login')"
     />
     <input-field
       type="password"
       v-model="form.password"
-      :label="$t('login-form.password-lbl')"
+      :placeholder="$t('login-form.password-lbl')"
       :error-message="getFieldErrorMessage('password')"
-      @blur="touchField('password')"
       :disabled="isFormDisabled"
+      @blur="touchField('password')"
     />
     <div class="login-form__actions">
       <app-button
         class="login-form__submit-btn"
+        size="large"
+        modification="border-rounded"
+        scheme="filled"
         type="submit"
         :text="$t('login-form.submit-btn')"
         :disabled="isFormDisabled"
@@ -26,64 +29,56 @@
   </form>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { reactive } from 'vue'
 import { AppButton } from '@/common'
 import { InputField } from '@/fields'
-
-import { defineComponent, reactive } from 'vue'
-import { Bus, ErrorHandler } from '@/helpers'
-import { useI18n } from 'vue-i18n'
 import { useForm, useFormValidation } from '@/composables'
 import { email, required } from '@/validators'
+import { router } from '@/router'
+import { ROUTE_NAMES } from '@/enums'
+import { ErrorHandler } from '@/helpers'
+import { useAuthStore } from '@/store'
 
-export default defineComponent({
-  name: 'login-form',
-  components: { AppButton, InputField },
-  setup() {
-    const { t } = useI18n({ useScope: 'global' })
-    const form = reactive({
-      login: '',
-      password: '',
-    })
-
-    const { isFormDisabled, disableForm, enableForm } = useForm()
-
-    const { isFormValid, getFieldErrorMessage, touchField } = useFormValidation(
-      form,
-      {
-        login: { email, required },
-        password: { required },
-      },
-    )
-
-    const submit = async () => {
-      if (!isFormValid()) return
-
-      disableForm()
-      try {
-        Bus.success(t('login-form.login-success-msg'))
-      } catch (error) {
-        ErrorHandler.process(error)
-      }
-      enableForm()
-    }
-    return {
-      form,
-
-      isFormDisabled,
-
-      getFieldErrorMessage,
-      touchField,
-
-      submit,
-    }
-  },
+const form = reactive({
+  login: '',
+  password: '',
 })
+
+const { isFormDisabled, disableForm, enableForm } = useForm()
+
+const { isFormValid, getFieldErrorMessage, touchField } = useFormValidation(
+  form,
+  {
+    login: { email, required },
+    password: { required },
+  },
+)
+const authStore = useAuthStore()
+
+const submit = async () => {
+  if (!isFormValid()) return
+
+  disableForm()
+  try {
+    await authStore.createSession(form.login, form.password)
+    router.push({ name: ROUTE_NAMES.verifiedUsers })
+  } catch (error) {
+    ErrorHandler.process(error)
+  }
+  enableForm()
+}
 </script>
 
 <style lang="scss" scoped>
 .login-form {
   display: grid;
   grid-gap: toRem(24);
+  max-width: toRem(430);
+  width: 100%;
+}
+
+.login-form__submit-btn {
+  width: 100%;
 }
 </style>

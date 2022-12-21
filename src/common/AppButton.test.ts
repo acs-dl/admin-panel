@@ -9,10 +9,7 @@ describe('AppButton tests', () => {
     expect(wrapper.find('button').exists()).toBeTruthy()
     expect(wrapper.classes()).toStrictEqual([
       'app-button',
-      'app-button--filled',
-      'app-button--border-rounded',
-      'app-button--primary',
-      'app-button--medium',
+      'app-button--default',
     ])
   })
 })

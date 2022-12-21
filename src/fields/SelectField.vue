@@ -118,32 +118,31 @@ watch(
   <div :class="selectFieldClasses">
     <div ref="selectElement" class="select-field__select-wrp">
       <div class="select-field__select-head-wrp">
+        <template v-if="$slots.head && !!modelValue">
+          <slot
+            name="head"
+            :select-field="{
+              select,
+              isOpen: isDropdownOpen,
+              close: closeDropdown,
+              open: openDropdown,
+              toggle: toggleDropdown,
+            }"
+          />
+        </template>
         <button
+          v-else
           type="button"
           class="select-field__select-head"
           @click="toggleDropdown"
         >
-          <template v-if="$slots.head && !!modelValue">
-            <slot
-              name="head"
-              :select-field="{
-                select,
-                isOpen: isDropdownOpen,
-                close: closeDropdown,
-                open: openDropdown,
-                toggle: toggleDropdown,
-              }"
-            />
+          <template v-if="modelValue">
+            {{ modelValue }}
           </template>
-          <template v-else>
-            <template v-if="modelValue">
-              {{ modelValue }}
-            </template>
-            <template v-else-if="!label">
-              <span class="select-field__placeholder">
-                {{ props.placeholder }}
-              </span>
-            </template>
+          <template v-else-if="!label">
+            <span class="select-field__placeholder">
+              {{ props.placeholder }}
+            </span>
           </template>
           <icon
             :class="[
@@ -287,6 +286,7 @@ $z-local-index: 2;
 }
 
 .select-field__select-head {
+  display: flex;
   background: var(--field-bg-primary);
   padding: var(--field-padding);
   padding-right: calc(var(--field-padding-right) + #{toRem(24)});
@@ -404,7 +404,7 @@ $z-local-index: 2;
   width: 100%;
   max-height: 500%;
   z-index: $z-local-index;
-  background: var(--field-bg-secondary);
+  background: var(--field-bg-primary);
   box-shadow: 0 toRem(1) toRem(2) rgba(var(--black-rgb), 0.3),
     0 toRem(2) toRem(6) toRem(2) rgba(var(--black-rgb), 0.15);
   border-radius: toRem(4);

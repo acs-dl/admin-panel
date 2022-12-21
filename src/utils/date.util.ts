@@ -9,7 +9,7 @@ export class DateUtil {
     return this._instance(date, format).format(this.ISOFormat)
   }
 
-  static toTimestamp(date: dayjs.ConfigType, format?: dayjs.OptionType) {
+  static toTimestamp(date?: dayjs.ConfigType, format?: dayjs.OptionType) {
     return this._instance(date, format).unix()
   }
 
