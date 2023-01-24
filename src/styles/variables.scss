@@ -76,6 +76,7 @@
   --app-font-family: 'Roboto', 'Arial', sans-serif;
   --app-padding-right: #{toRem(92)};
   --app-padding-left: #{toRem(92)};
+  --app-bg: var(--white);
 
   @include respond-to(small) {
     --app-padding-right: #{toRem(24)};

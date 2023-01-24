@@ -154,10 +154,6 @@ watch(
             :name="$icons.chevronDown"
           />
         </button>
-        <span
-          class="select-field__focus-indicator"
-          v-if="scheme === 'secondary'"
-        />
         <label
           v-if="label"
           class="select-field__label"
@@ -306,43 +302,18 @@ $z-local-index: 2;
 
   transition-property: all;
 
-  & + .select-field__focus-indicator {
-    pointer-events: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
-    &:after {
-      content: '';
-      position: absolute;
-      bottom: toRem(-2);
-      left: 50%;
-      transform: translateX(-50%);
-      height: toRem(2);
-      width: 0;
-      background: var(--primary-main);
-      transition: width calc(var(--field-transition-duration) + 0.3s);
-
-      .select-field--error & {
-        background: var(--field-error);
-      }
-    }
-  }
-
   .select-field--primary & {
     @include field-border;
   }
 
   .select-field--secondary & {
     position: relative;
-    background: var(--background-secondary-main);
-    box-shadow: inset 0 0 0 toRem(50) var(--field-bg-secondary),
-      0 toRem(2) 0 0 var(--field-border);
-    padding: calc(var(--field-padding-top) + #{toRem(12)})
-      var(--field-padding-right) var(--field-padding-bottom)
-      var(--field-padding-left);
+    background: var(--field-bg-secondary);
+    box-shadow: inset 0 0 0 toRem(50) var(--field-bg-secondary);
+    padding: var(--field-padding-top) var(--field-padding-right)
+      var(--field-padding-bottom) var(--field-padding-left);
+    border: toRem(1) solid var(--field-border);
+    border-radius: toRem(10);
   }
 
   .select-field--error.select-field--primary & {
@@ -352,22 +323,14 @@ $z-local-index: 2;
   }
 
   .select-field--error.select-field--secondary & {
-    box-shadow: inset 0 0 0 toRem(50) var(--field-bg-secondary),
-      0 toRem(2) 0 0 var(--field-error);
+    box-shadow: inset 0 0 0 toRem(50) var(--field-bg-secondary);
+    border-color: var(--field-error);
   }
 
   .select-field--open.select-field--primary & {
     box-shadow: inset 0 0 0 toRem(50) var(--field-bg-primary),
       0 0 0 toRem(2) var(--primary-main);
     border-color: var(--primary-main);
-  }
-
-  .select-field--open.select-field--secondary & {
-    & + .select-field__focus-indicator {
-      &:after {
-        width: 100%;
-      }
-    }
   }
 }
 
@@ -408,6 +371,11 @@ $z-local-index: 2;
   box-shadow: 0 toRem(1) toRem(2) rgba(var(--black-rgb), 0.3),
     0 toRem(2) toRem(6) toRem(2) rgba(var(--black-rgb), 0.15);
   border-radius: toRem(4);
+
+  .select-field--secondary & {
+    background: var(--field-bg-secondary);
+    max-height: 250%;
+  }
 }
 
 .select-field__select-dropdown-enter-active {
@@ -428,7 +396,7 @@ $z-local-index: 2;
   to {
     opacity: 1;
     transform: translateY(0);
-    max-height: 500%;
+    max-height: 250%;
   }
 }
 

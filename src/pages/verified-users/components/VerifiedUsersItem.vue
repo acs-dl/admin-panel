@@ -1,55 +1,46 @@
 <template>
-  <div class="verified-users-list-item">
+  <div class="verified-users-item">
     <app-button
-      :class="[
-        'verified-users-list-item__text',
-        'verified-users-list-item__text--name',
-      ]"
-      to="/"
+      :class="['verified-users-item__text', 'verified-users-item__text--name']"
+      :route="{ name: $routes.userDetails, params: { id: user.id } }"
       color="blue"
       :text="user.name"
-      @click="removeUser"
     />
-    <span class="verified-users-list-item__text">
+    <span class="verified-users-item__text">
       {{ user.position }}
     </span>
-    <span class="verified-users-list-item__text">
-      {{ user.telegram || $t('verified-users-list-item.telegram') }}
+    <span class="verified-users-item__text">
+      {{ user.telegram || $t('verified-users-item.telegram') }}
     </span>
 
-    <div class="verified-users-list-item__buttons">
+    <div class="verified-users-item__buttons">
       <app-button
-        class="verified-users-list-item__btn"
+        class="verified-users-item__btn"
         color="error"
         :icon-left="$icons.trash"
-        @click="removeUser"
+        @click="toggleRemoveModal"
       />
     </div>
 
-    <modal
+    <delete-modal
       v-if="isOpenRemoveModal"
-      :icon="$icons.trash"
       @cancel="toggleRemoveModal"
-      @confirm="removeUser"
+      @delete="deleteUser"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { AppButton, Modal } from '@/common'
+import { AppButton, DeleteModal } from '@/common'
 import { VerifiedUser } from '@/types'
 
 const props = defineProps<{
   user: VerifiedUser
 }>()
 
-enum EVENTS {
-  delete = 'delete',
-}
-
 const emit = defineEmits<{
-  (e: EVENTS.delete, payload: string): void
+  (e: 'delete', payload: string): void
 }>()
 
 const isOpenRemoveModal = ref(false)
@@ -58,14 +49,14 @@ const toggleRemoveModal = () => {
   isOpenRemoveModal.value = !isOpenRemoveModal.value
 }
 
-const removeUser = () => {
-  emit(EVENTS.delete, props.user.id)
+const deleteUser = () => {
+  emit('delete', props.user.id)
   isOpenRemoveModal.value = false
 }
 </script>
 
 <style lang="scss" scoped>
-.verified-users-list-item {
+.verified-users-item {
   display: grid;
   grid-column-gap: toRem(10);
   grid-template-columns: repeat(3, minmax(toRem(100), 1fr)) toRem(250);
@@ -77,7 +68,7 @@ const removeUser = () => {
   margin-bottom: toRem(8);
 }
 
-.verified-users-list-item__text {
+.verified-users-item__text {
   font-weight: 400;
   font-size: toRem(16);
   color: var(--text-secondary-light);
@@ -90,14 +81,14 @@ const removeUser = () => {
   }
 }
 
-.verified-users-list-item__buttons {
+.verified-users-item__buttons {
   display: flex;
   gap: toRem(25);
   justify-content: flex-end;
   padding: 0 toRem(20);
 }
 
-.verified-users-list-item__btn {
+.verified-users-item__btn {
   font-size: toRem(16);
 }
 </style>

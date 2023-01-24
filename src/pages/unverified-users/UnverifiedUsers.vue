@@ -10,15 +10,34 @@
         modification="border-rounded"
         scheme="filled"
         :text="$t('unverified-users.add-user-btn')"
+        @click="toggleCreateNewMemberModal"
       />
     </div>
+
     <unverified-users-list />
+
+    <create-user-modal
+      v-if="isShowCreateUserModal"
+      @sumbit="reloadCreateNewMemberModal"
+      @cancel="toggleCreateNewMemberModal"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { AppButton } from '@/common'
+import { ref } from 'vue'
+import { AppButton, CreateUserModal } from '@/common'
 import UnverifiedUsersList from './components/UnverifiedUsersList.vue'
+
+const isShowCreateUserModal = ref(false)
+
+const toggleCreateNewMemberModal = async () => {
+  isShowCreateUserModal.value = !isShowCreateUserModal.value
+}
+
+const reloadCreateNewMemberModal = async () => {
+  isShowCreateUserModal.value = false
+}
 </script>
 
 <style scoped lang="scss">

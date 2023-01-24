@@ -1,34 +1,41 @@
 <template>
-  <div class="unverified-users-list-item">
-    <span class="unverified-users-list-item__text">
+  <div class="unverified-users-item">
+    <span class="unverified-users-item__text">
       {{ user.name }}
     </span>
-    <span class="unverified-users-list-item__text">
-      {{ user.position }}
+    <span class="unverified-users-item__text">
+      {{ user.username }}
     </span>
-    <span class="unverified-users-list-item__text">
-      {{ user.telegram || $t('unverified-users-list-item.telegram') }}
+    <span class="unverified-users-item__text">
+      {{ user.path || $t('unverified-users-item.telegram') }}
     </span>
-    <span class="unverified-users-list-item__text">
+    <span class="unverified-users-item__text">
       {{ new Date().toDateString() }}
     </span>
 
-    <div class="unverified-users-list-item__buttons">
+    <div class="unverified-users-item__buttons">
       <app-button
-        class="unverified-users-list-item__btn"
+        class="unverified-users-item__btn"
         color="blue"
-        :text="$t('unverified-users-list-item.verify-btn')"
-        @click="removeUser"
+        :text="$t('unverified-users-item.verify-btn')"
+        @click="toggleCreateNewMemberModal"
       />
       <app-button
-        class="unverified-users-list-item__btn"
+        class="unverified-users-item__btn"
         color="error"
         :icon-left="$icons.trash"
-        @click="removeUser"
+        @click="toggleRemoveModal"
       />
     </div>
 
-    <modal
+    <verify-user-modal
+      v-if="isShowCreateUserModal"
+      :user="user"
+      @cancel="updateList"
+      @submit="updateList"
+    />
+
+    <delete-modal
       v-if="isOpenRemoveModal"
       :icon="$icons.trash"
       @cancel="toggleRemoveModal"
@@ -39,35 +46,65 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { AppButton, Modal } from '@/common'
-import { VerifiedUser } from '@/types'
+import { api } from '@/api'
+import { AppButton, VerifyUserModal, DeleteModal } from '@/common'
+import { UnverifiedUser } from '@/types'
+import { ErrorHandler } from '@/helpers'
 
 const props = defineProps<{
-  user: VerifiedUser
+  user: UnverifiedUser
 }>()
 
-enum EVENTS {
-  delete = 'delete',
-}
-
 const emit = defineEmits<{
-  (e: EVENTS.delete, payload: string): void
+  (e: 'update'): void
 }>()
 
 const isOpenRemoveModal = ref(false)
+const isShowCreateUserModal = ref(false)
+
+const toggleCreateNewMemberModal = async () => {
+  isShowCreateUserModal.value = !isShowCreateUserModal.value
+}
 
 const toggleRemoveModal = () => {
   isOpenRemoveModal.value = !isOpenRemoveModal.value
 }
 
-const removeUser = () => {
-  emit(EVENTS.delete, props.user.id)
-  isOpenRemoveModal.value = false
+const updateList = async () => {
+  emit('update')
+}
+
+const removeUser = async () => {
+  try {
+    await api.post('/integrations/orchestrator/requests', {
+      data: {
+        attributes: {
+          module: 'gitlab' ?? props.user.gitlab_id,
+          payload: {
+            action: 'delete_user',
+            user_id: String(props.user.gitlab_id),
+            username: props.user.username,
+          },
+        },
+        relationships: {
+          user: {
+            data: {
+              id: String(props.user.gitlab_id),
+            },
+          },
+        },
+      },
+    })
+    updateList()
+    isOpenRemoveModal.value = false
+  } catch (e) {
+    ErrorHandler.processWithoutFeedback(e)
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-.unverified-users-list-item {
+.unverified-users-item {
   display: grid;
   grid-column-gap: toRem(10);
   grid-template-columns: repeat(4, minmax(toRem(50), 1fr)) toRem(155);
@@ -79,7 +116,7 @@ const removeUser = () => {
   margin-bottom: toRem(8);
 }
 
-.unverified-users-list-item__text {
+.unverified-users-item__text {
   font-weight: 400;
   font-size: toRem(16);
   color: var(--text-secondary-light);
@@ -88,13 +125,13 @@ const removeUser = () => {
   white-space: nowrap;
 }
 
-.unverified-users-list-item__buttons {
+.unverified-users-item__buttons {
   display: flex;
   gap: toRem(25);
   justify-content: space-between;
 }
 
-.unverified-users-list-item__btn {
+.unverified-users-item__btn {
   font-size: toRem(16);
   font-weight: 400;
 }

@@ -113,15 +113,18 @@ const getUserList = async () => {
   isLoaded.value = false
   isLoadFailed.value = false
   try {
-    const { data } = await api.get<VerifiedUser[]>('/integrations/core/users', {
-      filter: {
-        position: '',
+    const { data } = await api.get<VerifiedUser[]>(
+      '/integrations/identity-svc/users',
+      {
+        filter: {
+          position: '',
+        },
+        page: {
+          limit: PAGE_LIMIT,
+          number: currentPage.value - 1,
+        },
       },
-      page: {
-        limit: PAGE_LIMIT,
-        number: currentPage.value - 1,
-      },
-    })
+    )
     countOfVerifiedUsers.value = data.length
     verifiedUsers.value = data
   } catch (e) {
@@ -133,7 +136,7 @@ const getUserList = async () => {
 
 const deleteUser = async (id: string) => {
   try {
-    await api.delete(`/integrations/core/users/${id}`)
+    await api.delete(`/integrations/identity-svc/users/${id}`)
     await getUserList()
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
@@ -147,6 +150,10 @@ watch(
   },
   { immediate: true },
 )
+
+defineExpose({
+  getUserList,
+})
 </script>
 
 <style scoped lang="scss">

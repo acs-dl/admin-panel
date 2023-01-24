@@ -1,7 +1,3 @@
-<script lang="ts" setup>
-import { AppSidebar } from '@/common'
-</script>
-
 <template>
   <div class="admin-panel">
     <div class="admin-panel__sidebar-wrapper">
@@ -10,6 +6,10 @@ import { AppSidebar } from '@/common'
     <router-view class="admin-panel__inner" />
   </div>
 </template>
+
+<script lang="ts" setup>
+import { AppSidebar } from '@/common'
+</script>
 
 <style scoped lang="scss">
 .admin-panel {

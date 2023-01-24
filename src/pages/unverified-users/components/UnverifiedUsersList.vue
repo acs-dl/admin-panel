@@ -37,7 +37,7 @@
               class="unverified-users-list__list-item"
               :key="item.id"
               :user="item"
-              @delete="deleteUser"
+              @update="getUserList"
             />
           </template>
           <template v-else>
@@ -61,33 +61,26 @@ import { ref } from 'vue'
 import { api } from '@/api'
 import { Loader, ErrorMessage, NoDataMessage } from '@/common'
 import { ErrorHandler } from '@/helpers'
-import { VerifiedUser } from '@/types'
+import { UnverifiedUser } from '@/types'
 import UnverifiedUsersItem from './UnverifiedUsersItem.vue'
 
 const isLoadFailed = ref(false)
 const isLoaded = ref(true)
-const verifiedUsers = ref<VerifiedUser[]>([])
+const verifiedUsers = ref<UnverifiedUser[]>([])
 
 const getUserList = async () => {
   isLoaded.value = false
   isLoadFailed.value = false
   try {
-    const { data } = await api.get<VerifiedUser[]>('/integrations/core/users')
+    const { data } = await api.get<UnverifiedUser[]>(
+      '/integrations/gitlab/permissions',
+    )
     verifiedUsers.value = data
   } catch (e) {
     isLoadFailed.value = true
     ErrorHandler.processWithoutFeedback(e)
   }
   isLoaded.value = true
-}
-
-const deleteUser = async (id: string) => {
-  try {
-    await api.delete(`/integrations/core/users/${id}`)
-    await getUserList()
-  } catch (e) {
-    ErrorHandler.processWithoutFeedback(e)
-  }
 }
 
 getUserList()

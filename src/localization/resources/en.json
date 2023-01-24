@@ -3,6 +3,49 @@
     "field-error_required": "Please fill out this field",
     "field-error_email": "Field must be a valid email"
   },
+  "create-user-modal": {
+    "main-title": "Add new member",
+    "secondary-title": "To add a new member, you must complete all fields"
+  },
+  "permission-modal": {
+    "main-title": "Add new member",
+    "secondary-title": "To add a new member, you must complete all fields"
+  },
+  "delete-modal": {
+    "main-title": "Delete",
+    "cancel-btn": "Cancel",
+    "submit-btn": "Delete",
+    "secondary-title": "To delete, you must click button"
+  },
+  "verify-user-modal": {
+    "main-title": "Add new member",
+    "add-account-title": "Add to existing account",
+    "add-account-msg": "Nunc ultricies nec vitae enim diam elit turpis sit viverra.",
+    "create-account-title": "Create new account",
+    "create-account-msg": "Add new member",
+    "secondary-title": "Diam ornare id sollicitudin nisi id laoreet nunc."
+  },
+  "create-user-form": {
+    "name-lbl": "Name",
+    "surname-lbl": "Surname",
+    "main-lbl": "Add new member",
+    "email-lbl": "Email",
+    "position-lbl": "Position",
+    "position-placeholder": "Select Position",
+    "cancel-btn": "Cancel",
+    "submit-btn": "Create"
+  },
+  "verify-user-form": {
+    "id-lbl": "User ID:",
+    "nickname-lbl": "Nickname:",
+    "module-lbl": "Module:",
+    "module-placeholder": "Select Module",
+    "cancel-btn": "Cancel",
+    "submit-btn": "Create"
+  },
+  "module-item": {
+    "delete-btn": "Delete"
+  },
   "errors": {
     "default": "Something went wrong"
   },
@@ -25,7 +68,22 @@
     "no-data-title": "Nothing found",
     "no-data-message": "Users does not exist in the system."
   },
-  "verified-users-list-item": {
+  "module-trees": {
+    "module-text": "Module",
+    "submodule-text": "Submodule",
+    "access-level-text": "Access level",
+    "edit-text": "Edit",
+    "no-data-title": "Nothing found",
+    "no-data-message": "Module does not exist in the system."
+  },
+  "user-details": {
+    "main-title": "User details",
+    "add-user-btn": "Add module",
+    "error-message": "Error while loading.",
+    "no-data-title": "Nothing found",
+    "no-data-message": "User info exist in the system."
+  },
+  "verified-users-item": {
     "telegram": "No Info"
   },
   "unverified-users": {
@@ -41,7 +99,7 @@
     "no-data-title": "Nothing found",
     "no-data-message": "Users does not exist in the system."
   },
-  "unverified-users-list-item": {
+  "unverified-users-item": {
     "telegram": "No Info",
     "verify-btn": "Verify"
   },
@@ -70,16 +128,5 @@
     "header-title": "Distributed Lab",
     "login-title": "Log In",
     "submit-btn": "Submit"
-  },
-  "ui-kit-page": {
-    "button": "Button",
-    "some-placeholder": "placeholder",
-    "some-label": "label",
-    "some-error-message": "error-message",
-    "modal-btn": "Open modal",
-    "collapse-btn": "Toggle Collapse",
-    "collapse-text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    "loading-error-msg": "Oops, something went wrong",
-    "no-data-msg": "Empty data, please add new"
   }
 }
