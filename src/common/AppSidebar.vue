@@ -2,15 +2,6 @@
   <aside class="sidebar">
     <div class="sidebar__header">
       <app-logo class="sidebar__logo" />
-      <input-field
-        v-model="searchValue"
-        class="sidebar__search-input"
-        icon-button
-        scheme="primary-gray"
-        :placeholder="$t('sidebar.search-placeholder')"
-        :icon-left="$icons.search"
-        @icon-click="search"
-      />
       <h2 class="sidebar__title">
         {{ $t('sidebar.main-title') }}
       </h2>
@@ -36,8 +27,11 @@
           <span class="sidebar__link-text">
             {{ $t('sidebar.unverified-users-link') }}
           </span>
-          <div class="sidebar__link-unverified-users-count">
-            {{ props.unverifiedUsersCount }}
+          <div
+            v-if="unverifiedUsersCount"
+            class="sidebar__link-unverified-users-count"
+          >
+            {{ unverifiedUsersCount }}
           </div>
         </router-link>
       </li>
@@ -74,33 +68,42 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { AppLogo, Icon, AppButton } from '@/common'
-import { InputField } from '@/fields'
 import { useAuthStore } from '@/store'
+import { UnverifiedModuleUser } from '@/types'
+import { api } from '@/api'
+import { ErrorHandler } from '@/helpers'
 
 const props = withDefaults(
   defineProps<{
     name?: string
     email?: string
     logo?: string
-    unverifiedUsersCount?: number
   }>(),
   {
     name: 'Serhii Pomohaev',
     email: '@Norwood.Hyatt9',
     logo: '',
-    unverifiedUsersCount: 445678,
   },
 )
-const authStore = useAuthStore()
-const searchValue = ref('')
 
-const search = () => {
-  searchValue.value = ''
+const authStore = useAuthStore()
+const unverifiedUsersCount = ref(0)
+
+const getUnverifiedUsersCount = async () => {
+  try {
+    const { meta } = await api.get<UnverifiedModuleUser[]>(
+      '/integrations/gitlab/users/unverified',
+    )
+    unverifiedUsersCount.value = Number(meta?.total_count) ?? 0
+  } catch (e) {
+    ErrorHandler.processWithoutFeedback(e)
+  }
 }
 
 const logout = () => {
   authStore.logout()
 }
+getUnverifiedUsersCount()
 </script>
 
 <style scoped lang="scss">
@@ -115,10 +118,6 @@ const logout = () => {
 }
 
 .sidebar__logo {
-  margin-bottom: toRem(40);
-}
-
-.sidebar__search-input {
   margin-bottom: toRem(40);
 }
 

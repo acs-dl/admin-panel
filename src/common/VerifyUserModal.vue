@@ -3,7 +3,7 @@
     <div class="verify-user-modal__inner">
       <div class="verify-user-modal__icon-wrapper">
         <icon
-          :name="$icons.informationCircle"
+          :name="$icons.doubleCircleCheck"
           class="verify-user-modal__icon"
         />
       </div>
@@ -20,13 +20,13 @@
         v-if="currentTab === TABS[0].id"
         :user="user"
         @cancel="cancelForm"
-        @submit="sumbitForm"
+        @submit="submitForm"
       />
       <create-user-form
         v-else
         :user="user"
         @cancel="cancelForm"
-        @submit="sumbitForm"
+        @submit="submitForm"
       />
     </div>
   </modal>
@@ -35,13 +35,13 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { Modal, Icon, Tabs } from '@/common'
-import { UnverifiedUser } from '@/types'
+import { UnverifiedModuleUser } from '@/types'
 import { useContext } from '@/composables'
 import VerifyUserForm from '@/forms/VerifyUserForm.vue'
 import CreateUserForm from '@/forms/CreateUserForm.vue'
 
 defineProps<{
-  user: UnverifiedUser
+  user: UnverifiedModuleUser
 }>()
 
 const emit = defineEmits<{
@@ -68,17 +68,19 @@ const cancelForm = () => {
   emit('cancel')
 }
 
-const sumbitForm = () => {
+const submitForm = () => {
   emit('submit')
 }
 </script>
 
 <style lang="scss" scoped>
+.verify-user-modal__inner {
+  width: toRem(600);
+}
+
 .verify-user-modal__icon-wrapper {
   width: toRem(48);
   height: toRem(48);
-  border: toRem(1) solid var(--border-primary-light);
-  padding: toRem(12);
   border-radius: toRem(10);
   background: transparent;
   margin-bottom: toRem(12);
@@ -86,6 +88,7 @@ const sumbitForm = () => {
 
 .verify-user-modal__icon {
   font-size: toRem(12);
+  color: var(--primary-main);
 }
 
 .verify-user-modal__title-wrapper {

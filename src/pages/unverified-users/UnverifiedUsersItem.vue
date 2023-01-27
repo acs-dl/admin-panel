@@ -1,16 +1,16 @@
 <template>
   <div class="unverified-users-item">
     <span class="unverified-users-item__text">
-      {{ user.name }}
+      {{ $t('unverified-users-item.unverified-name') }}
     </span>
     <span class="unverified-users-item__text">
       {{ user.username }}
     </span>
     <span class="unverified-users-item__text">
-      {{ user.path || $t('unverified-users-item.telegram') }}
+      {{ user.module || $t('unverified-users-item.telegram') }}
     </span>
     <span class="unverified-users-item__text">
-      {{ new Date().toDateString() }}
+      {{ user.created_ad }}
     </span>
 
     <div class="unverified-users-item__buttons">
@@ -31,7 +31,7 @@
     <verify-user-modal
       v-if="isShowCreateUserModal"
       :user="user"
-      @cancel="updateList"
+      @cancel="toggleCreateNewMemberModal"
       @submit="updateList"
     />
 
@@ -39,7 +39,7 @@
       v-if="isOpenRemoveModal"
       :icon="$icons.trash"
       @cancel="toggleRemoveModal"
-      @confirm="removeUser"
+      @delete="removeUser"
     />
   </div>
 </template>
@@ -48,15 +48,16 @@
 import { ref } from 'vue'
 import { api } from '@/api'
 import { AppButton, VerifyUserModal, DeleteModal } from '@/common'
-import { UnverifiedUser } from '@/types'
+import { UnverifiedModuleUser } from '@/types'
 import { ErrorHandler } from '@/helpers'
 
 const props = defineProps<{
-  user: UnverifiedUser
+  user: UnverifiedModuleUser
 }>()
 
 const emit = defineEmits<{
   (e: 'update'): void
+  (e: 'cancel'): void
 }>()
 
 const isOpenRemoveModal = ref(false)
@@ -79,17 +80,16 @@ const removeUser = async () => {
     await api.post('/integrations/orchestrator/requests', {
       data: {
         attributes: {
-          module: 'gitlab' ?? props.user.gitlab_id,
+          module: props.user.module,
           payload: {
             action: 'delete_user',
-            user_id: String(props.user.gitlab_id),
             username: props.user.username,
           },
         },
         relationships: {
           user: {
             data: {
-              id: String(props.user.gitlab_id),
+              id: '1',
             },
           },
         },

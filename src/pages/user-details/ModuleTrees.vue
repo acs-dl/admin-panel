@@ -1,23 +1,23 @@
 <template>
   <div class="module-trees">
     <div class="module-trees__header">
-      <div class="module-trees__item">
-        <span class="module-trees__item-text">
+      <div class="module-trees__header-item">
+        <span class="module-trees__header-item-text">
           {{ $t('module-trees.module-text') }}
         </span>
       </div>
-      <div class="module-trees__item">
-        <span class="module-trees__item-text">
+      <div class="module-trees__header-item">
+        <span class="module-trees__header-item-text">
           {{ $t('module-trees.submodule-text') }}
         </span>
       </div>
-      <div class="module-trees__item">
-        <span class="module-trees__item-text">
+      <div class="module-trees__header-item">
+        <span class="module-trees__header-item-text">
           {{ $t('module-trees.access-level-text') }}
         </span>
       </div>
-      <div class="module-trees__item">
-        <span class="module-trees__item-text">
+      <div class="module-trees__header-item">
+        <span class="module-trees__header-item-text">
           {{ $t('module-trees.edit-text') }}
         </span>
       </div>
@@ -27,6 +27,7 @@
       <template v-if="moduleTreesList.length">
         <module-trees-item
           v-for="item in moduleTreesList"
+          class="module-trees__item"
           is-module-level
           :key="item"
           :id="id"
@@ -74,7 +75,7 @@ defineProps<{
     repeat(2, toRem(100));
 }
 
-.module-trees__item-text {
+.module-trees__header-item-text {
   font-size: toRem(16);
   color: var(--text-primary-light);
 }
@@ -85,5 +86,11 @@ defineProps<{
 
 .module-trees__message {
   margin-top: toRem(50);
+}
+
+.module-trees__item {
+  background: var(--white);
+  border-radius: toRem(8);
+  padding: toRem(24);
 }
 </style>

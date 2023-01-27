@@ -8,8 +8,21 @@
     "secondary-title": "To add a new member, you must complete all fields"
   },
   "permission-modal": {
-    "main-title": "Add new member",
-    "secondary-title": "To add a new member, you must complete all fields"
+    "main-title": "Add new user in module",
+    "secondary-title": "To add, select a module and its details"
+  },
+  "permission-form": {
+    "cancel-btn": "Cancel",
+    "submit-btn": "Submit",
+    "module-lbl": "Module",
+    "module-placeholder": "Select module",
+    "link-lbl": "Submodule",
+    "link-placeholder": "Input submodule",
+    "username-lbl": "Username",
+    "username-placeholder": "Input username",
+    "success-msg": "Successful changed permission",
+    "access-level-lbl": "Access level",
+    "access-level-placeholder": "Select access level"
   },
   "delete-modal": {
     "main-title": "Delete",
@@ -18,7 +31,7 @@
     "secondary-title": "To delete, you must click button"
   },
   "verify-user-modal": {
-    "main-title": "Add new member",
+    "main-title": "New member verification",
     "add-account-title": "Add to existing account",
     "add-account-msg": "Nunc ultricies nec vitae enim diam elit turpis sit viverra.",
     "create-account-title": "Create new account",
@@ -32,6 +45,7 @@
     "email-lbl": "Email",
     "position-lbl": "Position",
     "position-placeholder": "Select Position",
+    "success-msg": "Successful created user",
     "cancel-btn": "Cancel",
     "submit-btn": "Create"
   },
@@ -40,10 +54,15 @@
     "nickname-lbl": "Nickname:",
     "module-lbl": "Module:",
     "module-placeholder": "Select Module",
+    "success-msg": "Successful verified user",
     "cancel-btn": "Cancel",
     "submit-btn": "Create"
   },
+  "module-info-item": {
+    "success-delete": "Module deleted"
+  },
   "module-item": {
+    "submodule-column": "Submodule",
     "delete-btn": "Delete"
   },
   "errors": {
@@ -51,12 +70,12 @@
   },
   "sidebar": {
     "main-title": "Employee List",
-    "search-placeholder": "Search by name",
     "verified-users-link": "Verified",
     "unverified-users-link": "Unverified"
   },
   "verified-users": {
     "main-title": "Employee List",
+    "search-placeholder": "Search by name",
     "add-user-btn": "Add new member"
   },
   "verified-users-list": {
@@ -88,6 +107,7 @@
   },
   "unverified-users": {
     "main-title": "Employee List",
+    "search-placeholder": "Search by username",
     "add-user-btn": "Add new member"
   },
   "unverified-users-list": {
@@ -101,6 +121,7 @@
   },
   "unverified-users-item": {
     "telegram": "No Info",
+    "unverified-name": "Unverified user",
     "verify-btn": "Verify"
   },
   "users-list-section": {

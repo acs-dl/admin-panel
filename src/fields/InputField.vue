@@ -335,6 +335,7 @@ $z-index-side-nodes: 1;
   .input-field--primary-gray & {
     background: var(--background-primary-dark);
     box-shadow: inset 0 0 0 toRem(50) var(--background-primary-dark);
+    border: toRem(1) solid var(--field-border);
 
     @include field-border;
   }

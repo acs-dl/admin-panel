@@ -2,7 +2,7 @@
   <div class="user-details">
     <div class="user-details__title-wrapper">
       <h2 class="user-details__title">
-        {{ $t('user-details.main-title') }}
+        {{ mainTitle }}
       </h2>
       <app-button
         class="user-details__add-user-btn"
@@ -44,14 +44,14 @@
     <permission-modal
       v-if="isShowCreateUserModal"
       :id="id"
-      @sumbit="reloadCreateNewMemberModal"
+      @submit="reloadCreateNewMemberModal"
       @cancel="toggleCreateNewMemberModal"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import {
   Loader,
   ErrorMessage,
@@ -60,20 +60,46 @@ import {
   AppButton,
 } from '@/common'
 import { api } from '@/api'
-import ModuleTrees from './components/ModuleTrees.vue'
-import ModuleInfoList from './components/ModuleInfoList.vue'
 import { ErrorHandler } from '@/helpers'
-import { ModuleInfo } from '@/types'
+import { ModuleInfo, VerifiedUser } from '@/types'
+import { useContext } from '@/composables'
+import ModuleTrees from '@/pages/user-details/ModuleTrees.vue'
+import ModuleInfoList from '@/pages/user-details/ModuleInfoList.vue'
+import { router } from '@/router'
+import { ROUTE_NAMES } from '@/enums'
 
 const props = defineProps<{
   id: string
 }>()
 
+const { $t } = useContext()
 const isLoadFailed = ref(false)
 const isLoaded = ref(true)
 const isShowCreateUserModal = ref(false)
 const modulesList = ref<ModuleInfo[]>([])
 const moduleTreesList = ref<unknown[]>([]) // use type
+const userDetails = ref<VerifiedUser | null>(null) // use type
+
+const mainTitle = computed(() =>
+  userDetails.value
+    ? `${userDetails.value.name} ${userDetails.value.surname}`
+    : $t('user-details.main-title'),
+)
+const getUser = async () => {
+  isLoaded.value = false
+  isLoadFailed.value = false
+  try {
+    const { data } = await api.get<VerifiedUser>(
+      `/integrations/identity-svc/users/${props.id}`,
+    )
+    userDetails.value = data
+  } catch (e) {
+    isLoadFailed.value = true
+    router.push({ name: ROUTE_NAMES.verifiedUsers })
+    ErrorHandler.processWithoutFeedback(e)
+  }
+  isLoaded.value = true
+}
 
 const getUserModules = async () => {
   isLoaded.value = false
@@ -83,7 +109,6 @@ const getUserModules = async () => {
       `/integrations/orchestrator/users/${props.id}`,
     )
     modulesList.value = data ?? []
-    await getModuleTreeList()
   } catch (e) {
     isLoadFailed.value = true
     ErrorHandler.processWithoutFeedback(e)
@@ -100,10 +125,10 @@ const getModuleTreeList = async () => {
         const { data } = await api.get(
           `/integrations/${item.module}/permissions`,
           {
-            filter: { userId: props.id },
+            filter: { userId: props.id, link: '' },
           },
         )
-        return { children: data, access_level: 10, type: item.module }
+        return { children: data, type: item.module }
       }) ?? [],
     )
   } catch (e) {
@@ -118,11 +143,19 @@ const toggleCreateNewMemberModal = async () => {
 }
 
 const reloadCreateNewMemberModal = async () => {
-  await getUserModules()
+  await loadInfo()
   isShowCreateUserModal.value = false
 }
 
-getUserModules()
+const loadInfo = async () => {
+  await getUser()
+  await getUserModules()
+  await getModuleTreeList()
+}
+
+onMounted(async () => {
+  await loadInfo()
+})
 </script>
 
 <style scoped lang="scss">

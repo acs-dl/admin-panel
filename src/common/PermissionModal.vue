@@ -15,8 +15,9 @@
       <permission-form
         :id="id"
         :module="module"
+        :module-name="moduleName"
         @cancel="cancelForm"
-        @submit="sumbitForm"
+        @submit="submitForm"
       />
     </div>
   </modal>
@@ -25,15 +26,17 @@
 <script lang="ts" setup>
 import { Modal, Icon } from '@/common'
 import PermissionForm from '@/forms/PermissionForm.vue'
+import { UserPermisonInfo } from '@/types'
 
 withDefaults(
   defineProps<{
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    module?: any // fix
+    module?: UserPermisonInfo
+    moduleName?: string
     id: string
   }>(),
   {
     module: undefined,
+    moduleName: '',
   },
 )
 
@@ -46,12 +49,16 @@ const cancelForm = () => {
   emit('cancel')
 }
 
-const sumbitForm = () => {
+const submitForm = () => {
   emit('submit')
 }
 </script>
 
 <style lang="scss" scoped>
+.permission-modal__inner {
+  width: toRem(500);
+}
+
 .permission-modal__icon-wrapper {
   width: toRem(48);
   height: toRem(48);

@@ -97,6 +97,7 @@ $z-modal: 10;
   background: var(--background-primary-light);
   padding: toRem(24);
   border-radius: toRem(10);
+  min-width: toRem(300);
 
   @include respond-to(small) {
     left: 0;

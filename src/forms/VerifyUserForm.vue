@@ -62,14 +62,14 @@ import { reactive } from 'vue'
 import { AppButton } from '@/common'
 import { api } from '@/api'
 import { InputField } from '@/fields'
-import { useForm, useFormValidation } from '@/composables'
+import { useContext, useForm, useFormValidation } from '@/composables'
 import { required } from '@/validators'
-import { ErrorHandler } from '@/helpers'
-import { UnverifiedUser } from '@/types'
+import { Bus, ErrorHandler } from '@/helpers'
+import { UnverifiedModuleUser } from '@/types'
 
 const props = withDefaults(
   defineProps<{
-    user?: UnverifiedUser
+    user?: UnverifiedModuleUser
   }>(),
   {
     user: undefined,
@@ -80,6 +80,8 @@ const emit = defineEmits<{
   (e: 'cancel'): void
   (e: 'submit'): void
 }>()
+
+const { $t } = useContext()
 
 const form = reactive({
   id: '',
@@ -127,6 +129,7 @@ const submit = async () => {
       },
     })
     emit('submit')
+    Bus.success($t('verify-user-form.success-msg'))
   } catch (error) {
     ErrorHandler.process(error)
   }

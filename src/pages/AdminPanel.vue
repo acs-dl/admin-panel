@@ -9,6 +9,15 @@
 
 <script lang="ts" setup>
 import { AppSidebar } from '@/common'
+import { usePlatformStore } from '@/store'
+import { onMounted } from 'vue'
+
+const { getAllPositions, getAllModules } = usePlatformStore()
+
+onMounted(async () => {
+  await getAllPositions()
+  await getAllModules()
+})
 </script>
 
 <style scoped lang="scss">

@@ -6,10 +6,10 @@
       </div>
       <div class="delete-modal__title-wrapper">
         <h2 class="delete-modal__title">
-          {{ $t('delete-modal.main-title') }}
+          {{ mainTitle || $t('delete-modal.main-title') }}
         </h2>
         <h3 class="delete-modal__title-secondary">
-          {{ $t('delete-modal.secondary-title') }}
+          {{ secondaryTitle || $t('delete-modal.secondary-title') }}
         </h3>
       </div>
       <div class="delete-modal__actions">
@@ -37,6 +37,17 @@
 
 <script lang="ts" setup>
 import { Modal, Icon, AppButton } from '@/common'
+
+withDefaults(
+  defineProps<{
+    mainTitle?: string
+    secondaryTitle?: string
+  }>(),
+  {
+    mainTitle: '',
+    secondaryTitle: '',
+  },
+)
 
 const emit = defineEmits<{
   (e: 'cancel'): void

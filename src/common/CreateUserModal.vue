@@ -15,7 +15,7 @@
           {{ $t('create-user-modal.secondary-title') }}
         </h3>
       </div>
-      <create-user-form @cancel="cancelForm" @submit="sumbitForm" />
+      <create-user-form @cancel="cancelForm" @submit="submitForm" />
     </div>
   </modal>
 </template>
@@ -33,12 +33,16 @@ const cancelForm = () => {
   emit('cancel')
 }
 
-const sumbitForm = () => {
+const submitForm = () => {
   emit('submit')
 }
 </script>
 
 <style lang="scss" scoped>
+.create-user-modal__inner {
+  width: toRem(500);
+}
+
 .create-user-modal__icon-wrapper {
   width: toRem(48);
   height: toRem(48);

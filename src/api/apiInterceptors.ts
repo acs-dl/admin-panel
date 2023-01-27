@@ -3,13 +3,12 @@ import { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { useAuthStore } from '@/store'
 import { router } from '@/router'
 import { ROUTE_NAMES } from '@/enums'
-import { DateUtil } from '@/utils'
 
 export function attachBearerInjector(axios: AxiosInstance): void {
   axios.interceptors.request.use((request): AxiosRequestConfig => {
     const { accessToken, logout } = useAuthStore()
 
-    if (!accessToken || DateUtil.toTimestamp() >= accessToken.expiresIn) {
+    if (!accessToken) {
       logout()
       return request
     }

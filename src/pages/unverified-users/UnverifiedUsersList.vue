@@ -53,28 +53,57 @@
         <loader class="unverified-users-list__message" />
       </template>
     </div>
+
+    <div v-if="isLoaded" class="unverified-users-list__pagination">
+      <table-navigation
+        v-if="pageCount > MIN_PAGE_AMOUNT"
+        v-model:current-page="currentPage"
+        class="filters-list-section__navigation"
+        :page-count="pageCount"
+        :total-amount="usersCount"
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { api } from '@/api'
-import { Loader, ErrorMessage, NoDataMessage } from '@/common'
+import { Loader, ErrorMessage, NoDataMessage, TableNavigation } from '@/common'
 import { ErrorHandler } from '@/helpers'
-import { UnverifiedUser } from '@/types'
+import { UnverifiedModuleUser } from '@/types'
+import { MIN_PAGE_AMOUNT, PAGE_LIMIT } from '@/consts'
 import UnverifiedUsersItem from './UnverifiedUsersItem.vue'
+
+const props = defineProps<{
+  searchText: string
+}>()
 
 const isLoadFailed = ref(false)
 const isLoaded = ref(true)
-const verifiedUsers = ref<UnverifiedUser[]>([])
+const verifiedUsers = ref<UnverifiedModuleUser[]>([])
+const usersCount = ref(0)
+const currentPage = ref(MIN_PAGE_AMOUNT)
+const pageCount = computed(() => Math.ceil(usersCount.value / PAGE_LIMIT))
 
 const getUserList = async () => {
   isLoaded.value = false
   isLoadFailed.value = false
   try {
-    const { data } = await api.get<UnverifiedUser[]>(
-      '/integrations/gitlab/permissions',
+    const { data, meta } = await api.get<UnverifiedModuleUser[]>(
+      '/integrations/gitlab/users/unverified',
+      {
+        page: {
+          limit: PAGE_LIMIT,
+          number: currentPage.value - 1,
+        },
+        filter: {
+          ...(props.searchText ? { username: props.searchText } : {}),
+        },
+      },
     )
+
+    usersCount.value = Number(meta?.total_count) ?? 0
     verifiedUsers.value = data
   } catch (e) {
     isLoadFailed.value = true
@@ -83,7 +112,25 @@ const getUserList = async () => {
   isLoaded.value = true
 }
 
-getUserList()
+watch(
+  () => currentPage.value,
+  async () => {
+    await getUserList()
+  },
+  { immediate: true },
+)
+
+watch(
+  () => props.searchText,
+  async () => {
+    currentPage.value = 1
+    await getUserList()
+  },
+)
+
+defineExpose({
+  getUserList,
+})
 </script>
 
 <style scoped lang="scss">
@@ -107,7 +154,7 @@ getUserList()
 }
 
 .unverified-users-list__content {
-  min-height: toRem(540);
+  margin-bottom: toRem(20);
 }
 
 .unverified-users-list__message {

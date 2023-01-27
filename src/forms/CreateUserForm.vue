@@ -38,7 +38,7 @@
         v-model="form.position"
         scheme="secondary"
         class="create-user-form__field-select"
-        :value-options="POSITIONS"
+        :value-options="positions"
         :placeholder="$t('create-user-form.position-placeholder')"
         :error-message="getFieldErrorMessage('position')"
         @blur="touchField('position')"
@@ -90,14 +90,17 @@ import { api } from '@/api'
 import { InputField, SelectField } from '@/fields'
 import { useForm, useFormValidation } from '@/composables'
 import { email, required } from '@/validators'
-import { POSITIONS } from '@/consts'
-import { ErrorHandler } from '@/helpers'
+import { Bus, ErrorHandler } from '@/helpers'
 import { DateUtil } from '@/utils'
-import { UnverifiedUser, VerifiedUser } from '@/types'
+import { UnverifiedModuleUser, VerifiedUser } from '@/types'
+import { useContext } from '@/composables'
+import { usePlatformStore } from '@/store'
+import { router } from '@/router'
+import { ROUTE_NAMES } from '@/enums'
 
 const props = withDefaults(
   defineProps<{
-    user?: UnverifiedUser
+    user?: UnverifiedModuleUser
   }>(),
   {
     user: undefined,
@@ -108,6 +111,9 @@ const emit = defineEmits<{
   (e: 'cancel'): void
   (e: 'submit'): void
 }>()
+
+const { $t } = useContext()
+const { positions } = usePlatformStore()
 
 const form = reactive({
   name: '',
@@ -138,7 +144,7 @@ const verifyUser = async (newUser: VerifiedUser) => {
     await api.post('/integrations/orchestrator/requests', {
       data: {
         attributes: {
-          module: 'gitlab', // get type module from back
+          module: props.user?.module,
           payload: {
             action: 'verify_user',
             user_id: Number(newUser.id),
@@ -186,6 +192,8 @@ const submit = async () => {
     }
 
     emit('submit')
+    Bus.success($t('create-user-form.success-msg'))
+    router.push({ name: ROUTE_NAMES.userDetails, params: { id: data.id } })
   } catch (error) {
     ErrorHandler.process(error)
   }

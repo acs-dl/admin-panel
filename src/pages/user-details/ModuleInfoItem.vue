@@ -2,7 +2,7 @@
   <div class="module-info-item">
     <img
       class="module-info-item__img"
-      :src="module.avatar"
+      :src="moduleBaseInfo?.icon"
       :alt="module.module"
     />
     <div class="module-info-item__details">
@@ -13,31 +13,38 @@
         {{ module.username }}
       </p>
     </div>
-    <app-button
-      class="module-info-item__btn"
-      :icon-left="$icons.trash"
-      @click="toggleRemoveModal"
-    />
+    <app-button class="module-info-item__btn" @click="toggleRemoveModal">
+      <icon class="module-info-item__btn-icon" :name="$icons.trash" />
+    </app-button>
     <delete-modal
       v-if="isOpenRemoveModal"
       :icon="$icons.trash"
       @cancel="toggleRemoveModal"
-      @confirm="deleteUserFromModule"
+      @delete="deleteUserFromModule"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { api } from '@/api'
-import { AppButton, DeleteModal } from '@/common'
-import { ErrorHandler } from '@/helpers'
+import { AppButton, DeleteModal, Icon } from '@/common'
+import { ErrorHandler, Bus } from '@/helpers'
 import { ModuleInfo } from '@/types'
+import { usePlatformStore } from '@/store'
+import { storeToRefs } from 'pinia'
+import { useContext } from '@/composables'
 
 const props = defineProps<{
   id: string
   module: ModuleInfo
 }>()
+
+const { $t } = useContext()
+const { modules } = storeToRefs(usePlatformStore())
+const moduleBaseInfo = computed(() =>
+  modules.value.find(item => item.name === props.module.module),
+)
 
 const isOpenRemoveModal = ref(false)
 
@@ -50,7 +57,7 @@ const deleteUserFromModule = async () => {
     await api.post('/integrations/orchestrator/requests', {
       data: {
         attributes: {
-          module: 'gitlab' ?? props.module.module,
+          module: moduleBaseInfo.value?.name,
           payload: {
             action: 'delete_user',
             user_id: String(props.id),
@@ -66,6 +73,8 @@ const deleteUserFromModule = async () => {
         },
       },
     })
+    Bus.success($t('module-info-item.success-delete'))
+    isOpenRemoveModal.value = false
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
   }
@@ -75,7 +84,7 @@ const deleteUserFromModule = async () => {
 <style scoped lang="scss">
 .module-info-item {
   display: grid;
-  grid-template-columns: toRem(40) minmax(toRem(100), 1fr) toRem(50);
+  grid-template-columns: toRem(40) minmax(toRem(100), 1fr) toRem(20);
   gap: toRem(8);
   align-items: end;
 
@@ -113,5 +122,10 @@ const deleteUserFromModule = async () => {
 
 .module-info-item__btn {
   color: var(--text-primary-light);
+}
+
+.module-info-item__btn-icon {
+  max-width: toRem(20);
+  max-height: toRem(24);
 }
 </style>

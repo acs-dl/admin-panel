@@ -78,6 +78,7 @@ const setHeightCSSVar = (element: HTMLElement) => {
 }
 
 const toggleDropdown = () => {
+  if (isDisabled.value || isReadonly.value) return
   isDropdownOpen.value ? closeDropdown() : openDropdown()
 }
 
@@ -336,7 +337,6 @@ $z-local-index: 2;
 
 .select-field__placeholder {
   font: inherit;
-  opacity: 0.25;
 
   @include field-placeholder;
 }

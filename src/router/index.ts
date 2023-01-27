@@ -32,18 +32,18 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '/verified-users',
         name: ROUTE_NAMES.verifiedUsers,
-        component: () => import('@/pages/verified-users/VerifiedUsers.vue'),
+        component: () => import('@/pages/VerifiedUsers.vue'),
       },
       {
         path: '/verified-users/:id',
         name: ROUTE_NAMES.userDetails,
         props: true,
-        component: () => import('@/pages/user-details/UserDetails.vue'),
+        component: () => import('@/pages/UserDetails.vue'),
       },
       {
         path: '/unverified-users',
         name: ROUTE_NAMES.unverifiedUsers,
-        component: () => import('@/pages/unverified-users/UnverifiedUsers.vue'),
+        component: () => import('@/pages/UnverifiedUsers.vue'),
       },
     ],
   },

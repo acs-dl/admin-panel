@@ -17,7 +17,11 @@
         </span>
       </div>
       <div class="verified-users-list__item">
-        <select-field v-model="selectValue" :value-options="POSITIONS">
+        <select-field
+          v-if="positions.length"
+          v-model="selectPositions"
+          :value-options="[ALL_FILTER, ...positions]"
+        >
           <template #head="{ selectField }">
             <app-button color="blue" @click="selectField.toggle()">
               <icon
@@ -30,7 +34,7 @@
               />
               <span>{{ $t('verified-users-list.select-field-btn-text') }}</span>
               <span class="verified-users-list__select-field-btn-position">
-                {{ selectValue }}
+                {{ selectPositions }}
               </span>
             </app-button>
           </template>
@@ -76,7 +80,7 @@
         v-model:current-page="currentPage"
         class="filters-list-section__navigation"
         :page-count="pageCount"
-        :total-amount="countOfVerifiedUsers"
+        :total-amount="usersCount"
       />
     </div>
   </div>
@@ -96,28 +100,38 @@ import {
 } from '@/common'
 import { ErrorHandler } from '@/helpers'
 import { VerifiedUser } from '@/types'
-import { MIN_PAGE_AMOUNT, PAGE_LIMIT, POSITIONS } from '@/consts'
+import { MIN_PAGE_AMOUNT, PAGE_LIMIT, ALL_FILTER } from '@/consts'
+import { usePlatformStore } from '@/store'
+import { storeToRefs } from 'pinia'
 import VerifiedUsersItem from './VerifiedUsersItem.vue'
 
+const props = defineProps<{
+  searchText: string
+}>()
+
+const { positions } = storeToRefs(usePlatformStore())
 const isLoadFailed = ref(false)
 const isLoaded = ref(true)
-const selectValue = ref(POSITIONS[0])
+const selectPositions = ref(ALL_FILTER)
 const verifiedUsers = ref<VerifiedUser[]>([])
-const countOfVerifiedUsers = ref(0)
+const usersCount = ref(0)
 const currentPage = ref(MIN_PAGE_AMOUNT)
-const pageCount = computed(() =>
-  Math.ceil(countOfVerifiedUsers.value / PAGE_LIMIT),
-)
+const pageCount = computed(() => Math.ceil(usersCount.value / PAGE_LIMIT))
 
 const getUserList = async () => {
   isLoaded.value = false
   isLoadFailed.value = false
   try {
-    const { data } = await api.get<VerifiedUser[]>(
+    const { data, meta } = await api.get<VerifiedUser[]>(
       '/integrations/identity-svc/users',
       {
         filter: {
-          position: '',
+          ...(selectPositions.value !== ALL_FILTER
+            ? {
+                position: selectPositions.value,
+              }
+            : {}),
+          ...(props.searchText ? { name: props.searchText } : {}),
         },
         page: {
           limit: PAGE_LIMIT,
@@ -125,7 +139,7 @@ const getUserList = async () => {
         },
       },
     )
-    countOfVerifiedUsers.value = data.length
+    usersCount.value = Number(meta?.total_count) ?? 0
     verifiedUsers.value = data
   } catch (e) {
     isLoadFailed.value = true
@@ -149,6 +163,14 @@ watch(
     await getUserList()
   },
   { immediate: true },
+)
+
+watch(
+  () => [props.searchText, selectPositions.value],
+  async () => {
+    currentPage.value = 1
+    await getUserList()
+  },
 )
 
 defineExpose({
@@ -183,7 +205,7 @@ defineExpose({
 }
 
 .verified-users-list__content {
-  min-height: toRem(540);
+  margin-bottom: toRem(20);
 }
 
 .verified-users-list__message {
@@ -204,6 +226,6 @@ defineExpose({
 .verified-users-list__select-field-btn-position {
   font-weight: 400;
   margin-left: toRem(8);
-  color: var(--text-primary-light);
+  color: var(--primary-main);
 }
 </style>

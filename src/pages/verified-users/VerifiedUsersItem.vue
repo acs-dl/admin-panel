@@ -4,7 +4,7 @@
       :class="['verified-users-item__text', 'verified-users-item__text--name']"
       :route="{ name: $routes.userDetails, params: { id: user.id } }"
       color="blue"
-      :text="user.name"
+      :text="`${user.name} ${user.surname}`"
     />
     <span class="verified-users-item__text">
       {{ user.position }}

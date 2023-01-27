@@ -15,7 +15,13 @@
           {{ item.message }}
         </span>
       </div>
-      <icon class="tabs__btn-icon" :name="iconName" />
+      <icon
+        class="tabs__btn-icon"
+        :name="
+          modelValue === item.id ? $icons.selectedCircle : $icons.emptyCircle
+        "
+        :class="{ 'tabs__btn-icon--active': modelValue === item.id }"
+      />
     </button>
   </div>
 </template>
@@ -37,7 +43,7 @@ withDefaults(
     iconName?: ICON_NAMES
   }>(),
   {
-    iconName: ICON_NAMES.checkCircle,
+    iconName: ICON_NAMES.selectedCircle,
   },
 )
 
@@ -75,6 +81,10 @@ const updateTab = (id: string) => {
 .tabs__btn-icon {
   width: toRem(16);
   height: toRem(16);
+
+  &--active {
+    color: var(--white);
+  }
 }
 
 .tabs__btn-text {
