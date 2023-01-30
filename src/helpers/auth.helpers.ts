@@ -10,6 +10,8 @@ export function parseJwt(token: string) {
 
   return {
     expiresIn: parsedDecodedPayload.exp,
+    email: parsedDecodedPayload.email,
     token: token,
+    userId: parsedDecodedPayload.owner_id,
   }
 }

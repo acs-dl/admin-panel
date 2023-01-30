@@ -39,17 +39,20 @@
     <div class="sidebar__footer">
       <div class="sidebar__user">
         <div class="sidebar__user-logo">
-          <img v-if="props.logo" src="" alt="" srcset="" />
-          <div v-else>
-            {{ props.name.split('')[0].toUpperCase() }}
+          <div>
+            {{ accessToken?.email.split('')[0].toUpperCase() }}
           </div>
         </div>
         <div class="sidebar__user-info">
-          <div class="sidebar__user-info-name">
-            {{ props.name }}
+          <div v-if="adminInfo?.name" class="sidebar__user-info-name">
+            {{ adminInfo?.name + ' ' + adminInfo?.surname }}
           </div>
-          <div class="sidebar__user-info-email">
-            {{ props.email }}
+          <div
+            v-if="accessToken?.email"
+            class="sidebar__user-info-email"
+            :title="accessToken?.email"
+          >
+            {{ accessToken?.email }}
           </div>
         </div>
       </div>
@@ -66,28 +69,16 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { AppLogo, Icon, AppButton } from '@/common'
 import { useAuthStore } from '@/store'
-import { UnverifiedModuleUser } from '@/types'
+import { UnverifiedModuleUser, VerifiedUser } from '@/types'
 import { api } from '@/api'
 import { ErrorHandler } from '@/helpers'
 
-const props = withDefaults(
-  defineProps<{
-    name?: string
-    email?: string
-    logo?: string
-  }>(),
-  {
-    name: 'Serhii Pomohaev',
-    email: '@Norwood.Hyatt9',
-    logo: '',
-  },
-)
-
-const authStore = useAuthStore()
+const { logout, accessToken } = useAuthStore()
 const unverifiedUsersCount = ref(0)
+const adminInfo = ref<VerifiedUser | null>(null)
 
 const getUnverifiedUsersCount = async () => {
   try {
@@ -100,10 +91,21 @@ const getUnverifiedUsersCount = async () => {
   }
 }
 
-const logout = () => {
-  authStore.logout()
+const getAdminInfo = async () => {
+  try {
+    const { data } = await api.get<VerifiedUser>(
+      `/integrations/identity-svc/users/${accessToken?.userId}`,
+    )
+    adminInfo.value = data
+  } catch (e) {
+    ErrorHandler.processWithoutFeedback(e)
+  }
 }
-getUnverifiedUsersCount()
+
+onMounted(async () => {
+  await getUnverifiedUsersCount()
+  await getAdminInfo()
+})
 </script>
 
 <style scoped lang="scss">
@@ -203,6 +205,12 @@ getUnverifiedUsersCount()
   display: flex;
   flex-direction: column;
   font-size: toRem(14);
+  max-width: toRem(150);
+}
+
+.sidebar__user-info-name,
+.sidebar__user-info-email {
+  @include text-ellipsis;
 }
 
 .sidebar__user-info-name {
