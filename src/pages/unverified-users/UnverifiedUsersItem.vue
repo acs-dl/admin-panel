@@ -102,6 +102,7 @@ const removeUser = async () => {
           module: props.user.module,
           payload: {
             action: 'delete_user',
+            user_id: String(props.user.id),
             username: props.user.username,
           },
         },

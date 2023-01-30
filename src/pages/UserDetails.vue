@@ -179,6 +179,10 @@ onMounted(async () => {
 .user-details__content-wrapper {
   display: flex;
   gap: toRem(24);
+
+  @include respond-to(large) {
+    flex-direction: column;
+  }
 }
 
 .user-details__message {

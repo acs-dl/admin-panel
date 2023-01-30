@@ -147,14 +147,14 @@ const verifyUser = async (newUser: VerifiedUser) => {
           module: props.user?.module,
           payload: {
             action: 'verify_user',
-            user_id: Number(newUser.id),
+            user_id: String(newUser.id),
             username: props.user.username,
           },
         },
         relationships: {
           user: {
             data: {
-              id: newUser.id,
+              id: '1',
             },
           },
         },

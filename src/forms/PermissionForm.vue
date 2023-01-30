@@ -164,7 +164,7 @@ const submit = async () => {
           module: form.module.toLowerCase(),
           payload: {
             action: isEditForm.value ? 'update_user' : 'add_user',
-            user_id: props.id,
+            user_id: String(props.id),
             username: form.username,
             link: form.link,
             access_level: accessLevelValue?.value,

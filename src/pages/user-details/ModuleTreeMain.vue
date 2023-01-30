@@ -154,8 +154,12 @@ const deleteUserFromModule = async () => {
 .module-tree-main__children-item {
   padding-left: 0;
 
+  &:not(:last-child) {
+    border: none;
+  }
+
   &:last-child:before {
-    border-left: none;
+    border: none;
   }
 }
 

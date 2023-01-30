@@ -118,7 +118,7 @@
     "add-user-btn": "Add module",
     "error-message": "Error while loading.",
     "no-data-title": "Nothing found",
-    "no-data-message": "User does not exist in the system."
+    "no-data-message": "User doesn't have any modules yet."
   },
   "verified-users-item": {
     "telegram": "No Info",
