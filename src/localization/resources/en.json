@@ -60,9 +60,22 @@
     "submit-btn": "Create"
   },
   "module-info-item": {
-    "success-delete": "Module deleted"
+    "delete-main-title": "Remove user from {module}",
+    "delete-secondary-title": "Click to remove a user from the {module}",
+    "success-delete":  "Request for remove module sent successfully"
   },
-  "module-item": {
+  "module-tree-main": {
+    "delete-main-title": "Remove user from {module}",
+    "delete-secondary-title": "Click to remove a user from the {module}",
+    "success-delete": "Request for remove module sent successfully",
+    "submodule-column": "Submodule",
+    "access-level-column": "Access Level",
+    "delete-btn": "Delete"
+  },
+  "module-tree-item": {
+    "delete-main-title": "Remove user from {module}",
+    "delete-secondary-title": "Click to remove a user from the {module}/{link}",
+    "success-delete": "Request for remove module sent successfully",
     "submodule-column": "Submodule",
     "access-level-column": "Access Level",
     "delete-btn": "Delete"
@@ -108,7 +121,9 @@
     "no-data-message": "User does not exist in the system."
   },
   "verified-users-item": {
-    "telegram": "No Info"
+    "telegram": "No Info",
+    "delete-main-title": "Remove verify user",
+    "delete-secondary-title": "Click to remove a user from the database"
   },
   "unverified-users": {
     "main-title": "Employee List",
@@ -125,8 +140,10 @@
     "no-data-message": "Users don't exist in the system."
   },
   "unverified-users-item": {
-    "telegram": "No Info",
+    "delete-main-title": "Remove unverify user",
+    "delete-secondary-title": "Click to remove a user from the module",
     "unverified-name": "Unverified user",
+    "success-delete": "Request for remove user from module sent successfully",
     "verify-btn": "Verify"
   },
   "users-list-section": {

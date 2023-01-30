@@ -8,9 +8,9 @@
         <h2 class="delete-modal__title">
           {{ mainTitle || $t('delete-modal.main-title') }}
         </h2>
-        <h3 class="delete-modal__title-secondary">
+        <p class="delete-modal__title-secondary">
           {{ secondaryTitle || $t('delete-modal.secondary-title') }}
-        </h3>
+        </p>
       </div>
       <div class="delete-modal__actions">
         <app-button
@@ -64,6 +64,10 @@ const deleteUser = () => {
 </script>
 
 <style lang="scss" scoped>
+.delete-modal__inner {
+  width: toRem(400);
+}
+
 .delete-modal__icon-wrapper {
   width: toRem(48);
   height: toRem(48);

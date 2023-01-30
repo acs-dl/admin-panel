@@ -24,6 +24,9 @@
 
     <delete-modal
       v-if="isOpenRemoveModal"
+      :icon="$icons.trash"
+      :main-title="$t('verified-users-item.delete-main-title')"
+      :secondary-title="$t('verified-users-item.delete-secondary-title')"
       @cancel="toggleRemoveModal"
       @delete="deleteUser"
     />

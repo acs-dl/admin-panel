@@ -8,7 +8,6 @@
         <input-field
           v-model="searchValue"
           class="unverified-users__search-input"
-          icon-button
           scheme="primary-gray"
           :placeholder="$t('unverified-users.search-placeholder')"
           :icon-left="$icons.search"
@@ -70,5 +69,9 @@ const reloadCreateNewMemberModal = async () => {
 .unverified-users__actions {
   display: flex;
   gap: toRem(10);
+}
+
+.unverified-users__search-input {
+  width: toRem(220);
 }
 </style>

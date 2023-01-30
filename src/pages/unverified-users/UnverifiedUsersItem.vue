@@ -7,7 +7,11 @@
       {{ user.username }}
     </span>
     <span class="unverified-users-item__text">
-      {{ user.module || $t('unverified-users-item.telegram') }}
+      <img
+        class="unverified-users-item__img"
+        :src="getModuleImage(user.module)"
+        :alt="user.module"
+      />
     </span>
     <span
       class="unverified-users-item__text"
@@ -41,6 +45,8 @@
     <delete-modal
       v-if="isOpenRemoveModal"
       :icon="$icons.trash"
+      :main-title="$t('unverified-users-item.delete-main-title')"
+      :secondary-title="$t('unverified-users-item.delete-secondary-title')"
       @cancel="toggleRemoveModal"
       @delete="removeUser"
     />
@@ -52,7 +58,10 @@ import { ref } from 'vue'
 import { api } from '@/api'
 import { AppButton, VerifyUserModal, DeleteModal } from '@/common'
 import { UnverifiedModuleUser } from '@/types'
-import { ErrorHandler, formatDMYHM } from '@/helpers'
+import { Bus, ErrorHandler, formatDMYHM } from '@/helpers'
+import { usePlatformStore } from '@/store'
+import { storeToRefs } from 'pinia'
+import { useContext } from '@/composables'
 
 const props = defineProps<{
   user: UnverifiedModuleUser
@@ -63,6 +72,8 @@ const emit = defineEmits<{
   (e: 'cancel'): void
 }>()
 
+const { $t } = useContext()
+const { modules } = storeToRefs(usePlatformStore())
 const isOpenRemoveModal = ref(false)
 const isShowCreateUserModal = ref(false)
 
@@ -76,6 +87,11 @@ const toggleRemoveModal = () => {
 
 const updateList = async () => {
   emit('update')
+}
+
+const getModuleImage = (moduleName: string) => {
+  const selectedModule = modules.value.find(item => item.name === moduleName)
+  return selectedModule?.icon
 }
 
 const removeUser = async () => {
@@ -99,6 +115,7 @@ const removeUser = async () => {
       },
     })
     updateList()
+    Bus.info($t('unverified-users-item.success-delete'))
     isOpenRemoveModal.value = false
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
@@ -138,5 +155,13 @@ const removeUser = async () => {
 .unverified-users-item__btn {
   font-size: toRem(16);
   font-weight: 400;
+}
+
+.unverified-users-item__img {
+  max-width: toRem(24);
+  max-height: toRem(24);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
 }
 </style>

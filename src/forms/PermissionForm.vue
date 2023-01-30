@@ -180,7 +180,7 @@ const submit = async () => {
       },
     })
 
-    Bus.success($t('permission-form.success-msg'))
+    Bus.info($t('permission-form.success-msg'))
     emit('submit')
   } catch (error) {
     ErrorHandler.process(error)

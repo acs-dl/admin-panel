@@ -1,30 +1,34 @@
 <template>
-  <ul class="module-item__wrapper">
-    <li class="module-item">
-      <app-button color="default" class="module-item__name" @click="toggle">
-        <div class="module-item__name-text">
+  <ul class="module-tree-item__wrapper">
+    <li class="module-tree-item">
+      <app-button
+        color="default"
+        class="module-tree-item__name"
+        @click="toggle"
+      >
+        <div class="module-tree-item__name-text">
           {{ item?.path }}
         </div>
         <icon
           v-if="isFolder"
-          class="module-item__name-icon"
-          :class="{ 'module-item__name-icon--open': isOpen }"
+          class="module-tree-item__name-icon"
+          :class="{ 'module-tree-item__name-icon--open': isOpen }"
           :name="$icons.chevronFullDown"
         />
       </app-button>
 
       <app-button
         v-if="item.access_level"
-        class="module-item__item-btn"
+        class="module-tree-item__item-btn"
         color="blue"
         :text="item.access_level?.name"
         @click="toggleCreateNewMemberModal"
       />
 
       <app-button
-        class="module-item__item-btn"
+        class="module-tree-item__item-btn"
         color="error"
-        :text="$t('module-item.delete-btn')"
+        :text="$t('module-tree-item.delete-btn')"
         @click="toggleRemoveModal"
       />
     </li>
@@ -48,6 +52,15 @@
     <delete-modal
       v-if="isOpenRemoveModal"
       :icon="$icons.trash"
+      :main-title="
+        $t('module-tree-item.delete-main-title', { module: moduleName })
+      "
+      :secondary-title="
+        $t('module-tree-item.delete-secondary-title', {
+          module: moduleName,
+          link: item.link,
+        })
+      "
       @cancel="toggleRemoveModal"
       @delete="deleteUserFromModule"
     />
@@ -130,7 +143,7 @@ const deleteUserFromModule = async () => {
         },
       },
     })
-    Bus.success($t('module-info-item.success-delete'))
+    Bus.info($t('module-tree-item.success-delete'))
     isOpenRemoveModal.value = false
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
@@ -139,7 +152,7 @@ const deleteUserFromModule = async () => {
 </script>
 
 <style scoped lang="scss">
-.module-item__wrapper {
+.module-tree-item__wrapper {
   line-height: 1.5em;
   position: relative;
   padding-left: 0.8em;
@@ -164,7 +177,7 @@ const deleteUserFromModule = async () => {
   }
 }
 
-.module-item {
+.module-tree-item {
   display: grid;
   grid-template-columns:
     minmax(toRem(100), 1fr)
@@ -173,13 +186,13 @@ const deleteUserFromModule = async () => {
   gap: toRem(10);
 }
 
-.module-item__name {
+.module-tree-item__name {
   white-space: nowrap;
   align-items: center;
   gap: toRem(4);
 }
 
-.module-item__name-text {
+.module-tree-item__name-text {
   max-width: toRem(200);
   text-align: start;
   font-weight: 400;
@@ -188,7 +201,7 @@ const deleteUserFromModule = async () => {
   @include text-ellipsis;
 }
 
-.module-item__name-icon {
+.module-tree-item__name-icon {
   width: toRem(10);
   height: toRem(10);
   transition: linear 0.1s;
@@ -200,7 +213,7 @@ const deleteUserFromModule = async () => {
   }
 }
 
-.module-item__item-btn {
+.module-tree-item__item-btn {
   font-weight: 400;
 }
 </style>

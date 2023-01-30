@@ -18,6 +18,12 @@
     </app-button>
     <delete-modal
       v-if="isOpenRemoveModal"
+      :main-title="
+        $t('module-info-item.delete-main-title', { module: module.module })
+      "
+      :secondary-title="
+        $t('module-info-item.delete-secondary-title', { module: module.module })
+      "
       :icon="$icons.trash"
       @cancel="toggleRemoveModal"
       @delete="deleteUserFromModule"
@@ -73,7 +79,7 @@ const deleteUserFromModule = async () => {
         },
       },
     })
-    Bus.success($t('module-info-item.success-delete'))
+    Bus.info($t('module-info-item.success-delete'))
     isOpenRemoveModal.value = false
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)

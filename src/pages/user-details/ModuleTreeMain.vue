@@ -1,38 +1,42 @@
 <template>
-  <ul class="module-item__wrapper">
-    <li class="module-item">
-      <app-button color="default" class="module-item__name" @click="toggle">
-        <span class="module-item__name-text">
+  <ul class="module-tree-main__wrapper">
+    <li class="module-tree-main">
+      <app-button
+        color="default"
+        class="module-tree-main__name"
+        @click="toggle"
+      >
+        <span class="module-tree-main__name-text">
           {{ module.type }}
         </span>
         <icon
-          class="module-item__name-icon"
-          :class="{ 'module-item__name-icon--open': isOpen }"
+          class="module-tree-main__name-icon"
+          :class="{ 'module-tree-main__name-icon--open': isOpen }"
           :name="$icons.chevronFullRight"
         />
       </app-button>
 
       <div>
         <span v-if="!isOpen">
-          {{ $t('module-item.submodule-column') }}
+          {{ $t('module-tree-main.submodule-column') }}
         </span>
       </div>
       <div>
         <span v-if="!isOpen">
-          {{ $t('module-item.access-level-column') }}
+          {{ $t('module-tree-main.access-level-column') }}
         </span>
       </div>
       <app-button
-        class="module-item__item-btn"
+        class="module-tree-main__item-btn"
         color="error"
-        :text="$t('module-item.delete-btn')"
+        :text="$t('module-tree-main.delete-btn')"
         @click="toggleRemoveModal"
       />
     </li>
-    <ul v-if="isOpen" class="module-item__children">
+    <ul v-if="isOpen" class="module-tree-main__children">
       <module-trees-item
         v-for="(child, index) in module.children"
-        class="module-item__children-item"
+        class="module-tree-main__children-item"
         :key="index"
         :id="module.id"
         :module-name="module.type"
@@ -42,6 +46,12 @@
     <delete-modal
       v-if="isOpenRemoveModal"
       :icon="$icons.trash"
+      :main-title="
+        $t('module-tree-main.delete-main-title', { module: module.type })
+      "
+      :secondary-title="
+        $t('module-tree-main.delete-secondary-title', { module: module.type })
+      "
       @cancel="toggleRemoveModal"
       @delete="deleteUserFromModule"
     />
@@ -94,7 +104,7 @@ const deleteUserFromModule = async () => {
         },
       },
     })
-    Bus.success($t('module-info-item.success-delete'))
+    Bus.info($t('module-tree-main.success-delete'))
     isOpenRemoveModal.value = false
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
@@ -103,12 +113,12 @@ const deleteUserFromModule = async () => {
 </script>
 
 <style scoped lang="scss">
-.module-item__wrapper {
+.module-tree-main__wrapper {
   padding-left: 0.5em;
   line-height: 1.5em;
 }
 
-.module-item {
+.module-tree-main {
   display: grid;
   grid-template-columns:
     toRem(100)
@@ -118,16 +128,16 @@ const deleteUserFromModule = async () => {
   gap: toRem(10);
 }
 
-.module-item__name {
+.module-tree-main__name {
   align-items: center;
   gap: toRem(4);
 }
 
-.module-item__name-text {
+.module-tree-main__name-text {
   font-weight: 400;
 }
 
-.module-item__name-icon {
+.module-tree-main__name-icon {
   width: toRem(8);
   height: toRem(8);
   transition: linear 0.1s;
@@ -137,11 +147,11 @@ const deleteUserFromModule = async () => {
   }
 }
 
-.module-item__children {
+.module-tree-main__children {
   margin-left: toRem(110);
 }
 
-.module-item__children-item {
+.module-tree-main__children-item {
   padding-left: 0;
 
   &:last-child:before {
@@ -149,7 +159,7 @@ const deleteUserFromModule = async () => {
   }
 }
 
-.module-item__item-btn {
+.module-tree-main__item-btn {
   font-weight: 400;
 }
 </style>

@@ -128,7 +128,7 @@ const submit = async () => {
         },
       },
     })
-    Bus.success($t('verify-user-form.success-msg'))
+    Bus.info($t('verify-user-form.success-msg'))
     emit('submit')
   } catch (error) {
     ErrorHandler.process(error)
