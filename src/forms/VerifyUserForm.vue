@@ -4,19 +4,19 @@
       <div class="verify-user-form__group-field">
         <div class="verify-user-form__field">
           <h5 class="verify-user-form__field-title">
-            {{ $t('verify-user-form.id-lbl') }}
+            {{ $t('verify-user-form.user-lbl') }}
           </h5>
-          <input-field
-            v-model="form.id"
+          <input-dropdown-field
+            v-model="form.name"
+            v-model:user="selectedUser"
             scheme="secondary"
             class="verify-user-form__field-input"
-            :placeholder="$t('verify-user-form.id-lbl')"
-            :error-message="getFieldErrorMessage('id')"
+            :placeholder="$t('verify-user-form.user-placeholder')"
+            :error-message="getFieldErrorMessage('name')"
             :disabled="isFormDisabled"
-            @blur="touchField('id')"
+            @blur="touchField('name')"
           />
         </div>
-
         <div class="verify-user-form__field">
           <h5 class="verify-user-form__field-title">
             {{ $t('verify-user-form.nickname-lbl') }}
@@ -58,14 +58,14 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { AppButton } from '@/common'
 import { api } from '@/api'
-import { InputField } from '@/fields'
+import { InputField, InputDropdownField } from '@/fields'
 import { useContext, useForm, useFormValidation } from '@/composables'
 import { required } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
-import { UnverifiedModuleUser } from '@/types'
+import { UnverifiedModuleUser, VerifiedUser } from '@/types'
 
 const props = withDefaults(
   defineProps<{
@@ -82,10 +82,10 @@ const emit = defineEmits<{
 }>()
 
 const { $t } = useContext()
-
+const selectedUser = ref<VerifiedUser | null>(null)
 const form = reactive({
-  id: '',
-  module: 'gitlab' ?? '', // from back
+  name: '',
+  module: props.user.module ?? '',
   nickname: props.user?.username ?? '',
 })
 
@@ -94,7 +94,7 @@ const { isFormDisabled, disableForm, enableForm } = useForm()
 const { isFormValid, getFieldErrorMessage, touchField } = useFormValidation(
   form,
   {
-    id: { required },
+    name: { required },
     module: { required },
     nickname: { required },
   },
@@ -105,7 +105,7 @@ const cancelForm = () => {
 }
 
 const submit = async () => {
-  if (!isFormValid()) return
+  if (!isFormValid() || !selectedUser.value?.id) return
 
   disableForm()
   try {
@@ -115,21 +115,21 @@ const submit = async () => {
           module: form.module.toLowerCase(),
           payload: {
             action: 'verify_user',
-            user_id: form.id,
+            user_id: selectedUser.value?.id,
             username: form.nickname,
           },
         },
         relationships: {
           user: {
             data: {
-              id: form.id,
+              id: '1',
             },
           },
         },
       },
     })
-    emit('submit')
     Bus.success($t('verify-user-form.success-msg'))
+    emit('submit')
   } catch (error) {
     ErrorHandler.process(error)
   }

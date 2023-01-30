@@ -24,17 +24,14 @@
     </div>
 
     <div class="module-trees__content">
-      <template v-if="moduleTreesList.length">
-        <module-trees-item
+      <div v-if="moduleTreesList.length" class="module-trees__item-wrapper">
+        <module-tree-main
           v-for="item in moduleTreesList"
           class="module-trees__item"
-          is-module-level
-          :key="item"
-          :id="id"
-          :item="item"
-          :module-name="item.type"
+          :key="item.id"
+          :module="item"
         />
-      </template>
+      </div>
       <template v-else>
         <no-data-message
           class="module-trees__message"
@@ -48,12 +45,12 @@
 
 <script lang="ts" setup>
 import { NoDataMessage } from '@/common'
-import ModuleTreesItem from './ModuleTreesItem.vue'
+import { ModuleTree } from '@/types'
+import ModuleTreeMain from './ModuleTreeMain.vue'
 
 defineProps<{
   id: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  moduleTreesList: any[] // fix
+  moduleTreesList: ModuleTree[]
 }>()
 </script>
 
@@ -66,13 +63,15 @@ defineProps<{
 }
 
 .module-trees__header {
-  padding: toRem(20);
+  padding: toRem(12) toRem(24);
   display: grid;
   align-items: center;
   grid-template-columns:
     toRem(100)
     minmax(toRem(100), 1fr)
-    repeat(2, toRem(100));
+    minmax(toRem(100), toRem(150))
+    toRem(100);
+  gap: toRem(10);
 }
 
 .module-trees__header-item-text {
@@ -86,6 +85,12 @@ defineProps<{
 
 .module-trees__message {
   margin-top: toRem(50);
+}
+
+.module-trees__item-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: toRem(16);
 }
 
 .module-trees__item {

@@ -23,10 +23,10 @@
           />
         </template>
         <template v-else>
-          <template v-if="modulesList.length">
+          <div v-if="modulesList?.length" class="user-details__content-wrapper">
             <module-info-list :id="id" :modules="modulesList" />
             <module-trees :id="id" :module-trees-list="moduleTreesList" />
-          </template>
+          </div>
           <template v-else>
             <no-data-message
               class="user-details__message"
@@ -61,7 +61,7 @@ import {
 } from '@/common'
 import { api } from '@/api'
 import { ErrorHandler } from '@/helpers'
-import { ModuleInfo, VerifiedUser } from '@/types'
+import { ModuleInfo, ModuleTree, UserPermisonInfo, VerifiedUser } from '@/types'
 import { useContext } from '@/composables'
 import ModuleTrees from '@/pages/user-details/ModuleTrees.vue'
 import ModuleInfoList from '@/pages/user-details/ModuleInfoList.vue'
@@ -77,14 +77,15 @@ const isLoadFailed = ref(false)
 const isLoaded = ref(true)
 const isShowCreateUserModal = ref(false)
 const modulesList = ref<ModuleInfo[]>([])
-const moduleTreesList = ref<unknown[]>([]) // use type
-const userDetails = ref<VerifiedUser | null>(null) // use type
+const moduleTreesList = ref<ModuleTree[]>([])
+const userDetails = ref<VerifiedUser | null>(null)
 
 const mainTitle = computed(() =>
   userDetails.value
     ? `${userDetails.value.name} ${userDetails.value.surname}`
     : $t('user-details.main-title'),
 )
+
 const getUser = async () => {
   isLoaded.value = false
   isLoadFailed.value = false
@@ -108,7 +109,7 @@ const getUserModules = async () => {
     const { data } = await api.get<ModuleInfo[]>(
       `/integrations/orchestrator/users/${props.id}`,
     )
-    modulesList.value = data ?? []
+    modulesList.value = data || []
   } catch (e) {
     isLoadFailed.value = true
     ErrorHandler.processWithoutFeedback(e)
@@ -121,14 +122,14 @@ const getModuleTreeList = async () => {
   isLoadFailed.value = false
   try {
     moduleTreesList.value = await Promise.all(
-      modulesList.value.map(async (item: ModuleInfo) => {
-        const { data } = await api.get(
+      modulesList.value?.map(async (item: ModuleInfo) => {
+        const { data } = await api.get<UserPermisonInfo[]>(
           `/integrations/${item.module}/permissions`,
           {
             filter: { userId: props.id, link: '' },
           },
         )
-        return { children: data, type: item.module }
+        return { children: data, type: item.module, id: props.id }
       }) ?? [],
     )
   } catch (e) {
@@ -168,10 +169,16 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: toRem(16);
 }
 
 .user-details__content {
   min-height: toRem(540);
+}
+
+.user-details__content-wrapper {
+  display: flex;
+  gap: toRem(24);
 }
 
 .user-details__message {

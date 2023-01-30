@@ -1,55 +1,42 @@
 <template>
   <ul class="module-item__wrapper">
-    <li class="module-item" :class="{ 'module-item--module': isModule }">
-      <div v-if="!isModule" class="module-item-border"></div>
-      <div class="module-item__name">
-        <app-button color="default" @click="toggle">
-          <icon
-            v-if="!isModule && isFolder"
-            class="module-item__name-icon"
-            :name="isOpen ? $icons.chevronUp : $icons.chevronDown"
-          />
-          <span class="module-item__name-text">
-            {{ item.path || moduleName }}
-          </span>
-          <icon
-            v-if="isModule"
-            class="module-item__name-icon"
-            :name="isOpen ? $icons.chevronUp : $icons.chevronDown"
-          />
-        </app-button>
-      </div>
+    <li class="module-item">
+      <app-button color="default" class="module-item__name" @click="toggle">
+        <div class="module-item__name-text">
+          {{ item?.path }}
+        </div>
+        <icon
+          v-if="isFolder"
+          class="module-item__name-icon"
+          :class="{ 'module-item__name-icon--open': isOpen }"
+          :name="$icons.chevronFullDown"
+        />
+      </app-button>
 
-      <div v-if="isModule">
-        {{ $t('module-item.submodule-column') }}
-      </div>
-      <div>
-        <app-button
-          v-if="item.access_level"
-          class="module-item__item-btn"
-          color="blue"
-          :text="item.access_level?.name"
-          @click="toggleCreateNewMemberModal"
-        />
-      </div>
-      <div>
-        <app-button
-          class="module-item__item-btn"
-          color="error"
-          :text="$t('module-item.delete-btn')"
-        />
-      </div>
+      <app-button
+        v-if="item.access_level"
+        class="module-item__item-btn"
+        color="blue"
+        :text="item.access_level?.name"
+        @click="toggleCreateNewMemberModal"
+      />
+
+      <app-button
+        class="module-item__item-btn"
+        color="error"
+        :text="$t('module-item.delete-btn')"
+        @click="toggleRemoveModal"
+      />
     </li>
-    <li v-if="isOpen" :class="{ 'module-item--right': isModule }">
+    <template v-if="isOpen">
       <module-trees-item
         v-for="(child, index) in children"
         :key="index"
         :id="id"
         :module-name="moduleName"
         :item="child"
-        :roles="rolesList"
       />
-    </li>
+    </template>
     <permission-modal
       v-if="isShowCreateUserModal"
       :id="id"
@@ -58,123 +45,162 @@
       @submit="reloadCreateNewMemberModal"
       @cancel="toggleCreateNewMemberModal"
     />
+    <delete-modal
+      v-if="isOpenRemoveModal"
+      :icon="$icons.trash"
+      @cancel="toggleRemoveModal"
+      @delete="deleteUserFromModule"
+    />
   </ul>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { api } from '@/api'
-import { AppButton, Icon, PermissionModal } from '@/common'
+import { AppButton, Icon, PermissionModal, DeleteModal } from '@/common'
 import { ErrorHandler } from '@/helpers'
+import { UserPermisonInfo } from '@/types'
+import { Bus } from '@/helpers'
+import { useContext } from '@/composables'
 import ModuleTreesItem from './ModuleTreesItem.vue'
-import {
-  ModulePermisonsResponse,
-  ModulePermisons,
-  UserPermisonInfo,
-} from '@/types'
 
-const props = withDefaults(
-  defineProps<{
-    id: string
-    moduleName: string
-    isModuleLevel?: boolean
-    item?: UserPermisonInfo
-    roles?: ModulePermisons[]
-  }>(),
-  {
-    item: undefined,
-    isModuleLevel: false,
-    roles: undefined,
-  },
-)
+const props = defineProps<{
+  moduleName: string
+  id: string
+  item: UserPermisonInfo
+}>()
+
+const { $t } = useContext()
+const isOpenRemoveModal = ref(false)
 const isShowCreateUserModal = ref(false)
 const isOpen = ref(false)
-const children = ref()
-const isModule = computed(() => props.isModuleLevel)
-const isFolder = computed(() => props.item.deployable || isModule.value)
-const rolesList = ref<ModulePermisons[]>(props.roles)
+const children = ref<UserPermisonInfo[]>([])
+const isFolder = computed(() => props.item.deployable)
 
 const toggle = async () => {
   try {
-    if (isFolder.value) {
-      if (!isModule.value) {
-        const { data } = await api.get(
-          `/integrations/${props.moduleName}/permissions`,
-          {
-            filter: {
-              userId: props.id,
-              link: props.item.link,
-            },
+    if (isFolder.value && !children.value.length) {
+      const { data } = await api.get<UserPermisonInfo[]>(
+        `/integrations/${props.moduleName}/permissions`,
+        {
+          filter: {
+            userId: props.id,
+            link: props.item.link,
           },
-        )
-        children.value = data ?? []
-      } else {
-        children.value = props.item.children
-      }
-      isOpen.value = !isOpen.value
-    }
-  } catch (e) {
-    ErrorHandler.processWithoutFeedback(e)
-  }
-}
-
-const getDesc = async () => {
-  try {
-    if (!isModule.value) return
-    const { data } = await api.get<ModulePermisonsResponse>(
-      `/integrations/${props.moduleName}/get_available_roles`,
-      {
-        filter: {
-          link: props.item.children[0]?.link,
         },
-      },
-    )
-
-    rolesList.value = data.list
+      )
+      children.value = data
+    }
+    isOpen.value = !isOpen.value
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
   }
 }
 
-const toggleCreateNewMemberModal = async () => {
+const toggleCreateNewMemberModal = () => {
   isShowCreateUserModal.value = !isShowCreateUserModal.value
 }
 
-const reloadCreateNewMemberModal = async () => {
+const reloadCreateNewMemberModal = () => {
   isShowCreateUserModal.value = false
 }
 
-onMounted(async () => {
-  await getDesc()
-})
+const toggleRemoveModal = () => {
+  isOpenRemoveModal.value = !isOpenRemoveModal.value
+}
+
+const deleteUserFromModule = async () => {
+  try {
+    await api.post('/integrations/orchestrator/requests', {
+      data: {
+        attributes: {
+          module: props.moduleName,
+          payload: {
+            action: 'remove_user',
+            link: props.item.link,
+            username: props.item.username,
+          },
+        },
+        relationships: {
+          user: {
+            data: {
+              id: '1',
+            },
+          },
+        },
+      },
+    })
+    Bus.success($t('module-info-item.success-delete'))
+    isOpenRemoveModal.value = false
+  } catch (e) {
+    ErrorHandler.processWithoutFeedback(e)
+  }
+}
 </script>
 
 <style scoped lang="scss">
 .module-item__wrapper {
-  padding-left: 0.5em;
   line-height: 1.5em;
+  position: relative;
+  padding-left: 0.8em;
+
+  &:not(:last-child) {
+    border-left: toRem(1) solid var(--border-primary-light);
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: -0.1em;
+    left: 0;
+    width: 0.5em;
+    height: 1em;
+    border-bottom: toRem(1) solid var(--border-primary-light);
+    border-bottom-left-radius: 50%;
+  }
+
+  &:last-child:before {
+    border-left: toRem(1) solid var(--border-primary-light);
+  }
 }
 
 .module-item {
   display: grid;
   grid-template-columns:
-    toRem(100)
     minmax(toRem(100), 1fr)
-    repeat(2, toRem(100));
+    minmax(toRem(100), toRem(150))
+    toRem(100);
+  gap: toRem(10);
 }
 
 .module-item__name {
-  display: flex;
+  white-space: nowrap;
   align-items: center;
-  gap: toRem(8);
+  gap: toRem(4);
 }
 
 .module-item__name-text {
+  max-width: toRem(200);
+  text-align: start;
   font-weight: 400;
+  line-height: 1.2;
+
+  @include text-ellipsis;
 }
 
 .module-item__name-icon {
-  width: toRem(12);
-  height: toRem(12);
+  width: toRem(10);
+  height: toRem(10);
+  transition: linear 0.1s;
+  transform: rotate(-90deg);
+  color: var(--text-primary-light);
+
+  &--open {
+    transform: rotate(0);
+  }
+}
+
+.module-item__item-btn {
+  font-weight: 400;
 }
 </style>

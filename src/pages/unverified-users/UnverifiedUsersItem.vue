@@ -9,8 +9,11 @@
     <span class="unverified-users-item__text">
       {{ user.module || $t('unverified-users-item.telegram') }}
     </span>
-    <span class="unverified-users-item__text">
-      {{ user.created_ad }}
+    <span
+      class="unverified-users-item__text"
+      :title="formatDMYHM(user.created_at)"
+    >
+      {{ formatDMYHM(user.created_at) }}
     </span>
 
     <div class="unverified-users-item__buttons">
@@ -49,7 +52,7 @@ import { ref } from 'vue'
 import { api } from '@/api'
 import { AppButton, VerifyUserModal, DeleteModal } from '@/common'
 import { UnverifiedModuleUser } from '@/types'
-import { ErrorHandler } from '@/helpers'
+import { ErrorHandler, formatDMYHM } from '@/helpers'
 
 const props = defineProps<{
   user: UnverifiedModuleUser
@@ -119,6 +122,7 @@ const removeUser = async () => {
 .unverified-users-item__text {
   font-weight: 400;
   font-size: toRem(16);
+  line-height: 1.2;
   color: var(--text-secondary-light);
   text-overflow: ellipsis;
   overflow: hidden;

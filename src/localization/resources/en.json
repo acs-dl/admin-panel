@@ -20,7 +20,7 @@
     "link-placeholder": "Input submodule",
     "username-lbl": "Username",
     "username-placeholder": "Input username",
-    "success-msg": "Successful changed permission",
+    "success-msg": "Successful sent request for user permission",
     "access-level-lbl": "Access level",
     "access-level-placeholder": "Select access level"
   },
@@ -33,10 +33,10 @@
   "verify-user-modal": {
     "main-title": "New member verification",
     "add-account-title": "Add to existing account",
-    "add-account-msg": "Nunc ultricies nec vitae enim diam elit turpis sit viverra.",
+    "add-account-msg": "Link an account to an existing one",
     "create-account-title": "Create new account",
     "create-account-msg": "Add new member",
-    "secondary-title": "Diam ornare id sollicitudin nisi id laoreet nunc."
+    "secondary-title": "Create a new account for this user"
   },
   "create-user-form": {
     "name-lbl": "Name",
@@ -45,16 +45,17 @@
     "email-lbl": "Email",
     "position-lbl": "Position",
     "position-placeholder": "Select Position",
-    "success-msg": "Successful created user",
+    "success-msg": "Successful sent request for create user",
     "cancel-btn": "Cancel",
     "submit-btn": "Create"
   },
   "verify-user-form": {
-    "id-lbl": "User ID:",
+    "user-lbl": "User:",
+    "user-placeholder": "Select User",
     "nickname-lbl": "Nickname:",
     "module-lbl": "Module:",
     "module-placeholder": "Select Module",
-    "success-msg": "Successful verified user",
+    "success-msg": "Successful sent request for verify user",
     "cancel-btn": "Cancel",
     "submit-btn": "Create"
   },
@@ -63,6 +64,7 @@
   },
   "module-item": {
     "submodule-column": "Submodule",
+    "access-level-column": "Access Level",
     "delete-btn": "Delete"
   },
   "errors": {
@@ -85,7 +87,10 @@
     "select-field-btn-text": "Filter by",
     "error-message": "Error while loading.",
     "no-data-title": "Nothing found",
-    "no-data-message": "Users does not exist in the system."
+    "no-data-message": "Users don't exist in the system."
+  },
+  "module-info-list": {
+    "header": "Modules"
   },
   "module-trees": {
     "module-text": "Module",
@@ -100,7 +105,7 @@
     "add-user-btn": "Add module",
     "error-message": "Error while loading.",
     "no-data-title": "Nothing found",
-    "no-data-message": "User info exist in the system."
+    "no-data-message": "User does not exist in the system."
   },
   "verified-users-item": {
     "telegram": "No Info"
@@ -117,7 +122,7 @@
     "date-text": "Date",
     "error-message": "Error while loading.",
     "no-data-title": "Nothing found",
-    "no-data-message": "Users does not exist in the system."
+    "no-data-message": "Users don't exist in the system."
   },
   "unverified-users-item": {
     "telegram": "No Info",
@@ -149,5 +154,9 @@
     "header-title": "Distributed Lab",
     "login-title": "Log In",
     "submit-btn": "Submit"
+  },
+  "input-dropdown-field": {
+    "empty-message": "No users",
+    "error-message": "Something went wrong"
   }
 }

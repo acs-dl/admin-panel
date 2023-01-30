@@ -71,6 +71,7 @@ const deleteUser = () => {
 .verified-users-item__text {
   font-weight: 400;
   font-size: toRem(16);
+  line-height: 1.2;
   color: var(--text-secondary-light);
   text-overflow: ellipsis;
   overflow: hidden;

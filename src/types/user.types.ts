@@ -19,11 +19,10 @@ export type UnverifiedUser = {
 
 export type UnverifiedModuleUser = {
   id: string
-  created_ad: string
+  created_at: string
   module: string
   username: string
   type: string
-  updated_ad: string
 }
 
 export type ModuleInfo = {
@@ -60,7 +59,7 @@ export type ModulePermisonsResponse = {
 export type UserPermisonInfo = {
   type: string
   id: string
-  access_level: number
+  access_level: ModulePermisons
   deployable: boolean
   link: string
   module_id: number
@@ -68,4 +67,10 @@ export type UserPermisonInfo = {
   path: string
   user_id: number
   username: string
+}
+
+export type ModuleTree = {
+  children: UserPermisonInfo[]
+  type: string
+  id: string
 }

@@ -191,8 +191,8 @@ const submit = async () => {
       await verifyUser(data)
     }
 
-    emit('submit')
     Bus.success($t('create-user-form.success-msg'))
+    emit('submit')
     router.push({ name: ROUTE_NAMES.userDetails, params: { id: data.id } })
   } catch (error) {
     ErrorHandler.process(error)

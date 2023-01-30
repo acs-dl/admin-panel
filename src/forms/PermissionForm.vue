@@ -173,15 +173,15 @@ const submit = async () => {
         relationships: {
           user: {
             data: {
-              id: props.id,
+              id: '1',
             },
           },
         },
       },
     })
 
-    emit('submit')
     Bus.success($t('permission-form.success-msg'))
+    emit('submit')
   } catch (error) {
     ErrorHandler.process(error)
   }
@@ -210,7 +210,7 @@ const getAccessLevelList = async () => {
 
     if (props.module) {
       const currentAccessLevel = accessList.value.find(
-        item => item.value === props.module.access_level,
+        item => item.value === props.module.access_level.value,
       )
       form.accessLevel = currentAccessLevel?.name ?? ''
     }

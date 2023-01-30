@@ -49,6 +49,8 @@ export enum ICON_NAMES {
   chevronDoubleRight = 'chevron-double-right',
   chevronDoubleUp = 'chevron-double-up',
   chevronDown = 'chevron-down',
+  chevronFullDown = 'chevron-full-down',
+  chevronFullRight = 'chevron-full-right',
   chevronLeft = 'chevron-left',
   chevronRight = 'chevron-right',
   chevronUp = 'chevron-up',
