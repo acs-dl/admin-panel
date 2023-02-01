@@ -3,17 +3,94 @@
     "field-error_required": "Please fill out this field",
     "field-error_email": "Field must be a valid email"
   },
+  "create-user-modal": {
+    "main-title": "Add new member",
+    "secondary-title": "To add a new member, you must complete all fields"
+  },
+  "permission-modal": {
+    "main-title": "Add new user in module",
+    "secondary-title": "To add, select a module and its details"
+  },
+  "permission-form": {
+    "cancel-btn": "Cancel",
+    "submit-btn": "Submit",
+    "module-lbl": "Module",
+    "module-placeholder": "Select module",
+    "link-lbl": "Submodule",
+    "link-placeholder": "Input submodule",
+    "username-lbl": "Username",
+    "username-placeholder": "Input username",
+    "success-msg": "Successful sent request for user permission",
+    "access-level-lbl": "Access level",
+    "access-level-placeholder": "Select access level"
+  },
+  "delete-modal": {
+    "main-title": "Delete",
+    "cancel-btn": "Cancel",
+    "submit-btn": "Delete",
+    "secondary-title": "To delete, you must click button"
+  },
+  "verify-user-modal": {
+    "main-title": "New member verification",
+    "add-account-title": "Add to existing account",
+    "add-account-msg": "Link an account to an existing one",
+    "create-account-title": "Create new account",
+    "create-account-msg": "Add new member",
+    "secondary-title": "Create a new account for this user"
+  },
+  "create-user-form": {
+    "name-lbl": "Name",
+    "surname-lbl": "Surname",
+    "main-lbl": "Add new member",
+    "email-lbl": "Email",
+    "position-lbl": "Position",
+    "position-placeholder": "Select Position",
+    "success-msg": "Successful sent request for create user",
+    "cancel-btn": "Cancel",
+    "submit-btn": "Create"
+  },
+  "verify-user-form": {
+    "user-lbl": "User:",
+    "user-placeholder": "Select User",
+    "nickname-lbl": "Nickname:",
+    "module-lbl": "Module:",
+    "module-placeholder": "Select Module",
+    "success-msg": "Successful sent request for verify user",
+    "cancel-btn": "Cancel",
+    "submit-btn": "Create"
+  },
+  "module-info-item": {
+    "delete-main-title": "Remove user from {module}",
+    "delete-secondary-title": "Click to remove a user from the {module}",
+    "success-delete":  "Request for remove module sent successfully"
+  },
+  "module-tree-main": {
+    "delete-main-title": "Remove user from {module}",
+    "delete-secondary-title": "Click to remove a user from the {module}",
+    "success-delete": "Request for remove module sent successfully",
+    "submodule-column": "Submodule",
+    "access-level-column": "Access Level",
+    "delete-btn": "Delete"
+  },
+  "module-tree-item": {
+    "delete-main-title": "Remove user from {module}",
+    "delete-secondary-title": "Click to remove a user from the {module}/{link}",
+    "success-delete": "Request for remove module sent successfully",
+    "submodule-column": "Submodule",
+    "access-level-column": "Access Level",
+    "delete-btn": "Delete"
+  },
   "errors": {
     "default": "Something went wrong"
   },
   "sidebar": {
     "main-title": "Employee List",
-    "search-placeholder": "Search by name",
     "verified-users-link": "Verified",
     "unverified-users-link": "Unverified"
   },
   "verified-users": {
     "main-title": "Employee List",
+    "search-placeholder": "Search by name",
     "add-user-btn": "Add new member"
   },
   "verified-users-list": {
@@ -23,13 +100,34 @@
     "select-field-btn-text": "Filter by",
     "error-message": "Error while loading.",
     "no-data-title": "Nothing found",
-    "no-data-message": "Users does not exist in the system."
+    "no-data-message": "Users don't exist in the system."
   },
-  "verified-users-list-item": {
-    "telegram": "No Info"
+  "module-info-list": {
+    "header": "Modules"
+  },
+  "module-trees": {
+    "module-text": "Module",
+    "submodule-text": "Submodule",
+    "access-level-text": "Access level",
+    "edit-text": "Edit",
+    "no-data-title": "Nothing found",
+    "no-data-message": "Module does not exist in the system."
+  },
+  "user-details": {
+    "main-title": "User details",
+    "add-user-btn": "Add module",
+    "error-message": "Error while loading.",
+    "no-data-title": "Nothing found",
+    "no-data-message": "User doesn't have any modules yet."
+  },
+  "verified-users-item": {
+    "telegram": "No Info",
+    "delete-main-title": "Remove verify user",
+    "delete-secondary-title": "Click to remove a user from the database"
   },
   "unverified-users": {
     "main-title": "Employee List",
+    "search-placeholder": "Search by username",
     "add-user-btn": "Add new member"
   },
   "unverified-users-list": {
@@ -39,10 +137,13 @@
     "date-text": "Date",
     "error-message": "Error while loading.",
     "no-data-title": "Nothing found",
-    "no-data-message": "Users does not exist in the system."
+    "no-data-message": "Users don't exist in the system."
   },
-  "unverified-users-list-item": {
-    "telegram": "No Info",
+  "unverified-users-item": {
+    "delete-main-title": "Remove unverify user",
+    "delete-secondary-title": "Click to remove a user from the module",
+    "unverified-name": "Unverified user",
+    "success-delete": "Request for remove user from module sent successfully",
     "verify-btn": "Verify"
   },
   "users-list-section": {
@@ -71,15 +172,8 @@
     "login-title": "Log In",
     "submit-btn": "Submit"
   },
-  "ui-kit-page": {
-    "button": "Button",
-    "some-placeholder": "placeholder",
-    "some-label": "label",
-    "some-error-message": "error-message",
-    "modal-btn": "Open modal",
-    "collapse-btn": "Toggle Collapse",
-    "collapse-text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    "loading-error-msg": "Oops, something went wrong",
-    "no-data-msg": "Empty data, please add new"
+  "input-dropdown-field": {
+    "empty-message": "No users",
+    "error-message": "Something went wrong"
   }
 }

@@ -31,13 +31,13 @@
           />
         </template>
         <template v-else>
-          <template v-if="verifiedUsers.length">
+          <template v-if="unverifiedUsers.length">
             <unverified-users-item
-              v-for="item in verifiedUsers"
+              v-for="item in unverifiedUsers"
               class="unverified-users-list__list-item"
               :key="item.id"
               :user="item"
-              @delete="deleteUser"
+              @update="getUnverifiedUsersList"
             />
           </template>
           <template v-else>
@@ -53,27 +53,60 @@
         <loader class="unverified-users-list__message" />
       </template>
     </div>
+
+    <div v-if="isLoaded" class="unverified-users-list__pagination">
+      <table-navigation
+        v-if="pageCount > MIN_PAGE_AMOUNT"
+        v-model:current-page="currentPage"
+        class="filters-list-section__navigation"
+        :page-count="pageCount"
+        :total-amount="unverifiedUsersCount"
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { api } from '@/api'
-import { Loader, ErrorMessage, NoDataMessage } from '@/common'
+import { Loader, ErrorMessage, NoDataMessage, TableNavigation } from '@/common'
 import { ErrorHandler } from '@/helpers'
-import { VerifiedUser } from '@/types'
+import { UnverifiedModuleUser, UserMeta } from '@/types'
+import { MIN_PAGE_AMOUNT, PAGE_LIMIT } from '@/consts'
 import UnverifiedUsersItem from './UnverifiedUsersItem.vue'
 
-const isLoadFailed = ref(false)
-const isLoaded = ref(true)
-const verifiedUsers = ref<VerifiedUser[]>([])
+const props = defineProps<{
+  searchText: string
+}>()
 
-const getUserList = async () => {
+const isLoadFailed = ref(false)
+const isLoaded = ref(false)
+const unverifiedUsers = ref<UnverifiedModuleUser[]>([])
+const unverifiedUsersCount = ref(0)
+const currentPage = ref(MIN_PAGE_AMOUNT)
+const pageCount = computed(() =>
+  Math.ceil(unverifiedUsersCount.value / PAGE_LIMIT),
+)
+
+const getUnverifiedUsersList = async () => {
   isLoaded.value = false
   isLoadFailed.value = false
   try {
-    const { data } = await api.get<VerifiedUser[]>('/integrations/core/users')
-    verifiedUsers.value = data
+    const { data, meta } = await api.get<UnverifiedModuleUser[], UserMeta>(
+      '/integrations/gitlab/users/unverified',
+      {
+        page: {
+          limit: PAGE_LIMIT,
+          number: currentPage.value - 1,
+        },
+        filter: {
+          ...(props.searchText ? { username: props.searchText } : {}),
+        },
+      },
+    )
+
+    unverifiedUsersCount.value = meta.total_count
+    unverifiedUsers.value = data
   } catch (e) {
     isLoadFailed.value = true
     ErrorHandler.processWithoutFeedback(e)
@@ -81,16 +114,25 @@ const getUserList = async () => {
   isLoaded.value = true
 }
 
-const deleteUser = async (id: string) => {
-  try {
-    await api.delete(`/integrations/core/users/${id}`)
-    await getUserList()
-  } catch (e) {
-    ErrorHandler.processWithoutFeedback(e)
-  }
-}
+watch(
+  () => currentPage.value,
+  async () => {
+    await getUnverifiedUsersList()
+  },
+  { immediate: true },
+)
 
-getUserList()
+watch(
+  () => props.searchText,
+  async () => {
+    currentPage.value = 1
+    await getUnverifiedUsersList()
+  },
+)
+
+defineExpose({
+  getUnverifiedUsersList,
+})
 </script>
 
 <style scoped lang="scss">
@@ -114,7 +156,7 @@ getUserList()
 }
 
 .unverified-users-list__content {
-  min-height: toRem(540);
+  margin-bottom: toRem(20);
 }
 
 .unverified-users-list__message {

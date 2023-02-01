@@ -7,15 +7,15 @@ $background-primary-light: #ffffff;
 $background-primary-main: #e6f2ff;
 $background-primary-dark: #f6f6f6;
 
-$background-secondary-light: #f4efff;
-$background-secondary-main: #e6ddfb;
-$background-secondary-dark: #d6caf5;
+$background-secondary-light: #ffffff;
+$background-secondary-main: #ffffff;
+$background-secondary-dark: #ffffff;
 
 /* status colors */
 
-$success-light: #9ad7a4;
-$success-main: #5cc56e;
-$success-dark: #278337;
+$success-light: #5efc82;
+$success-main: #00c853;
+$success-dark: #1bb901;
 
 $error-light: #f2b8b5;
 $error-main: #d92d20;
@@ -67,6 +67,8 @@ $text-secondary-invert-dark: #ffffff;
 
 /* border colors */
 
-$border-primary-light: #cfcfcf;
+$border-primary-light: #d0d5dd;
 $border-primary-main: #9e9e9e;
 $border-primary-dark: #707070;
+
+$shadow-primary: rgba(0, 0, 0, 0.2);

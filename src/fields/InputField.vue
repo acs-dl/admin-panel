@@ -335,6 +335,7 @@ $z-index-side-nodes: 1;
   .input-field--primary-gray & {
     background: var(--background-primary-dark);
     box-shadow: inset 0 0 0 toRem(50) var(--background-primary-dark);
+    border: toRem(1) solid var(--field-border);
 
     @include field-border;
   }
@@ -342,11 +343,11 @@ $z-index-side-nodes: 1;
   .input-field--secondary & {
     position: relative;
     background: var(--field-bg-secondary);
-    box-shadow: inset 0 0 0 toRem(50) var(--field-bg-secondary),
-      0 toRem(2) 0 0 var(--field-border);
-    padding: calc(var(--field-padding-top) + #{toRem(12)})
-      var(--field-padding-right) var(--field-padding-bottom)
-      var(--field-padding-left);
+    box-shadow: inset 0 0 0 toRem(50) var(--field-bg-secondary);
+    padding: var(--field-padding-top) var(--field-padding-right)
+      var(--field-padding-bottom) var(--field-padding-left);
+    border: toRem(1) solid var(--field-border);
+    border-radius: toRem(10);
   }
 
   transition-property: all;
@@ -421,8 +422,7 @@ $z-index-side-nodes: 1;
 
   .input-field--error.input-field--secondary & {
     border-color: var(--field-error);
-    box-shadow: inset 0 0 0 toRem(50) var(--field-bg-secondary),
-      0 toRem(2) 0 0 var(--field-error);
+    box-shadow: inset 0 0 0 toRem(50) var(--field-bg-secondary);
   }
 
   &:not([disabled]):focus {

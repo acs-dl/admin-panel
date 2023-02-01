@@ -59,6 +59,7 @@ const decreasePageCount = async () => {
 .table-navigation {
   display: flex;
   align-items: center;
+  justify-content: center;
   column-gap: toRem(20);
 }
 </style>

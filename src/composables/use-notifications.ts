@@ -1,6 +1,6 @@
 import { Notification } from '@/common'
 
-import { TYPE, useToast } from 'vue-toastification'
+import { TYPE, useToast, POSITION } from 'vue-toastification'
 import { useI18n } from 'vue-i18n'
 import { NotificationObjectPayload } from '@/types'
 import { Bus } from '@/helpers'
@@ -76,6 +76,7 @@ export const useNotifications = (): void => {
         },
       },
       {
+        position: POSITION.TOP_RIGHT,
         icon: false,
         type: messageType,
       },

@@ -1,6 +1,8 @@
 export type Jwt = {
   expiresIn: number
+  email: string
   token: string
+  userId: number
 }
 
 export type AuthorizeUserResponse = {

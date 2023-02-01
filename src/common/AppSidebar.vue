@@ -2,15 +2,6 @@
   <aside class="sidebar">
     <div class="sidebar__header">
       <app-logo class="sidebar__logo" />
-      <input-field
-        v-model="searchValue"
-        class="sidebar__search-input"
-        icon-button
-        scheme="primary-gray"
-        :placeholder="$t('sidebar.search-placeholder')"
-        :icon-left="$icons.search"
-        @icon-click="search"
-      />
       <h2 class="sidebar__title">
         {{ $t('sidebar.main-title') }}
       </h2>
@@ -36,26 +27,31 @@
           <span class="sidebar__link-text">
             {{ $t('sidebar.unverified-users-link') }}
           </span>
-          <div class="sidebar__link-unverified-users-count">
-            {{ props.unverifiedUsersCount }}
+          <div
+            v-if="unverifiedUsersCount"
+            class="sidebar__link-unverified-users-count"
+          >
+            {{ unverifiedUsersCount }}
           </div>
         </router-link>
       </li>
     </ul>
     <div class="sidebar__footer">
-      <div class="sidebar__user">
+      <div
+        v-if="adminInfo?.name && adminInfo?.surname && accessToken?.email"
+        class="sidebar__user"
+      >
         <div class="sidebar__user-logo">
-          <img v-if="props.logo" src="" alt="" srcset="" />
-          <div v-else>
-            {{ props.name.split('')[0].toUpperCase() }}
+          <div>
+            {{ adminInfo.name[0].toUpperCase() }}
           </div>
         </div>
         <div class="sidebar__user-info">
           <div class="sidebar__user-info-name">
-            {{ props.name }}
+            {{ `${adminInfo.name} ${adminInfo.surname}` }}
           </div>
-          <div class="sidebar__user-info-email">
-            {{ props.email }}
+          <div class="sidebar__user-info-email" :title="accessToken.email">
+            {{ accessToken.email }}
           </div>
         </div>
       </div>
@@ -74,33 +70,42 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { AppLogo, Icon, AppButton } from '@/common'
-import { InputField } from '@/fields'
 import { useAuthStore } from '@/store'
+import { UnverifiedModuleUser, VerifiedUser } from '@/types'
+import { api } from '@/api'
+import { ErrorHandler } from '@/helpers'
 
-const props = withDefaults(
-  defineProps<{
-    name?: string
-    email?: string
-    logo?: string
-    unverifiedUsersCount?: number
-  }>(),
-  {
-    name: 'Serhii Pomohaev',
-    email: '@Norwood.Hyatt9',
-    logo: '',
-    unverifiedUsersCount: 445678,
-  },
-)
-const authStore = useAuthStore()
-const searchValue = ref('')
+const { logout, accessToken } = useAuthStore()
+const unverifiedUsersCount = ref(0)
+const adminInfo = ref<VerifiedUser | null>(null)
 
-const search = () => {
-  searchValue.value = ''
+const getUnverifiedUsersCount = async () => {
+  try {
+    const { meta } = await api.get<UnverifiedModuleUser[]>(
+      '/integrations/gitlab/users/unverified',
+    )
+    unverifiedUsersCount.value = Number(meta?.total_count)
+  } catch (e) {
+    ErrorHandler.processWithoutFeedback(e)
+  }
 }
 
-const logout = () => {
-  authStore.logout()
+const getAdminInfo = async () => {
+  try {
+    const { data } = await api.get<VerifiedUser>(
+      `/integrations/identity-svc/users/${accessToken?.userId}`,
+    )
+    adminInfo.value = data
+  } catch (e) {
+    ErrorHandler.processWithoutFeedback(e)
+  }
 }
+
+const init = async () => {
+  await Promise.allSettled([getUnverifiedUsersCount(), getAdminInfo()])
+}
+
+init()
 </script>
 
 <style scoped lang="scss">
@@ -115,10 +120,6 @@ const logout = () => {
 }
 
 .sidebar__logo {
-  margin-bottom: toRem(40);
-}
-
-.sidebar__search-input {
   margin-bottom: toRem(40);
 }
 
@@ -204,6 +205,12 @@ const logout = () => {
   display: flex;
   flex-direction: column;
   font-size: toRem(14);
+  max-width: toRem(150);
+}
+
+.sidebar__user-info-name,
+.sidebar__user-info-email {
+  @include text-ellipsis;
 }
 
 .sidebar__user-info-name {
