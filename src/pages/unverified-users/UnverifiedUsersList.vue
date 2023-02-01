@@ -31,13 +31,13 @@
           />
         </template>
         <template v-else>
-          <template v-if="verifiedUsers.length">
+          <template v-if="unverifiedUsers.length">
             <unverified-users-item
-              v-for="item in verifiedUsers"
+              v-for="item in unverifiedUsers"
               class="unverified-users-list__list-item"
               :key="item.id"
               :user="item"
-              @update="getUserList"
+              @update="getUnverifiedUsersList"
             />
           </template>
           <template v-else>
@@ -60,7 +60,7 @@
         v-model:current-page="currentPage"
         class="filters-list-section__navigation"
         :page-count="pageCount"
-        :total-amount="usersCount"
+        :total-amount="unverifiedUsersCount"
       />
     </div>
   </div>
@@ -80,13 +80,15 @@ const props = defineProps<{
 }>()
 
 const isLoadFailed = ref(false)
-const isLoaded = ref(true)
-const verifiedUsers = ref<UnverifiedModuleUser[]>([])
-const usersCount = ref(0)
+const isLoaded = ref(false)
+const unverifiedUsers = ref<UnverifiedModuleUser[]>([])
+const unverifiedUsersCount = ref(0)
 const currentPage = ref(MIN_PAGE_AMOUNT)
-const pageCount = computed(() => Math.ceil(usersCount.value / PAGE_LIMIT))
+const pageCount = computed(() =>
+  Math.ceil(unverifiedUsersCount.value / PAGE_LIMIT),
+)
 
-const getUserList = async () => {
+const getUnverifiedUsersList = async () => {
   isLoaded.value = false
   isLoadFailed.value = false
   try {
@@ -103,8 +105,8 @@ const getUserList = async () => {
       },
     )
 
-    usersCount.value = Number(meta?.total_count) ?? 0
-    verifiedUsers.value = data
+    unverifiedUsersCount.value = Number(meta?.total_count ?? 0)
+    unverifiedUsers.value = data
   } catch (e) {
     isLoadFailed.value = true
     ErrorHandler.processWithoutFeedback(e)
@@ -115,7 +117,7 @@ const getUserList = async () => {
 watch(
   () => currentPage.value,
   async () => {
-    await getUserList()
+    await getUnverifiedUsersList()
   },
   { immediate: true },
 )
@@ -124,12 +126,12 @@ watch(
   () => props.searchText,
   async () => {
     currentPage.value = 1
-    await getUserList()
+    await getUnverifiedUsersList()
   },
 )
 
 defineExpose({
-  getUserList,
+  getUnverifiedUsersList,
 })
 </script>
 

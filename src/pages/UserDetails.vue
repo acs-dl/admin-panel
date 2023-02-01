@@ -10,7 +10,7 @@
         modification="border-rounded"
         scheme="filled"
         :text="$t('user-details.add-user-btn')"
-        @click="toggleCreateNewMemberModal"
+        @click="togglePermissionModal"
       />
     </div>
 
@@ -42,16 +42,16 @@
     </div>
 
     <permission-modal
-      v-if="isShowCreateUserModal"
+      :is-shown="isShownPermissonModal"
       :id="id"
-      @submit="reloadCreateNewMemberModal"
-      @cancel="toggleCreateNewMemberModal"
+      @submit="reloadPermissionModal"
+      @cancel="togglePermissionModal"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import {
   Loader,
   ErrorMessage,
@@ -74,8 +74,8 @@ const props = defineProps<{
 
 const { $t } = useContext()
 const isLoadFailed = ref(false)
-const isLoaded = ref(true)
-const isShowCreateUserModal = ref(false)
+const isLoaded = ref(false)
+const isShownPermissonModal = ref(false)
 const modulesList = ref<ModuleInfo[]>([])
 const moduleTreesList = ref<ModuleTree[]>([])
 const userDetails = ref<VerifiedUser | null>(null)
@@ -139,24 +139,20 @@ const getModuleTreeList = async () => {
   isLoaded.value = true
 }
 
-const toggleCreateNewMemberModal = async () => {
-  isShowCreateUserModal.value = !isShowCreateUserModal.value
+const togglePermissionModal = async () => {
+  isShownPermissonModal.value = !isShownPermissonModal.value
 }
 
-const reloadCreateNewMemberModal = async () => {
-  await loadInfo()
-  isShowCreateUserModal.value = false
+const init = async () => {
+  await Promise.all([getUser(), getUserModules(), getModuleTreeList()])
 }
 
-const loadInfo = async () => {
-  await getUser()
-  await getUserModules()
-  await getModuleTreeList()
+const reloadPermissionModal = async () => {
+  await init()
+  isShownPermissonModal.value = false
 }
 
-onMounted(async () => {
-  await loadInfo()
-})
+init()
 </script>
 
 <style scoped lang="scss">

@@ -18,7 +18,7 @@
           modification="border-rounded"
           scheme="filled"
           :text="$t('unverified-users.add-user-btn')"
-          @click="toggleCreateNewMemberModal"
+          @click="toggleCreateUserModal"
         />
       </div>
     </div>
@@ -26,9 +26,9 @@
     <unverified-users-list :search-text="searchValue" ref="usersList" />
 
     <create-user-modal
-      v-if="isShowCreateUserModal"
-      @submit="reloadCreateNewMemberModal"
-      @cancel="toggleCreateNewMemberModal"
+      :is-shown="isShownCreateUserModal"
+      @submit="reloadCreateUserModal"
+      @cancel="toggleCreateUserModal"
     />
   </div>
 </template>
@@ -37,20 +37,20 @@
 import { ref } from 'vue'
 import { AppButton, CreateUserModal } from '@/common'
 import { InputField } from '@/fields'
-import UnverifiedUsersList from '@/pages/unverified-users//UnverifiedUsersList.vue'
+import UnverifiedUsersList from '@/pages/unverified-users/UnverifiedUsersList.vue'
 
 const usersList = ref<InstanceType<typeof UnverifiedUsersList> | null>(null)
-const isShowCreateUserModal = ref(false)
+const isShownCreateUserModal = ref(false)
 const searchValue = ref('')
-const toggleCreateNewMemberModal = async () => {
-  isShowCreateUserModal.value = !isShowCreateUserModal.value
+const toggleCreateUserModal = async () => {
+  isShownCreateUserModal.value = !isShownCreateUserModal.value
 }
 
-const reloadCreateNewMemberModal = async () => {
+const reloadCreateUserModal = async () => {
   if (usersList.value) {
-    await usersList.value.getUserList()
+    await usersList.value.getUnverifiedUsersList()
   }
-  isShowCreateUserModal.value = false
+  isShownCreateUserModal.value = false
 }
 </script>
 

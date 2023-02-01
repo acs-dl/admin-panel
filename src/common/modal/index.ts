@@ -1,0 +1,6 @@
+export { default as Modal } from '@/common/modal/Modal.vue'
+export { default as TransitionModal } from '@/common/modal/TransitionModal.vue'
+export { default as DeleteModal } from '@/common/modal/DeleteModal.vue'
+export { default as CreateUserModal } from '@/common/modal/CreateUserModal.vue'
+export { default as VerifyUserModal } from '@/common/modal/VerifyUserModal.vue'
+export { default as PermissionModal } from '@/common/modal/PermissionModal.vue'

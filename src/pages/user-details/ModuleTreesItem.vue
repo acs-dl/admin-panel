@@ -4,7 +4,7 @@
       <app-button
         color="default"
         class="module-tree-item__name"
-        @click="toggle"
+        @click="toggleTree"
       >
         <div class="module-tree-item__name-text">
           {{ item?.path }}
@@ -12,7 +12,7 @@
         <icon
           v-if="isFolder"
           class="module-tree-item__name-icon"
-          :class="{ 'module-tree-item__name-icon--open': isOpen }"
+          :class="{ 'module-tree-item__name-icon--open': isOpenTree }"
           :name="$icons.chevronFullDown"
         />
       </app-button>
@@ -22,17 +22,17 @@
         class="module-tree-item__item-btn"
         color="blue"
         :text="item.access_level?.name"
-        @click="toggleCreateNewMemberModal"
+        @click="togglePermissionModal"
       />
 
       <app-button
         class="module-tree-item__item-btn"
         color="error"
         :text="$t('module-tree-item.delete-btn')"
-        @click="toggleRemoveModal"
+        @click="toggleDeleteModal"
       />
     </li>
-    <template v-if="isOpen">
+    <template v-if="isOpenTree">
       <module-trees-item
         v-for="(child, index) in children"
         :key="index"
@@ -42,15 +42,15 @@
       />
     </template>
     <permission-modal
-      v-if="isShowCreateUserModal"
+      :is-shown="isShownPermissionrModal"
       :id="id"
       :module="item"
       :module-name="moduleName"
-      @submit="reloadCreateNewMemberModal"
-      @cancel="toggleCreateNewMemberModal"
+      @submit="reloadPermissionModal"
+      @cancel="togglePermissionModal"
     />
     <delete-modal
-      v-if="isOpenRemoveModal"
+      :is-shown="isShownDeleteModal"
       :icon="$icons.trash"
       :main-title="
         $t('module-tree-item.delete-main-title', { module: moduleName })
@@ -61,7 +61,7 @@
           link: item.link,
         })
       "
-      @cancel="toggleRemoveModal"
+      @cancel="toggleDeleteModal"
       @delete="deleteUserFromModule"
     />
   </ul>
@@ -84,13 +84,13 @@ const props = defineProps<{
 }>()
 
 const { $t } = useContext()
-const isOpenRemoveModal = ref(false)
-const isShowCreateUserModal = ref(false)
-const isOpen = ref(false)
+const isShownDeleteModal = ref(false)
+const isShownPermissionrModal = ref(false)
+const isOpenTree = ref(false)
 const children = ref<UserPermisonInfo[]>([])
 const isFolder = computed(() => props.item.deployable)
 
-const toggle = async () => {
+const toggleTree = async () => {
   try {
     if (isFolder.value && !children.value.length) {
       const { data } = await api.get<UserPermisonInfo[]>(
@@ -104,22 +104,22 @@ const toggle = async () => {
       )
       children.value = data
     }
-    isOpen.value = !isOpen.value
+    isOpenTree.value = !isOpenTree.value
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
   }
 }
 
-const toggleCreateNewMemberModal = () => {
-  isShowCreateUserModal.value = !isShowCreateUserModal.value
+const togglePermissionModal = () => {
+  isShownPermissionrModal.value = !isShownPermissionrModal.value
 }
 
-const reloadCreateNewMemberModal = () => {
-  isShowCreateUserModal.value = false
+const reloadPermissionModal = () => {
+  isShownPermissionrModal.value = false
 }
 
-const toggleRemoveModal = () => {
-  isOpenRemoveModal.value = !isOpenRemoveModal.value
+const toggleDeleteModal = () => {
+  isShownDeleteModal.value = !isShownDeleteModal.value
 }
 
 const deleteUserFromModule = async () => {
@@ -145,7 +145,7 @@ const deleteUserFromModule = async () => {
       },
     })
     Bus.info($t('module-tree-item.success-delete'))
-    isOpenRemoveModal.value = false
+    isShownDeleteModal.value = false
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
   }

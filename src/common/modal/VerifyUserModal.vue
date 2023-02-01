@@ -1,5 +1,5 @@
 <template>
-  <modal is-shown>
+  <transition-modal :is-shown="isShown" @click-outside="cancelForm">
     <div class="verify-user-modal__inner">
       <div class="verify-user-modal__icon-wrapper">
         <icon
@@ -29,18 +29,19 @@
         @submit="submitForm"
       />
     </div>
-  </modal>
+  </transition-modal>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { Modal, Icon, Tabs } from '@/common'
+import { TransitionModal, Icon, Tabs } from '@/common'
 import { UnverifiedModuleUser } from '@/types'
 import { useContext } from '@/composables'
 import VerifyUserForm from '@/forms/VerifyUserForm.vue'
 import CreateUserForm from '@/forms/CreateUserForm.vue'
 
 defineProps<{
+  isShown: boolean
   user: UnverifiedModuleUser
 }>()
 

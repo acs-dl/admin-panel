@@ -13,11 +13,11 @@
         {{ module.username }}
       </p>
     </div>
-    <app-button class="module-info-item__btn" @click="toggleRemoveModal">
+    <app-button class="module-info-item__btn" @click="toggleDeleteModal">
       <icon class="module-info-item__btn-icon" :name="$icons.trash" />
     </app-button>
     <delete-modal
-      v-if="isOpenRemoveModal"
+      :is-shown="isShownDeleteModal"
       :main-title="
         $t('module-info-item.delete-main-title', { module: module.module })
       "
@@ -25,7 +25,7 @@
         $t('module-info-item.delete-secondary-title', { module: module.module })
       "
       :icon="$icons.trash"
-      @cancel="toggleRemoveModal"
+      @cancel="toggleDeleteModal"
       @delete="deleteUserFromModule"
     />
   </div>
@@ -51,11 +51,10 @@ const { modules } = storeToRefs(usePlatformStore())
 const moduleBaseInfo = computed(() =>
   modules.value.find(item => item.name === props.module.module),
 )
+const isShownDeleteModal = ref(false)
 
-const isOpenRemoveModal = ref(false)
-
-const toggleRemoveModal = async () => {
-  isOpenRemoveModal.value = !isOpenRemoveModal.value
+const toggleDeleteModal = async () => {
+  isShownDeleteModal.value = !isShownDeleteModal.value
 }
 
 const deleteUserFromModule = async () => {
@@ -80,7 +79,7 @@ const deleteUserFromModule = async () => {
       },
     })
     Bus.info($t('module-info-item.success-delete'))
-    isOpenRemoveModal.value = false
+    isShownDeleteModal.value = false
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
   }

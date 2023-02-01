@@ -10,14 +10,14 @@
 <script lang="ts" setup>
 import { AppSidebar } from '@/common'
 import { usePlatformStore } from '@/store'
-import { onMounted } from 'vue'
 
 const { getAllPositions, getAllModules } = usePlatformStore()
 
-onMounted(async () => {
-  await getAllPositions()
-  await getAllModules()
-})
+const init = async () => {
+  await Promise.allSettled([getAllPositions(), getAllModules()])
+}
+
+init()
 </script>
 
 <style scoped lang="scss">

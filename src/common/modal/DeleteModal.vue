@@ -1,5 +1,5 @@
 <template>
-  <modal is-shown>
+  <transition-modal :is-shown="isShown" @click-outside="cancelForm">
     <div class="delete-modal__inner">
       <div class="delete-modal__icon-wrapper">
         <icon :name="$icons.trash" class="delete-modal__icon" />
@@ -32,14 +32,15 @@
         />
       </div>
     </div>
-  </modal>
+  </transition-modal>
 </template>
 
 <script lang="ts" setup>
-import { Modal, Icon, AppButton } from '@/common'
+import { TransitionModal, Icon, AppButton } from '@/common'
 
 withDefaults(
   defineProps<{
+    isShown: boolean
     mainTitle?: string
     secondaryTitle?: string
   }>(),

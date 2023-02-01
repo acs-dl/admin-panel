@@ -31,24 +31,24 @@
         class="unverified-users-item__btn"
         color="error"
         :icon-left="$icons.trash"
-        @click="toggleRemoveModal"
+        @click="toggleDeleteModal"
       />
     </div>
 
     <verify-user-modal
-      v-if="isShowCreateUserModal"
+      :is-shown="isShownVerifyUserModal"
       :user="user"
       @cancel="toggleCreateNewMemberModal"
       @submit="updateList"
     />
 
     <delete-modal
-      v-if="isOpenRemoveModal"
+      :is-shown="isShownDeleteModal"
       :icon="$icons.trash"
       :main-title="$t('unverified-users-item.delete-main-title')"
       :secondary-title="$t('unverified-users-item.delete-secondary-title')"
-      @cancel="toggleRemoveModal"
-      @delete="removeUser"
+      @cancel="toggleDeleteModal"
+      @delete="deleteUnverifiedUsers"
     />
   </div>
 </template>
@@ -74,15 +74,15 @@ const emit = defineEmits<{
 
 const { $t } = useContext()
 const { modules } = storeToRefs(usePlatformStore())
-const isOpenRemoveModal = ref(false)
-const isShowCreateUserModal = ref(false)
+const isShownDeleteModal = ref(false)
+const isShownVerifyUserModal = ref(false)
 
 const toggleCreateNewMemberModal = async () => {
-  isShowCreateUserModal.value = !isShowCreateUserModal.value
+  isShownVerifyUserModal.value = !isShownVerifyUserModal.value
 }
 
-const toggleRemoveModal = () => {
-  isOpenRemoveModal.value = !isOpenRemoveModal.value
+const toggleDeleteModal = () => {
+  isShownDeleteModal.value = !isShownDeleteModal.value
 }
 
 const updateList = async () => {
@@ -94,7 +94,7 @@ const getModuleImage = (moduleName: string) => {
   return selectedModule?.icon
 }
 
-const removeUser = async () => {
+const deleteUnverifiedUsers = async () => {
   try {
     await api.post('/integrations/orchestrator/requests', {
       data: {
@@ -117,7 +117,7 @@ const removeUser = async () => {
     })
     updateList()
     Bus.info($t('unverified-users-item.success-delete'))
-    isOpenRemoveModal.value = false
+    isShownDeleteModal.value = false
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
   }

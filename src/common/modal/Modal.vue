@@ -1,22 +1,20 @@
 <template>
-  <transition name="modal">
-    <div v-show="isShown" class="modal">
-      <button
-        class="modal__backdrop"
-        @click="isCloseByClickOutside ? closeModal : ''"
-      />
-      <div class="modal__pane" ref="modalPane">
-        <div v-if="isWithCancelBtn" class="modal__pane-header">
-          <app-button
-            class="modal__pane-header-close-btn"
-            :icon-right="$icons.cross"
-            @click="closeModal"
-          />
-        </div>
-        <slot :modal="{ close: closeModal }" />
+  <div class="modal">
+    <button
+      class="modal__backdrop"
+      @click="isCloseByClickOutside ? closeModal : ''"
+    />
+    <div class="modal__pane" ref="modalPane">
+      <div v-if="isWithCancelBtn" class="modal__pane-header">
+        <app-button
+          class="modal__pane-header-close-btn"
+          :icon-right="$icons.cross"
+          @click="closeModal"
+        />
       </div>
+      <slot :modal="{ close: closeModal }" />
     </div>
-  </transition>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -24,12 +22,8 @@ import { onMounted, ref } from 'vue'
 import { AppButton } from '@/common'
 import { onClickOutside } from '@vueuse/core'
 
-enum EVENTS {
-  updateIsShown = 'update:is-shown',
-}
-
 const emit = defineEmits<{
-  (e: EVENTS.updateIsShown, payload: boolean): void
+  (e: 'click-outside', payload: boolean): void
 }>()
 
 const props = withDefaults(
@@ -46,7 +40,9 @@ const props = withDefaults(
     isCloseByClickOutside: false,
   },
 )
+
 const modalPane = ref<HTMLElement | undefined>()
+
 onMounted(() => {
   if (modalPane.value) {
     if (props.isCloseByClickOutside) {
@@ -58,7 +54,7 @@ onMounted(() => {
 })
 
 const closeModal = () => {
-  emit(EVENTS.updateIsShown, false)
+  emit('click-outside', false)
 }
 </script>
 
@@ -116,17 +112,5 @@ $z-modal: 10;
 .modal__pane-header-close-btn {
   font-size: toRem(20);
   color: var(--text-gray);
-}
-
-.modal-enter-active,
-.modal-leave-active {
-  transition: 0.25s ease;
-  transition-property: opacity, transform;
-}
-
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
-  transform: scale(1.1);
 }
 </style>

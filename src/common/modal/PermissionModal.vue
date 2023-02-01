@@ -1,5 +1,5 @@
 <template>
-  <modal is-shown>
+  <transition-modal :is-shown="isShown" @click-outside="cancelForm">
     <div class="permission-modal__inner">
       <div class="permission-modal__icon-wrapper">
         <icon class="permission-modal__icon" :name="$icons.informationCircle" />
@@ -20,16 +20,17 @@
         @submit="submitForm"
       />
     </div>
-  </modal>
+  </transition-modal>
 </template>
 
 <script lang="ts" setup>
-import { Modal, Icon } from '@/common'
-import PermissionForm from '@/forms/PermissionForm.vue'
+import { TransitionModal, Icon } from '@/common'
 import { UserPermisonInfo } from '@/types'
+import PermissionForm from '@/forms/PermissionForm.vue'
 
 withDefaults(
   defineProps<{
+    isShown: boolean
     module?: UserPermisonInfo
     moduleName?: string
     id: string

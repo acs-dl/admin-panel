@@ -1,5 +1,5 @@
 <template>
-  <modal is-shown>
+  <transition-modal :is-shown="isShown" @click-outside="cancelForm">
     <div class="create-user-modal__inner">
       <div class="create-user-modal__icon-wrapper">
         <icon
@@ -17,12 +17,17 @@
       </div>
       <create-user-form @cancel="cancelForm" @submit="submitForm" />
     </div>
-  </modal>
+  </transition-modal>
 </template>
 
 <script lang="ts" setup>
-import { Modal, Icon } from '@/common'
+import { TransitionModal, Icon } from '@/common'
 import CreateUserForm from '@/forms/CreateUserForm.vue'
+
+defineProps<{
+  isShown?: boolean
+  secondaryTitle?: string
+}>()
 
 const emit = defineEmits<{
   (e: 'cancel'): void

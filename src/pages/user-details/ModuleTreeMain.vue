@@ -4,25 +4,25 @@
       <app-button
         color="default"
         class="module-tree-main__name"
-        @click="toggle"
+        @click="toggleModuleTree"
       >
         <span class="module-tree-main__name-text">
           {{ module.type }}
         </span>
         <icon
           class="module-tree-main__name-icon"
-          :class="{ 'module-tree-main__name-icon--open': isOpen }"
+          :class="{ 'module-tree-main__name-icon--open': isOpenModuleTree }"
           :name="$icons.chevronFullRight"
         />
       </app-button>
 
       <div>
-        <span v-if="!isOpen">
+        <span v-if="!isOpenModuleTree">
           {{ $t('module-tree-main.submodule-column') }}
         </span>
       </div>
       <div>
-        <span v-if="!isOpen">
+        <span v-if="!isOpenModuleTree">
           {{ $t('module-tree-main.access-level-column') }}
         </span>
       </div>
@@ -30,10 +30,10 @@
         class="module-tree-main__item-btn"
         color="error"
         :text="$t('module-tree-main.delete-btn')"
-        @click="toggleRemoveModal"
+        @click="toggleDeleteModal"
       />
     </li>
-    <ul v-if="isOpen" class="module-tree-main__children">
+    <ul v-if="isOpenModuleTree" class="module-tree-main__children">
       <module-trees-item
         v-for="(child, index) in module.children"
         class="module-tree-main__children-item"
@@ -44,7 +44,7 @@
       />
     </ul>
     <delete-modal
-      v-if="isOpenRemoveModal"
+      :is-shown="isShownDeleteModal"
       :icon="$icons.trash"
       :main-title="
         $t('module-tree-main.delete-main-title', { module: module.type })
@@ -52,7 +52,7 @@
       :secondary-title="
         $t('module-tree-main.delete-secondary-title', { module: module.type })
       "
-      @cancel="toggleRemoveModal"
+      @cancel="toggleDeleteModal"
       @delete="deleteUserFromModule"
     />
   </ul>
@@ -72,15 +72,15 @@ const props = defineProps<{
 }>()
 
 const { $t } = useContext()
-const isOpenRemoveModal = ref(false)
-const isOpen = ref(false)
+const isShownDeleteModal = ref(false)
+const isOpenModuleTree = ref(false)
 
-const toggle = () => {
-  isOpen.value = !isOpen.value
+const toggleModuleTree = () => {
+  isOpenModuleTree.value = !isOpenModuleTree.value
 }
 
-const toggleRemoveModal = () => {
-  isOpenRemoveModal.value = !isOpenRemoveModal.value
+const toggleDeleteModal = () => {
+  isShownDeleteModal.value = !isShownDeleteModal.value
 }
 
 const deleteUserFromModule = async () => {
@@ -105,7 +105,7 @@ const deleteUserFromModule = async () => {
       },
     })
     Bus.info($t('module-tree-main.success-delete'))
-    isOpenRemoveModal.value = false
+    isShownDeleteModal.value = false
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
   }

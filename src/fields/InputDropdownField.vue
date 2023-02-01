@@ -7,8 +7,8 @@
       autocomplete="off"
       :placeholder="placeholder"
       :label="label"
-      @input="search()"
-      @focus="toggleDropdown()"
+      @input="debounceSearchUsers"
+      @focus="toggleDropdown"
     />
     <transition name="input-dropdown-field">
       <div v-if="isDropdownOpened" class="input-dropdown-field__inner">
@@ -18,16 +18,16 @@
           </div>
         </template>
         <template v-else>
-          <template v-if="filters.length">
+          <template v-if="users.length">
             <div class="input-dropdown-field__inner-list">
               <button
-                v-for="item in filters"
+                v-for="item in users"
                 class="input-dropdown-field__inner-list-item"
                 :key="item.id"
                 type="button"
-                @click="toggleCurrentFilter(item)"
+                @click="toggleCurrentUser(item)"
               >
-                {{ item.name + ' ' + item.surname }}
+                {{ `${item.name} ${item.surname}` }}
               </button>
             </div>
           </template>
@@ -49,6 +49,7 @@ import { api } from '@/api'
 import { ErrorHandler } from '@/helpers'
 import { onClickOutside } from '@vueuse/core'
 import { VerifiedUser } from '@/types'
+import debounce from 'lodash-es/debounce'
 
 const props = withDefaults(
   defineProps<{
@@ -70,20 +71,14 @@ const emit = defineEmits<{
 
 const rootEl = ref<HTMLElement | null>(null)
 
-const filters = ref<VerifiedUser[]>([])
+const users = ref<VerifiedUser[]>([])
 const searchValue = ref(props.modelValue)
 
 const isDropdownOpened = ref(false)
 const isLoadFailed = ref(false)
-const isLoaded = ref(true)
+const isLoaded = ref(false)
 
-const search = async () => {
-  filters.value = []
-  isDropdownOpened.value = true
-  await loadFilters()
-}
-
-const loadFilters = async () => {
+const loadUsers = async () => {
   try {
     const { data } = await api.get<VerifiedUser[]>(
       '/integrations/identity-svc/users',
@@ -93,7 +88,7 @@ const loadFilters = async () => {
         },
       },
     )
-    filters.value = data
+    users.value = data
   } catch (e) {
     isLoadFailed.value = false
     ErrorHandler.processWithoutFeedback(e)
@@ -109,13 +104,21 @@ const closeDropdown = () => {
   isDropdownOpened.value = false
 }
 
-const toggleCurrentFilter = (selectedFilter: VerifiedUser) => {
-  if (props.user?.id !== selectedFilter.id) {
-    searchValue.value = `${selectedFilter.name} ${selectedFilter.surname}`
-    emit('update:user', selectedFilter)
+const toggleCurrentUser = (selectedUser: VerifiedUser) => {
+  if (props.user?.id !== selectedUser.id) {
+    searchValue.value = `${selectedUser.name} ${selectedUser.surname}`
+    emit('update:user', selectedUser)
   }
   closeDropdown()
 }
+
+const search = async () => {
+  users.value = []
+  isDropdownOpened.value = true
+  await loadUsers()
+}
+
+const debounceSearchUsers = debounce(search, 200)
 
 onMounted(async () => {
   if (rootEl.value) {
@@ -123,14 +126,14 @@ onMounted(async () => {
       if (isDropdownOpened.value) closeDropdown()
     })
   }
-  await loadFilters()
+  await loadUsers()
 })
 
 watch(
   () => searchValue.value,
   async () => {
     emit('update:modelValue', searchValue.value)
-    if (!filters.value.length) {
+    if (!users.value.length) {
       emit('update:user', null)
     }
   },

@@ -139,31 +139,25 @@ const cancelForm = () => {
 }
 
 const verifyUser = async (newUser: VerifiedUser) => {
-  disableForm()
-  try {
-    await api.post('/integrations/orchestrator/requests', {
-      data: {
-        attributes: {
-          module: props.user?.module,
-          payload: {
-            action: 'verify_user',
-            user_id: String(newUser.id),
-            username: props.user.username,
-          },
+  await api.post('/integrations/orchestrator/requests', {
+    data: {
+      attributes: {
+        module: props.user?.module,
+        payload: {
+          action: 'verify_user',
+          user_id: String(newUser.id),
+          username: props.user.username,
         },
-        relationships: {
-          user: {
-            data: {
-              id: '1',
-            },
+      },
+      relationships: {
+        user: {
+          data: {
+            id: '1',
           },
         },
       },
-    })
-  } catch (error) {
-    ErrorHandler.process(error)
-  }
-  enableForm()
+    },
+  })
 }
 
 const submit = async () => {

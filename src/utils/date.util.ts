@@ -31,28 +31,6 @@ export class DateUtil {
     return targetDate.diff(currentDate, 'ms')
   }
 
-  static isSameOrAfter(
-    checkingDate: DataConfigType,
-    targetDate?: DataConfigType,
-  ) {
-    return (
-      this.isAfter(checkingDate, targetDate) ||
-      this.isSame(checkingDate, targetDate)
-    )
-  }
-
-  static isAfter(checkingDate: DataConfigType, targetDate?: DataConfigType) {
-    const checking = this._instance(checkingDate)
-    const target = this._instance(targetDate)
-    return target.isAfter(checking)
-  }
-
-  static isSame(checkingDate: DataConfigType, targetDate?: DataConfigType) {
-    const checking = this._instance(checkingDate)
-    const target = this._instance(targetDate)
-    return checking.isSame(target)
-  }
-
   static substract(
     cuttingAmount: number,
     cuttingValue: ManipulateType,

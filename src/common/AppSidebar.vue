@@ -37,22 +37,21 @@
       </li>
     </ul>
     <div class="sidebar__footer">
-      <div class="sidebar__user">
+      <div
+        v-if="adminInfo?.name && adminInfo?.surname && accessToken?.email"
+        class="sidebar__user"
+      >
         <div class="sidebar__user-logo">
           <div>
-            {{ accessToken?.email.split('')[0].toUpperCase() }}
+            {{ adminInfo.name[0].toUpperCase() }}
           </div>
         </div>
         <div class="sidebar__user-info">
-          <div v-if="adminInfo?.name" class="sidebar__user-info-name">
-            {{ adminInfo?.name + ' ' + adminInfo?.surname }}
+          <div class="sidebar__user-info-name">
+            {{ `${adminInfo.name} ${adminInfo.surname}` }}
           </div>
-          <div
-            v-if="accessToken?.email"
-            class="sidebar__user-info-email"
-            :title="accessToken?.email"
-          >
-            {{ accessToken?.email }}
+          <div class="sidebar__user-info-email" :title="accessToken.email">
+            {{ accessToken.email }}
           </div>
         </div>
       </div>
@@ -69,7 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { AppLogo, Icon, AppButton } from '@/common'
 import { useAuthStore } from '@/store'
 import { UnverifiedModuleUser, VerifiedUser } from '@/types'
@@ -85,7 +84,7 @@ const getUnverifiedUsersCount = async () => {
     const { meta } = await api.get<UnverifiedModuleUser[]>(
       '/integrations/gitlab/users/unverified',
     )
-    unverifiedUsersCount.value = Number(meta?.total_count) ?? 0
+    unverifiedUsersCount.value = Number(meta?.total_count)
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
   }
@@ -102,10 +101,11 @@ const getAdminInfo = async () => {
   }
 }
 
-onMounted(async () => {
-  await getUnverifiedUsersCount()
-  await getAdminInfo()
-})
+const init = async () => {
+  await Promise.allSettled([getUnverifiedUsersCount(), getAdminInfo()])
+}
+
+init()
 </script>
 
 <style scoped lang="scss">

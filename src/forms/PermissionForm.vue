@@ -194,9 +194,9 @@ const cancelForm = () => {
 
 const getAccessLevelList = async () => {
   try {
+    if (!form.module || !form.link) return
     isAccesLevelRequired.value = false
     accessList.value = []
-    if (!form.module || !form.link) return
     const { data } = await api.get<ModulePermisonsResponse>(
       `/integrations/${form.module.toLowerCase()}/get_available_roles`,
       {
@@ -219,7 +219,7 @@ const getAccessLevelList = async () => {
   }
 }
 
-const loadAccessLevelList = debounce(getAccessLevelList, 400)
+const loadAccessLevelList = debounce(getAccessLevelList, 200)
 
 watch(
   () => [form.module, form.link],

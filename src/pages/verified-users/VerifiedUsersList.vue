@@ -19,7 +19,7 @@
       <div class="verified-users-list__item">
         <select-field
           v-if="positions.length"
-          v-model="selectPositions"
+          v-model="selectedPositions"
           :value-options="[ALL_FILTER, ...positions]"
         >
           <template #head="{ selectField }">
@@ -34,7 +34,7 @@
               />
               <span>{{ $t('verified-users-list.select-field-btn-text') }}</span>
               <span class="verified-users-list__select-field-btn-position">
-                {{ selectPositions }}
+                {{ selectedPositions }}
               </span>
             </app-button>
           </template>
@@ -80,7 +80,7 @@
         v-model:current-page="currentPage"
         class="filters-list-section__navigation"
         :page-count="pageCount"
-        :total-amount="usersCount"
+        :total-amount="verifiedUsersCount"
       />
     </div>
   </div>
@@ -111,12 +111,14 @@ const props = defineProps<{
 
 const { positions } = storeToRefs(usePlatformStore())
 const isLoadFailed = ref(false)
-const isLoaded = ref(true)
-const selectPositions = ref(ALL_FILTER)
+const isLoaded = ref(false)
+const selectedPositions = ref(ALL_FILTER)
 const verifiedUsers = ref<VerifiedUser[]>([])
-const usersCount = ref(0)
+const verifiedUsersCount = ref(0)
 const currentPage = ref(MIN_PAGE_AMOUNT)
-const pageCount = computed(() => Math.ceil(usersCount.value / PAGE_LIMIT))
+const pageCount = computed(() =>
+  Math.ceil(verifiedUsersCount.value / PAGE_LIMIT),
+)
 
 const getUserList = async () => {
   isLoaded.value = false
@@ -126,9 +128,9 @@ const getUserList = async () => {
       '/integrations/identity-svc/users',
       {
         filter: {
-          ...(selectPositions.value !== ALL_FILTER
+          ...(selectedPositions.value !== ALL_FILTER
             ? {
-                position: selectPositions.value,
+                position: selectedPositions.value,
               }
             : {}),
           ...(props.searchText ? { name: props.searchText } : {}),
@@ -139,7 +141,7 @@ const getUserList = async () => {
         },
       },
     )
-    usersCount.value = Number(meta?.total_count) ?? 0
+    verifiedUsersCount.value = Number(meta?.total_count)
     verifiedUsers.value = data
   } catch (e) {
     isLoadFailed.value = true
@@ -166,7 +168,7 @@ watch(
 )
 
 watch(
-  () => [props.searchText, selectPositions.value],
+  () => [props.searchText, selectedPositions.value],
   async () => {
     currentPage.value = 1
     await getUserList()

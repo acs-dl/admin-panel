@@ -18,16 +18,16 @@
         class="verified-users-item__btn"
         color="error"
         :icon-left="$icons.trash"
-        @click="toggleRemoveModal"
+        @click="toggleDeleteModal"
       />
     </div>
 
     <delete-modal
-      v-if="isOpenRemoveModal"
+      :is-shown="isShownDeleteModal"
       :icon="$icons.trash"
       :main-title="$t('verified-users-item.delete-main-title')"
       :secondary-title="$t('verified-users-item.delete-secondary-title')"
-      @cancel="toggleRemoveModal"
+      @cancel="toggleDeleteModal"
       @delete="deleteUser"
     />
   </div>
@@ -46,15 +46,15 @@ const emit = defineEmits<{
   (e: 'delete', payload: string): void
 }>()
 
-const isOpenRemoveModal = ref(false)
+const isShownDeleteModal = ref(false)
 
-const toggleRemoveModal = () => {
-  isOpenRemoveModal.value = !isOpenRemoveModal.value
+const toggleDeleteModal = () => {
+  isShownDeleteModal.value = !isShownDeleteModal.value
 }
 
 const deleteUser = () => {
   emit('delete', props.user.id)
-  isOpenRemoveModal.value = false
+  isShownDeleteModal.value = false
 }
 </script>
 
