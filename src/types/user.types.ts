@@ -74,3 +74,7 @@ export type ModuleTree = {
   type: string
   id: string
 }
+
+export type UserMeta = {
+  total_count: number
+}

@@ -99,7 +99,7 @@ import {
   Icon,
 } from '@/common'
 import { ErrorHandler } from '@/helpers'
-import { VerifiedUser } from '@/types'
+import { VerifiedUser, UserMeta } from '@/types'
 import { MIN_PAGE_AMOUNT, PAGE_LIMIT, ALL_FILTER } from '@/consts'
 import { usePlatformStore } from '@/store'
 import { storeToRefs } from 'pinia'
@@ -124,7 +124,7 @@ const getUserList = async () => {
   isLoaded.value = false
   isLoadFailed.value = false
   try {
-    const { data, meta } = await api.get<VerifiedUser[]>(
+    const { data, meta } = await api.get<VerifiedUser[], UserMeta>(
       '/integrations/identity-svc/users',
       {
         filter: {
@@ -141,7 +141,7 @@ const getUserList = async () => {
         },
       },
     )
-    verifiedUsersCount.value = Number(meta?.total_count)
+    verifiedUsersCount.value = meta.total_count
     verifiedUsers.value = data
   } catch (e) {
     isLoadFailed.value = true

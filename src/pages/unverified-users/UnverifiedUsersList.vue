@@ -71,7 +71,7 @@ import { ref, computed, watch } from 'vue'
 import { api } from '@/api'
 import { Loader, ErrorMessage, NoDataMessage, TableNavigation } from '@/common'
 import { ErrorHandler } from '@/helpers'
-import { UnverifiedModuleUser } from '@/types'
+import { UnverifiedModuleUser, UserMeta } from '@/types'
 import { MIN_PAGE_AMOUNT, PAGE_LIMIT } from '@/consts'
 import UnverifiedUsersItem from './UnverifiedUsersItem.vue'
 
@@ -92,7 +92,7 @@ const getUnverifiedUsersList = async () => {
   isLoaded.value = false
   isLoadFailed.value = false
   try {
-    const { data, meta } = await api.get<UnverifiedModuleUser[]>(
+    const { data, meta } = await api.get<UnverifiedModuleUser[], UserMeta>(
       '/integrations/gitlab/users/unverified',
       {
         page: {
@@ -105,7 +105,7 @@ const getUnverifiedUsersList = async () => {
       },
     )
 
-    unverifiedUsersCount.value = Number(meta?.total_count ?? 0)
+    unverifiedUsersCount.value = meta.total_count
     unverifiedUsers.value = data
   } catch (e) {
     isLoadFailed.value = true
