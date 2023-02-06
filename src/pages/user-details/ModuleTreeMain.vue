@@ -41,6 +41,8 @@
         :id="module.id"
         :module-name="module.type"
         :item="child"
+        :is-last="checkIsLastTreeItem(index)"
+        :nesting-level="getTreeNestingLevel(index)"
       />
     </ul>
     <delete-modal
@@ -66,6 +68,8 @@ import ModuleTreesItem from './ModuleTreesItem.vue'
 import { api } from '@/api'
 import { ErrorHandler, Bus } from '@/helpers'
 import { useContext } from '@/composables'
+
+const FIRST_LEVEL = 1
 
 const props = defineProps<{
   module: ModuleTree
@@ -110,6 +114,21 @@ const deleteUserFromModule = async () => {
     ErrorHandler.processWithoutFeedback(e)
   }
 }
+
+const checkIsLastTreeItem = (index: number) => {
+  return (
+    index === props.module.children.length - 1 ||
+    props.module.children[index]?.level >
+      props.module.children[index + 1]?.level
+  )
+}
+const getTreeNestingLevel = (index: number) => {
+  if (props.module.children[index]?.level === FIRST_LEVEL) return 0
+  return (
+    props.module.children[index]?.level -
+    props.module.children[index - 1]?.level
+  )
+}
 </script>
 
 <style scoped lang="scss">
@@ -149,18 +168,6 @@ const deleteUserFromModule = async () => {
 
 .module-tree-main__children {
   margin-left: toRem(110);
-}
-
-.module-tree-main__children-item {
-  padding-left: 0;
-
-  &:not(:last-child) {
-    border: none;
-  }
-
-  &:last-child:before {
-    border: none;
-  }
 }
 
 .module-tree-main__item-btn {

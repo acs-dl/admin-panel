@@ -1,21 +1,19 @@
 <template>
   <ul class="module-tree-item__wrapper">
     <li class="module-tree-item">
-      <app-button
-        color="default"
-        class="module-tree-item__name"
-        @click="toggleTree"
+      <div
+        class="module-tree-item__name-text-wrapper"
+        :style="{ marginLeft: nestingLevel + 'em' }"
       >
-        <div class="module-tree-item__name-text">
-          {{ item?.path }}
-        </div>
-        <icon
-          v-if="isFolder"
-          class="module-tree-item__name-icon"
-          :class="{ 'module-tree-item__name-icon--open': isOpenTree }"
-          :name="$icons.chevronFullDown"
+        <div
+          v-if="!isFirstLevel"
+          class="module-tree-item__level"
+          :class="{ 'module-tree-item__level--last': isLast }"
         />
-      </app-button>
+        <span class="module-tree-item__name-text">
+          {{ item?.link }}
+        </span>
+      </div>
 
       <app-button
         v-if="item.access_level"
@@ -32,17 +30,8 @@
         @click="toggleDeleteModal"
       />
     </li>
-    <template v-if="isOpenTree">
-      <module-trees-item
-        v-for="(child, index) in children"
-        :key="index"
-        :id="id"
-        :module-name="moduleName"
-        :item="child"
-      />
-    </template>
     <permission-modal
-      :is-shown="isShownPermissionrModal"
+      :is-shown="isShownPermissionModal"
       :id="id"
       :module="item"
       :module-name="moduleName"
@@ -68,54 +57,35 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import { api } from '@/api'
-import { AppButton, Icon, PermissionModal, DeleteModal } from '@/common'
+import { AppButton, PermissionModal, DeleteModal } from '@/common'
 import { ErrorHandler } from '@/helpers'
-import { UserPermisonInfo } from '@/types'
+import { UserPermissionInfo } from '@/types'
 import { Bus } from '@/helpers'
 import { useContext } from '@/composables'
-import ModuleTreesItem from './ModuleTreesItem.vue'
+
+const FIRST_LEVEL = 0
 
 const props = defineProps<{
   moduleName: string
   id: string
-  item: UserPermisonInfo
+  item: UserPermissionInfo
+  isLast: boolean
+  nestingLevel: number
 }>()
 
 const { $t } = useContext()
 const isShownDeleteModal = ref(false)
-const isShownPermissionrModal = ref(false)
-const isOpenTree = ref(false)
-const children = ref<UserPermisonInfo[]>([])
-const isFolder = computed(() => props.item.deployable)
-
-const toggleTree = async () => {
-  try {
-    if (isFolder.value && !children.value.length) {
-      const { data } = await api.get<UserPermisonInfo[]>(
-        `/integrations/${props.moduleName}/permissions`,
-        {
-          filter: {
-            userId: props.id,
-            link: props.item.link,
-          },
-        },
-      )
-      children.value = data
-    }
-    isOpenTree.value = !isOpenTree.value
-  } catch (e) {
-    ErrorHandler.processWithoutFeedback(e)
-  }
-}
+const isShownPermissionModal = ref(false)
+const isFirstLevel = computed(() => props.nestingLevel === FIRST_LEVEL)
 
 const togglePermissionModal = () => {
-  isShownPermissionrModal.value = !isShownPermissionrModal.value
+  isShownPermissionModal.value = !isShownPermissionModal.value
 }
 
 const reloadPermissionModal = () => {
-  isShownPermissionrModal.value = false
+  isShownPermissionModal.value = false
 }
 
 const toggleDeleteModal = () => {
@@ -155,26 +125,36 @@ const deleteUserFromModule = async () => {
 <style scoped lang="scss">
 .module-tree-item__wrapper {
   line-height: 1.5em;
-  position: relative;
-  padding-left: 0.8em;
+}
 
-  &:not(:last-child) {
-    border-left: toRem(1) solid var(--border-primary-light);
-  }
+.module-tree-item__level {
+  width: 1em;
+  height: 100%;
+  border-left: toRem(1) solid var(--border-primary-light);
+  position: relative;
 
   &:before {
     content: '';
     position: absolute;
     top: -0.1em;
-    left: 0;
-    width: 0.5em;
+    left: -0.1em;
+    width: 1em;
     height: 1em;
     border-bottom: toRem(1) solid var(--border-primary-light);
     border-bottom-left-radius: 50%;
   }
 
-  &:last-child:before {
-    border-left: toRem(1) solid var(--border-primary-light);
+  &--last {
+    height: 100%;
+    border-left: 0;
+
+    &:before {
+      top: -0.1em;
+      left: 0;
+      border-bottom: toRem(1) solid var(--border-primary-light);
+      border-left: toRem(1) solid var(--border-primary-light);
+      border-bottom-left-radius: 50%;
+    }
   }
 }
 
@@ -193,8 +173,14 @@ const deleteUserFromModule = async () => {
   gap: toRem(4);
 }
 
+.module-tree-item__name-text-wrapper {
+  display: flex;
+  align-items: center;
+  gap: toRem(5);
+}
+
 .module-tree-item__name-text {
-  max-width: toRem(200);
+  max-width: toRem(300);
   text-align: start;
   font-weight: 400;
   line-height: 1.2;

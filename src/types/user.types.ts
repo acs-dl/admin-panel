@@ -44,22 +44,22 @@ export type ModuleBaseInfo = {
   type: string
 }
 
-export type ModulePermisons = {
+export type ModulePermissions = {
   name: string
   value: number
 }
 
-export type ModulePermisonsResponse = {
+export type ModulePermissionsResponse = {
   type: string
   id: string
-  list: ModulePermisons[]
+  list: ModulePermissions[]
   req: boolean
 }
 
-export type UserPermisonInfo = {
+export type UserPermissionInfo = {
   type: string
   id: string
-  access_level: ModulePermisons
+  access_level: ModulePermissions
   deployable: boolean
   link: string
   module_id: number
@@ -67,10 +67,11 @@ export type UserPermisonInfo = {
   path: string
   user_id: number
   username: string
+  level: number
 }
 
 export type ModuleTree = {
-  children: UserPermisonInfo[]
+  children: UserPermissionInfo[]
   type: string
   id: string
 }

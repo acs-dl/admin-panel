@@ -61,7 +61,7 @@ import {
 } from '@/common'
 import { api } from '@/api'
 import { ErrorHandler } from '@/helpers'
-import { ModuleInfo, ModuleTree, UserPermisonInfo, VerifiedUser } from '@/types'
+import { ModuleInfo, ModuleTree, UserPermissionInfo, VerifiedUser } from '@/types'
 import { useContext } from '@/composables'
 import ModuleTrees from '@/pages/user-details/ModuleTrees.vue'
 import ModuleInfoList from '@/pages/user-details/ModuleInfoList.vue'
@@ -125,7 +125,7 @@ const getModuleTreeList = async () => {
   try {
     moduleTreesList.value = await Promise.all(
       modulesList.value?.map(async (item: ModuleInfo) => {
-        const { data } = await api.get<UserPermisonInfo[]>(
+        const { data } = await api.get<UserPermissionInfo[]>(
           `/integrations/${item.module}/permissions`,
           {
             filter: { userId: props.id, link: '' },
