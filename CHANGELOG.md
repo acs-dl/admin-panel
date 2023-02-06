@@ -13,5 +13,3 @@ for further information about branching and tagging conventions.
 
 [Unreleased]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/compare/1.0.0-rc.0...main
 [1.0.0-rc.0]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/tags/1.0.0-rc.0
-
-
