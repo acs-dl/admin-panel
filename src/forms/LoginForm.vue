@@ -2,6 +2,7 @@
   <form class="login-form" @submit.prevent="submit">
     <input-field
       v-model="form.login"
+      scheme="flat"
       :placeholder="$t('login-form.login-lbl')"
       :error-message="getFieldErrorMessage('login')"
       :disabled="isFormDisabled"
@@ -9,6 +10,7 @@
     />
     <input-field
       type="password"
+      scheme="flat"
       v-model="form.password"
       :placeholder="$t('login-form.password-lbl')"
       :error-message="getFieldErrorMessage('password')"
@@ -18,7 +20,6 @@
     <div class="login-form__actions">
       <app-button
         class="login-form__submit-btn"
-        size="large"
         modification="border-rounded"
         scheme="filled"
         type="submit"
@@ -62,7 +63,7 @@ const submit = async () => {
   disableForm()
   try {
     await authStore.createSession(form.login, form.password)
-    router.push({ name: ROUTE_NAMES.verifiedUsers })
+    await router.push({ name: ROUTE_NAMES.verifiedUsers })
   } catch (error) {
     ErrorHandler.process(error)
   }
@@ -73,12 +74,13 @@ const submit = async () => {
 <style lang="scss" scoped>
 .login-form {
   display: grid;
-  grid-gap: toRem(24);
+  grid-gap: toRem(16);
   max-width: toRem(430);
   width: 100%;
 }
 
 .login-form__submit-btn {
   width: 100%;
+  padding: toRem(12);
 }
 </style>
