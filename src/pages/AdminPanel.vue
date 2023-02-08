@@ -22,7 +22,7 @@ import { AppSidebar, AppButton, StatusModal } from '@/common'
 import { usePlatformStore } from '@/store'
 
 const { getAllPositions, getAllModules } = usePlatformStore()
-const isStatusModalOpened = ref(true)
+const isStatusModalOpened = ref(false)
 
 const init = async () => {
   await Promise.allSettled([getAllPositions(), getAllModules()])

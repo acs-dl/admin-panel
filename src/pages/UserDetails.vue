@@ -61,7 +61,12 @@ import {
 } from '@/common'
 import { api } from '@/api'
 import { ErrorHandler } from '@/helpers'
-import { ModuleInfo, ModuleTree, UserPermissionInfo, VerifiedUser } from '@/types'
+import {
+  ModuleInfo,
+  ModuleTree,
+  UserPermissionInfo,
+  VerifiedUser,
+} from '@/types'
 import { useContext } from '@/composables'
 import ModuleTrees from '@/pages/user-details/ModuleTrees.vue'
 import ModuleInfoList from '@/pages/user-details/ModuleInfoList.vue'
