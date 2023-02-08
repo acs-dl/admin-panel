@@ -1,3 +1,5 @@
+import { REQUEST_STATUSES } from '@/enums'
+
 export type VerifiedUser = {
   id: string
   name: string
@@ -78,4 +80,24 @@ export type ModuleTree = {
 
 export type UserMeta = {
   total_count: number
+}
+
+export type UserRequest = {
+  type: string
+  id: string
+  module: string
+  error: string
+  status: REQUEST_STATUSES
+  relationshipNames?: string[]
+  user?: {
+    type: string
+    id: number
+  }
+  payload?: {
+    action: string
+    user_id: string
+    username: string
+    link?: string
+    access_level?: number
+  }
 }
