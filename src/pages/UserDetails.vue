@@ -42,7 +42,7 @@
     </div>
 
     <permission-modal
-      :is-shown="isShownPermissonModal"
+      :is-shown="isShownPermissionModal"
       :id="id"
       @submit="reloadPermissionModal"
       @cancel="togglePermissionModal"
@@ -61,12 +61,7 @@ import {
 } from '@/common'
 import { api } from '@/api'
 import { ErrorHandler } from '@/helpers'
-import {
-  ModuleInfo,
-  ModuleTree,
-  UserPermissionInfo,
-  VerifiedUser,
-} from '@/types'
+import { ModuleInfo, ModuleTree, UserPermissionInfo, VerifiedUser } from '@/types'
 import { useContext } from '@/composables'
 import ModuleTrees from '@/pages/user-details/ModuleTrees.vue'
 import ModuleInfoList from '@/pages/user-details/ModuleInfoList.vue'
@@ -80,7 +75,7 @@ const props = defineProps<{
 const { $t } = useContext()
 const isLoadFailed = ref(false)
 const isLoaded = ref(false)
-const isShownPermissonModal = ref(false)
+const isShownPermissionModal = ref(false)
 const modulesList = ref<ModuleInfo[]>([])
 const moduleTreesList = ref<ModuleTree[]>([])
 const userDetails = ref<VerifiedUser | null>(null)
@@ -147,12 +142,12 @@ const getModuleTreeList = async () => {
 }
 
 const togglePermissionModal = async () => {
-  isShownPermissonModal.value = !isShownPermissonModal.value
+  isShownPermissionModal.value = !isShownPermissionModal.value
 }
 
 const reloadPermissionModal = async () => {
   await getUser()
-  isShownPermissonModal.value = false
+  isShownPermissionModal.value = false
 }
 
 getUser()
