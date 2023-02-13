@@ -94,9 +94,10 @@ const getUser = async () => {
       `/integrations/identity-svc/users/${props.id}`,
     )
     userDetails.value = data
+    await getUserModules()
   } catch (e) {
     isLoadFailed.value = true
-    router.push({ name: ROUTE_NAMES.verifiedUsers })
+    await router.push({ name: ROUTE_NAMES.verifiedUsers })
     ErrorHandler.processWithoutFeedback(e)
   }
   isLoaded.value = true
@@ -110,6 +111,7 @@ const getUserModules = async () => {
       `/integrations/orchestrator/users/${props.id}`,
     )
     modulesList.value = data || []
+    await getModuleTreeList()
   } catch (e) {
     isLoadFailed.value = true
     ErrorHandler.processWithoutFeedback(e)
@@ -143,16 +145,12 @@ const togglePermissionModal = async () => {
   isShownPermissonModal.value = !isShownPermissonModal.value
 }
 
-const init = async () => {
-  await Promise.all([getUser(), getUserModules(), getModuleTreeList()])
-}
-
 const reloadPermissionModal = async () => {
-  await init()
+  await getUser()
   isShownPermissonModal.value = false
 }
 
-init()
+getUser()
 </script>
 
 <style scoped lang="scss">
