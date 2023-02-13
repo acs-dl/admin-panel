@@ -37,8 +37,7 @@ import { ref } from 'vue'
 import { TransitionModal, Icon, Tabs } from '@/common'
 import { UnverifiedModuleUser } from '@/types'
 import { useContext } from '@/composables'
-import VerifyUserForm from '@/forms/VerifyUserForm.vue'
-import CreateUserForm from '@/forms/CreateUserForm.vue'
+import { CreateUserForm, VerifyUserForm } from '@/forms'
 
 defineProps<{
   isShown: boolean

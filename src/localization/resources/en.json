@@ -169,6 +169,7 @@
   },
   "login-page": {
     "header-title": "Distributed Lab",
+    "logo-text": "Access control system",
     "login-title": "Log In",
     "submit-btn": "Submit"
   },
