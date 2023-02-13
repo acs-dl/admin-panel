@@ -26,7 +26,7 @@
 <script lang="ts" setup>
 import { TransitionModal, Icon } from '@/common'
 import { UserPermisonInfo } from '@/types'
-import PermissionForm from '@/forms/PermissionForm.vue'
+import { PermissionForm } from '@/forms'
 
 withDefaults(
   defineProps<{
