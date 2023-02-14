@@ -8,8 +8,13 @@ Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
 ## [Unreleased]
+
+## [0.2.0] - 2023-02-14
 #### Changed
 - Login Page design
+
+#### Fixed
+- Release check with wrong link
 
 ## [0.1.0] - 2023-02-06
 #### Added
@@ -24,5 +29,6 @@ for further information about branching and tagging conventions.
 #### Under the hood changes
 - Initiated and setup project
 
-[Unreleased]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/compare/0.1.0...main
+[Unreleased]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/compare/0.2.0...main
+[0.2.0]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/compare/0.1.0...0.2.0
 [0.1.0]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/tags/0.1.0
