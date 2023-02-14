@@ -6,7 +6,7 @@ import { computed, getCurrentInstance, ref, useAttrs, useSlots } from 'vue'
 
 type INPUT_TYPES = 'text' | 'number' | 'password'
 
-type SCHEMES = 'primary' | 'primary-gray' | 'secondary'
+type SCHEMES = 'primary' | 'primary-gray' | 'flat' | 'secondary'
 
 const props = withDefaults(
   defineProps<{
@@ -228,6 +228,11 @@ $z-index-side-nodes: 1;
 
   .input-field--secondary & {
     padding: 0;
+    background: var(--field-bg-secondary);
+  }
+
+  .input-field--flat & {
+    background: var(--field-bg-secondary);
   }
 
   .input-field--secondary.input-field--node-left & {
@@ -282,11 +287,6 @@ $z-index-side-nodes: 1;
       left: calc(var(--field-padding-left) * 3);
     }
   }
-
-  /* stylelint-disable-next-line */
-  .input-field--secondary & {
-    background: var(--field-bg-secondary);
-  }
 }
 
 .input-field__input-wrp {
@@ -338,6 +338,13 @@ $z-index-side-nodes: 1;
     border: toRem(1) solid var(--field-border);
 
     @include field-border;
+  }
+
+  .input-field--flat & {
+    background: var(--background-primary-dark);
+    box-shadow: inset 0 0 0 toRem(50) var(--background-primary-dark);
+    border: none;
+    border-radius: toRem(10);
   }
 
   .input-field--secondary & {
@@ -416,6 +423,12 @@ $z-index-side-nodes: 1;
 
   .input-field--error.input-field--primary-gray & {
     border-color: var(--field-error);
+    box-shadow: inset 0 0 0 toRem(50) var(--background-primary-dark),
+      0 0 0 toRem(1) var(--field-error);
+  }
+
+  .input-field--error.input-field--flat & {
+    border: toRem(1) solid var(--field-error);
     box-shadow: inset 0 0 0 toRem(50) var(--background-primary-dark),
       0 0 0 toRem(1) var(--field-error);
   }

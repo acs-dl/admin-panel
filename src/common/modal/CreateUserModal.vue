@@ -22,7 +22,7 @@
 
 <script lang="ts" setup>
 import { TransitionModal, Icon } from '@/common'
-import CreateUserForm from '@/forms/CreateUserForm.vue'
+import { CreateUserForm } from '@/forms'
 
 defineProps<{
   isShown?: boolean

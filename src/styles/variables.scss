@@ -79,6 +79,11 @@
   --app-bg: var(--white);
   --shadow-primary: #{0 toRem(40) toRem(60) $shadow-primary};
 
+  @include respond-to(tablet) {
+    --app-padding-right: #{toRem(40)};
+    --app-padding-left: #{toRem(40)};
+  }
+
   @include respond-to(small) {
     --app-padding-right: #{toRem(24)};
     --app-padding-left: #{toRem(24)};
