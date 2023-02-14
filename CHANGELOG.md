@@ -11,17 +11,26 @@ for further information about branching and tagging conventions.
 #### Added
 - Request statuses modal
 
+## [0.2.0] - 2023-02-14
 #### Changed
 - Login Page design
 
-## [1.0.0] - 2022-02-06
+#### Fixed
+- Release check with wrong link
+
+## [0.1.0] - 2023-02-06
+#### Added
+- Authorization
+- Users list
+- Modal
+- Repositories tree
+
 #### Fixed
 - User details requests queue
 
-## [1.0.0-rc.0] - 2022-09-23
-#### Added
-- Login Page
+#### Under the hood changes
+- Initiated and setup project
 
-[Unreleased]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/compare/1.0.0...main
-[1.0.0]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/compare/1.0.0-rc.0...1.0.0
-[1.0.0-rc.0]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/tags/1.0.0-rc.0
+[Unreleased]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/compare/0.2.0...main
+[0.2.0]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/compare/0.1.0...0.2.0
+[0.1.0]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/tags/0.1.0
