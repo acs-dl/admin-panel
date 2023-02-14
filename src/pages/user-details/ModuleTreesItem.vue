@@ -42,7 +42,7 @@
       />
     </template>
     <permission-modal
-      :is-shown="isShownPermissionrModal"
+      :is-shown="isShownPermissionModal"
       :id="id"
       :module="item"
       :module-name="moduleName"
@@ -85,7 +85,7 @@ const props = defineProps<{
 
 const { $t } = useContext()
 const isShownDeleteModal = ref(false)
-const isShownPermissionrModal = ref(false)
+const isShownPermissionModal = ref(false)
 const isOpenTree = ref(false)
 const children = ref<UserPermissionInfo[]>([])
 const isFolder = computed(() => props.item.deployable)
@@ -111,11 +111,11 @@ const toggleTree = async () => {
 }
 
 const togglePermissionModal = () => {
-  isShownPermissionrModal.value = !isShownPermissionrModal.value
+  isShownPermissionModal.value = !isShownPermissionModal.value
 }
 
 const reloadPermissionModal = () => {
-  isShownPermissionrModal.value = false
+  isShownPermissionModal.value = false
 }
 
 const toggleDeleteModal = () => {
