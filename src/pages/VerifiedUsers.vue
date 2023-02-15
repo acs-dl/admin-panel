@@ -12,6 +12,8 @@
           scheme="primary-gray"
           :placeholder="$t('verified-users.search-placeholder')"
           :icon-left="$icons.search"
+          :icon-right="iconRight"
+          @right-icon-click="clearInput"
         />
         <app-button
           class="verified-users__add-user-btn"
@@ -34,15 +36,22 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { AppButton, CreateUserModal } from '@/common'
 import { InputField } from '@/fields'
 import VerifiedUsersList from '@/pages/verified-users/VerifiedUsersList.vue'
+import { ICON_NAMES } from '@/enums'
 
 const usersList = ref<InstanceType<typeof VerifiedUsersList> | null>(null)
 const isShownCreateUserModal = ref(false)
 
 const searchValue = ref('')
+
+const iconRight = computed(() => (searchValue.value ? ICON_NAMES.x : undefined))
+
+const clearInput = () => {
+  searchValue.value = ''
+}
 
 const toggleCreateUserModal = async () => {
   isShownCreateUserModal.value = !isShownCreateUserModal.value
@@ -71,5 +80,9 @@ const reloadCreateUserModal = async () => {
 .verified-users__actions {
   display: flex;
   gap: toRem(10);
+}
+
+.verified-users__search-input {
+  width: toRem(250);
 }
 </style>

@@ -11,6 +11,9 @@ for further information about branching and tagging conventions.
 #### Added
 - Request statuses modal
 
+#### Fixed
+- Validation for user creating
+
 ## [0.2.0] - 2023-02-14
 #### Changed
 - Login Page design

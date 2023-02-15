@@ -89,14 +89,14 @@ import { AppButton } from '@/common'
 import { api } from '@/api'
 import { InputField, SelectField } from '@/fields'
 import { useForm, useFormValidation } from '@/composables'
-import { email, required } from '@/validators'
+import { email, maxLength, required } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
 import { DateUtil } from '@/utils'
 import { UnverifiedModuleUser, VerifiedUser } from '@/types'
 import { useContext } from '@/composables'
 import { usePlatformStore } from '@/store'
 import { router } from '@/router'
-import { ROUTE_NAMES } from '@/enums'
+import { MAX_LENGTH, ROUTE_NAMES } from '@/enums'
 
 const props = withDefaults(
   defineProps<{
@@ -127,8 +127,8 @@ const { isFormDisabled, disableForm, enableForm } = useForm()
 const { isFormValid, getFieldErrorMessage, touchField } = useFormValidation(
   form,
   {
-    name: { required },
-    surname: { required },
+    name: { required, maxLength: maxLength(MAX_LENGTH.name) },
+    surname: { required, maxLength: maxLength(MAX_LENGTH.surname) },
     emailAddress: { email, required },
     position: { required },
   },
