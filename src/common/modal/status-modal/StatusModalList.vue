@@ -58,7 +58,7 @@ import { ErrorHandler } from '@/helpers'
 import { api } from '@/api'
 import { UserRequest, UserMeta } from '@/types'
 import { REQUEST_STATUSES } from '@/enums'
-import { MIN_PAGE_AMOUNT } from '@/consts'
+import { MIN_COUNT, MIN_PAGE_AMOUNT } from '@/consts'
 
 const PAGE_LIMIT = 5
 
@@ -67,7 +67,7 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
-const userRequestsCount = ref(0)
+const userRequestsCount = ref(MIN_COUNT)
 const currentPage = ref(MIN_PAGE_AMOUNT)
 const isLoaded = ref(false)
 const isErrored = ref(false)
