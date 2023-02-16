@@ -88,30 +88,54 @@ const pageCount = computed(() =>
   Math.ceil(unverifiedUsersCount.value / PAGE_LIMIT),
 )
 
+// TODO: PUT IN ONE REQUEST WHEN THE BACKEND IS READY
 const getUnverifiedUsersList = async () => {
   isLoaded.value = false
   isLoadFailed.value = false
   try {
-    const { data, meta } = await api.get<UnverifiedModuleUser[], UserMeta>(
-      '/integrations/gitlab/users/unverified',
-      {
-        page: {
-          limit: PAGE_LIMIT,
-          number: currentPage.value - 1,
-        },
-        filter: {
-          ...(props.searchText ? { username: props.searchText } : {}),
-        },
-      },
-    )
-
-    unverifiedUsersCount.value = meta.total_count
-    unverifiedUsers.value = data
+    await Promise.all([
+      getUnverifiedUsersFromGitlab(),
+      getUnverifiedUsersFromGithub(),
+    ])
   } catch (e) {
     isLoadFailed.value = true
     ErrorHandler.processWithoutFeedback(e)
   }
   isLoaded.value = true
+}
+
+const getUnverifiedUsersFromGitlab = async () => {
+  const { data, meta } = await api.get<UnverifiedModuleUser[], UserMeta>(
+    '/integrations/gitlab/users/unverified',
+    {
+      page: {
+        limit: PAGE_LIMIT,
+        number: currentPage.value - 1,
+      },
+      filter: {
+        ...(props.searchText ? { username: props.searchText } : {}),
+      },
+    },
+  )
+  unverifiedUsersCount.value = unverifiedUsersCount.value + meta.total_count
+  unverifiedUsers.value = unverifiedUsers.value.concat(data)
+}
+
+const getUnverifiedUsersFromGithub = async () => {
+  const { data, meta } = await api.get<UnverifiedModuleUser[], UserMeta>(
+    '/integrations/github/users/unverified',
+    {
+      page: {
+        limit: PAGE_LIMIT,
+        number: currentPage.value - 1,
+      },
+      filter: {
+        ...(props.searchText ? { username: props.searchText } : {}),
+      },
+    },
+  )
+  unverifiedUsersCount.value = unverifiedUsersCount.value + meta.total_count
+  unverifiedUsers.value = unverifiedUsers.value.concat(data)
 }
 
 watch(
