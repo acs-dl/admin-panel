@@ -66,6 +66,7 @@ import { useContext, useForm, useFormValidation } from '@/composables'
 import { required } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
 import { UnverifiedModuleUser, VerifiedUser } from '@/types'
+import { useAuthStore } from '@/store'
 
 const props = withDefaults(
   defineProps<{
@@ -82,6 +83,7 @@ const emit = defineEmits<{
 }>()
 
 const { $t } = useContext()
+const { currentUserId } = useAuthStore()
 const selectedUser = ref<VerifiedUser | null>(null)
 const form = reactive({
   name: '',
@@ -113,6 +115,8 @@ const submit = async () => {
       data: {
         attributes: {
           module: form.module.toLowerCase(),
+          ...(currentUserId ? { from_user: String(currentUserId) } : {}),
+          to_user: props.user.id,
           payload: {
             action: 'verify_user',
             user_id: String(selectedUser.value?.id),

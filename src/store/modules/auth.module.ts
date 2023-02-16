@@ -55,4 +55,7 @@ export const useAuthStore = defineStore('auth', {
       this.refreshToken = parseJwt(data.refresh)
     },
   },
+  getters: {
+    currentUserId: state => state.refreshToken?.userId || null,
+  },
 })

@@ -176,5 +176,24 @@
   "input-dropdown-field": {
     "empty-message": "No users",
     "error-message": "Something went wrong"
+  },
+  "admin-panel": {
+    "status-button": "Status of adding modules"
+  },
+  "status-modal": {
+    "title": "Status of requests"
+  },
+  "status-modal-list": {
+    "module-title": "Module",
+    "user-title": "User",
+    "submodule-title": "Submodule",
+    "level-title": "Access level",
+    "date-title": "Date",
+    "status-title": "Status",
+    "empty-message": "No requests",
+    "error-message": "Something went wrong"
+  },
+  "status-modal-list-item": {
+    "icon-description": "Request Module"
   }
 }

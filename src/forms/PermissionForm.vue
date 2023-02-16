@@ -98,9 +98,9 @@ import { useContext, useForm, useFormValidation } from '@/composables'
 import { required } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
 import {
-  ModulePermisonsResponse,
-  UserPermisonInfo,
-  ModulePermisons,
+  ModulePermissionsResponse,
+  UserPermissionInfo,
+  ModulePermissions,
 } from '@/types'
 import { debounce } from 'lodash-es'
 import { usePlatformStore } from '@/store'
@@ -109,7 +109,7 @@ import { storeToRefs } from 'pinia'
 const props = withDefaults(
   defineProps<{
     id: string
-    module?: UserPermisonInfo
+    module?: UserPermissionInfo
     moduleName?: string
   }>(),
   {
@@ -126,7 +126,7 @@ const emit = defineEmits<{
 const { $t } = useContext()
 const { modules } = storeToRefs(usePlatformStore())
 const isAccesLevelRequired = ref(false)
-const accessList = ref<ModulePermisons[]>([])
+const accessList = ref<ModulePermissions[]>([])
 const modulesNames = computed(() => modules.value.map(item => item.name))
 const accessNameList = computed(() => accessList.value.map(item => item.name))
 const isEditForm = computed(() => Boolean(props.module))
@@ -197,7 +197,7 @@ const getAccessLevelList = async () => {
     if (!form.module || !form.link) return
     isAccesLevelRequired.value = false
     accessList.value = []
-    const { data } = await api.get<ModulePermisonsResponse>(
+    const { data } = await api.get<ModulePermissionsResponse>(
       `/integrations/${form.module.toLowerCase()}/get_available_roles`,
       {
         filter: {

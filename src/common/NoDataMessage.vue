@@ -16,8 +16,8 @@ import { ICON_NAMES } from '@/enums'
 
 withDefaults(
   defineProps<{
-    message: string
-    title: string
+    message?: string
+    title?: string
     iconName?: ICON_NAMES
   }>(),
   {
