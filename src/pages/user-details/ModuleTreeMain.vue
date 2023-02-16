@@ -151,18 +151,6 @@ const deleteUserFromModule = async () => {
   margin-left: toRem(110);
 }
 
-.module-tree-main__children-item {
-  padding-left: 0;
-
-  &:not(:last-child) {
-    border: none;
-  }
-
-  &:last-child:before {
-    border: none;
-  }
-}
-
 .module-tree-main__item-btn {
   font-weight: 400;
 }

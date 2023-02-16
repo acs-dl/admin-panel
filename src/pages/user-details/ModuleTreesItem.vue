@@ -42,7 +42,7 @@
       />
     </template>
     <permission-modal
-      :is-shown="isShownPermissionrModal"
+      :is-shown="isShownPermissionModal"
       :id="id"
       :module="item"
       :module-name="moduleName"
@@ -72,7 +72,7 @@ import { ref, computed } from 'vue'
 import { api } from '@/api'
 import { AppButton, Icon, PermissionModal, DeleteModal } from '@/common'
 import { ErrorHandler } from '@/helpers'
-import { UserPermisonInfo } from '@/types'
+import { UserPermissionInfo } from '@/types'
 import { Bus } from '@/helpers'
 import { useContext } from '@/composables'
 import ModuleTreesItem from './ModuleTreesItem.vue'
@@ -80,20 +80,20 @@ import ModuleTreesItem from './ModuleTreesItem.vue'
 const props = defineProps<{
   moduleName: string
   id: string
-  item: UserPermisonInfo
+  item: UserPermissionInfo
 }>()
 
 const { $t } = useContext()
 const isShownDeleteModal = ref(false)
-const isShownPermissionrModal = ref(false)
+const isShownPermissionModal = ref(false)
 const isOpenTree = ref(false)
-const children = ref<UserPermisonInfo[]>([])
+const children = ref<UserPermissionInfo[]>([])
 const isFolder = computed(() => props.item.deployable)
 
 const toggleTree = async () => {
   try {
     if (isFolder.value && !children.value.length) {
-      const { data } = await api.get<UserPermisonInfo[]>(
+      const { data } = await api.get<UserPermissionInfo[]>(
         `/integrations/${props.moduleName}/permissions`,
         {
           filter: {
@@ -111,11 +111,11 @@ const toggleTree = async () => {
 }
 
 const togglePermissionModal = () => {
-  isShownPermissionrModal.value = !isShownPermissionrModal.value
+  isShownPermissionModal.value = !isShownPermissionModal.value
 }
 
 const reloadPermissionModal = () => {
-  isShownPermissionrModal.value = false
+  isShownPermissionModal.value = false
 }
 
 const toggleDeleteModal = () => {
