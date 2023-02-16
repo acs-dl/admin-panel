@@ -144,7 +144,7 @@ const verifyUser = async (newUser: VerifiedUser) => {
     data: {
       attributes: {
         module: props.user?.module,
-        ...(currentUserId ? { from_user: String(currentUserId) } : {}),
+        from_user: String(currentUserId),
         to_user: newUser.id,
         payload: {
           action: 'verify_user',
