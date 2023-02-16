@@ -34,7 +34,8 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: number | string): void
-  (e: 'icon-click'): void
+  (e: 'right-icon-click'): void
+  (e: 'left-icon-click'): void
 }>()
 
 const attrs = useAttrs()
@@ -97,9 +98,6 @@ const normalizeNumber = (value: string) => {
   return isNaN(Number(value)) ? props.modelValue : value
 }
 
-const iconClick = () => {
-  emit('icon-click')
-}
 const normalizeRange = (value: string | number): string => {
   let result = value
 
@@ -130,7 +128,7 @@ const setHeightCSSVar = (element: HTMLElement) => {
         v-if="iconLeft"
         class="input-field__icon-button input-field__icon-button--left"
         :icon-left="iconLeft"
-        @click="iconClick"
+        @click="emit('left-icon-click')"
       />
 
       <input
@@ -151,7 +149,7 @@ const setHeightCSSVar = (element: HTMLElement) => {
         v-if="iconRight"
         class="input-field__icon-button input-field__icon-button--right"
         :icon-right="iconRight"
-        @click="iconClick"
+        @click="emit('right-icon-click')"
       />
       <label
         v-if="label"

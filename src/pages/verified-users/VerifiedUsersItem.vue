@@ -72,13 +72,15 @@ const deleteUser = () => {
 }
 
 .verified-users-item__text {
+  max-width: 100%;
+  display: inline;
   font-weight: 400;
   font-size: toRem(16);
   line-height: 1.2;
   color: var(--text-secondary-light);
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+  justify-content: left;
+
+  @include text-ellipsis;
 
   &--name {
     color: var(--primary-main);

@@ -11,6 +11,8 @@
           scheme="primary-gray"
           :placeholder="$t('unverified-users.search-placeholder')"
           :icon-left="$icons.search"
+          :icon-right="iconRight"
+          @right-icon-click="clearInput"
         />
         <app-button
           class="unverified-users__add-user-btn"
@@ -34,14 +36,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { AppButton, CreateUserModal } from '@/common'
 import { InputField } from '@/fields'
 import UnverifiedUsersList from '@/pages/unverified-users/UnverifiedUsersList.vue'
+import { ICON_NAMES } from '@/enums'
 
 const usersList = ref<InstanceType<typeof UnverifiedUsersList> | null>(null)
 const isShownCreateUserModal = ref(false)
 const searchValue = ref('')
+
+const iconRight = computed(() => (searchValue.value ? ICON_NAMES.x : undefined))
+
 const toggleCreateUserModal = async () => {
   isShownCreateUserModal.value = !isShownCreateUserModal.value
 }
@@ -51,6 +57,10 @@ const reloadCreateUserModal = async () => {
     await usersList.value.getUnverifiedUsersList()
   }
   isShownCreateUserModal.value = false
+}
+
+const clearInput = () => {
+  searchValue.value = ''
 }
 </script>
 
@@ -72,6 +82,6 @@ const reloadCreateUserModal = async () => {
 }
 
 .unverified-users__search-input {
-  width: toRem(220);
+  width: toRem(250);
 }
 </style>

@@ -89,14 +89,14 @@ import { AppButton } from '@/common'
 import { api } from '@/api'
 import { InputField, SelectField } from '@/fields'
 import { useForm, useFormValidation } from '@/composables'
-import { email, required } from '@/validators'
+import { email, maxLength, required } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
 import { DateUtil } from '@/utils'
 import { UnverifiedModuleUser, VerifiedUser } from '@/types'
 import { useContext } from '@/composables'
-import { usePlatformStore } from '@/store'
+import { useAuthStore, usePlatformStore } from '@/store'
 import { router } from '@/router'
-import { ROUTE_NAMES } from '@/enums'
+import { MAX_LENGTH, ROUTE_NAMES } from '@/enums'
 
 const props = withDefaults(
   defineProps<{
@@ -114,6 +114,7 @@ const emit = defineEmits<{
 
 const { $t } = useContext()
 const { positions } = usePlatformStore()
+const { currentUserId } = useAuthStore()
 
 const form = reactive({
   name: '',
@@ -127,8 +128,8 @@ const { isFormDisabled, disableForm, enableForm } = useForm()
 const { isFormValid, getFieldErrorMessage, touchField } = useFormValidation(
   form,
   {
-    name: { required },
-    surname: { required },
+    name: { required, maxLength: maxLength(MAX_LENGTH.name) },
+    surname: { required, maxLength: maxLength(MAX_LENGTH.surname) },
     emailAddress: { email, required },
     position: { required },
   },
@@ -143,6 +144,8 @@ const verifyUser = async (newUser: VerifiedUser) => {
     data: {
       attributes: {
         module: props.user?.module,
+        from_user: String(currentUserId),
+        to_user: newUser.id,
         payload: {
           action: 'verify_user',
           user_id: String(newUser.id),
@@ -187,7 +190,10 @@ const submit = async () => {
 
     Bus.success($t('create-user-form.success-msg'))
     emit('submit')
-    router.push({ name: ROUTE_NAMES.userDetails, params: { id: data.id } })
+    await router.push({
+      name: ROUTE_NAMES.userDetails,
+      params: { id: data.id },
+    })
   } catch (error) {
     ErrorHandler.process(error)
   }

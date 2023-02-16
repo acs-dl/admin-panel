@@ -162,6 +162,8 @@ getUser()
 .user-details__title {
   font-size: toRem(24);
   font-weight: 700;
+
+  @include text-ellipsis;
 }
 
 .user-details__title-wrapper {
@@ -169,6 +171,7 @@ getUser()
   justify-content: space-between;
   align-items: center;
   margin-bottom: toRem(16);
+  gap: toRem(15);
 }
 
 .user-details__content {
@@ -186,5 +189,9 @@ getUser()
 
 .user-details__message {
   margin-top: toRem(50);
+}
+
+.user-details__add-user-btn {
+  min-width: toRem(190);
 }
 </style>
