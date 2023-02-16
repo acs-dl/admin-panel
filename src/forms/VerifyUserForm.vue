@@ -116,10 +116,10 @@ const submit = async () => {
         attributes: {
           module: form.module.toLowerCase(),
           from_user: String(currentUserId),
-          to_user: selectedUser.value?.id,
+          to_user: selectedUser.value.id,
           payload: {
             action: 'verify_user',
-            user_id: String(selectedUser.value?.id),
+            user_id: String(selectedUser.value.id),
             username: form.nickname,
           },
         },
