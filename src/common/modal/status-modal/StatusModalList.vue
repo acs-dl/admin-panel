@@ -114,18 +114,11 @@ const loadRequests = async () => {
 }
 
 watch(
-  () => currentPage.value,
+  [currentPage, () => props.status],
   async () => {
     await loadRequests()
   },
   { immediate: true },
-)
-
-watch(
-  () => props.status,
-  async () => {
-    await loadRequests()
-  },
 )
 </script>
 

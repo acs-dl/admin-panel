@@ -47,7 +47,7 @@ const props = defineProps<{
 
 const iconLink = computed(() => {
   const foundModule = modules.find(el => el.name === props.request.module)
-  return foundModule ? foundModule.icon : ''
+  return foundModule?.icon ?? ''
 })
 
 const module = computed(() => props.request.payload?.link || '-')
@@ -55,12 +55,16 @@ const module = computed(() => props.request.payload?.link || '-')
 const accessLevel = computed(() => props.request.payload?.access_level || '-')
 
 const requestStatusIcon = computed(() => {
-  const status = props.request.status
-  if (status === REQUEST_STATUSES.finished) return ICON_NAMES.check
-  if (status === REQUEST_STATUSES.created)
-    return ICON_NAMES.dotsCircleHorizontal
-  if (status === REQUEST_STATUSES.failed) return ICON_NAMES.exclamationCircle
-  return ICON_NAMES.loading
+  switch (props.request.status) {
+    case REQUEST_STATUSES.finished:
+      return ICON_NAMES.check
+    case REQUEST_STATUSES.created:
+      return ICON_NAMES.dotsCircleHorizontal
+    case REQUEST_STATUSES.failed:
+      return ICON_NAMES.exclamationCircle
+    default:
+      return ICON_NAMES.loading
+  }
 })
 </script>
 
