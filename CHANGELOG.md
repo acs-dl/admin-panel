@@ -8,6 +8,8 @@ Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
 ## [Unreleased]
+#### Added
+- Request statuses modal
 
 ## [0.2.0] - 2023-02-14
 #### Changed

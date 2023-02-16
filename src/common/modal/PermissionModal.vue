@@ -25,13 +25,13 @@
 
 <script lang="ts" setup>
 import { TransitionModal, Icon } from '@/common'
-import { UserPermisonInfo } from '@/types'
+import { UserPermissionInfo } from '@/types'
 import { PermissionForm } from '@/forms'
 
 withDefaults(
   defineProps<{
     isShown: boolean
-    module?: UserPermisonInfo
+    module?: UserPermissionInfo
     moduleName?: string
     id: string
   }>(),

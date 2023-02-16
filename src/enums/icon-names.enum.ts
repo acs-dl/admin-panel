@@ -239,4 +239,6 @@ export enum ICON_NAMES {
   x = 'x',
   zoomIn = 'zoom-in',
   zoomOut = 'zoom-out',
+  viewFilledGridAdd = 'view-filled-grid-add',
+  loading = 'loading',
 }
