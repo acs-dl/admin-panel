@@ -116,7 +116,7 @@ const submit = async () => {
         attributes: {
           module: form.module.toLowerCase(),
           ...(currentUserId ? { from_user: String(currentUserId) } : {}),
-          to_user: props.user.id,
+          to_user: selectedUser.value.id,
           payload: {
             action: 'verify_user',
             user_id: String(selectedUser.value?.id),

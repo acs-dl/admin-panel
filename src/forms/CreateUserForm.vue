@@ -94,7 +94,7 @@ import { Bus, ErrorHandler } from '@/helpers'
 import { DateUtil } from '@/utils'
 import { UnverifiedModuleUser, VerifiedUser } from '@/types'
 import { useContext } from '@/composables'
-import { usePlatformStore } from '@/store'
+import { useAuthStore, usePlatformStore } from '@/store'
 import { router } from '@/router'
 import { MAX_LENGTH, ROUTE_NAMES } from '@/enums'
 
@@ -114,6 +114,7 @@ const emit = defineEmits<{
 
 const { $t } = useContext()
 const { positions } = usePlatformStore()
+const { currentUserId } = useAuthStore()
 
 const form = reactive({
   name: '',
@@ -143,6 +144,8 @@ const verifyUser = async (newUser: VerifiedUser) => {
     data: {
       attributes: {
         module: props.user?.module,
+        ...(currentUserId ? { from_user: String(currentUserId) } : {}),
+        to_user: newUser.id,
         payload: {
           action: 'verify_user',
           user_id: String(newUser.id),
@@ -187,7 +190,10 @@ const submit = async () => {
 
     Bus.success($t('create-user-form.success-msg'))
     emit('submit')
-    router.push({ name: ROUTE_NAMES.userDetails, params: { id: data.id } })
+    await router.push({
+      name: ROUTE_NAMES.userDetails,
+      params: { id: data.id },
+    })
   } catch (error) {
     ErrorHandler.process(error)
   }
