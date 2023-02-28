@@ -93,18 +93,17 @@ const getUnverifiedUsersList = async () => {
   isLoadFailed.value = false
   try {
     const { data, meta } = await api.get<UnverifiedModuleUser[], UserMeta>(
-      '/integrations/gitlab/users/unverified',
+      '/integrations/unverified-svc/users',
       {
         page: {
           limit: PAGE_LIMIT,
           number: currentPage.value - 1,
         },
         filter: {
-          ...(props.searchText ? { username: props.searchText } : {}),
+          ...(props.searchText ? { search: props.searchText } : {}),
         },
       },
     )
-
     unverifiedUsersCount.value = meta.total_count
     unverifiedUsers.value = data
   } catch (e) {

@@ -4,12 +4,14 @@
       <app-button
         color="default"
         class="module-tree-main__name"
+        :disabled="!module.children.length"
         @click="toggleModuleTree"
       >
         <span class="module-tree-main__name-text">
           {{ module.type }}
         </span>
         <icon
+          v-if="module.children.length"
           class="module-tree-main__name-icon"
           :class="{ 'module-tree-main__name-icon--open': isOpenModuleTree }"
           :name="$icons.chevronFullRight"
@@ -33,10 +35,11 @@
         @click="toggleDeleteModal"
       />
     </li>
-    <ul v-if="isOpenModuleTree" class="module-tree-main__children">
+    <ul v-show="isOpenModuleTree" class="module-tree-main__children">
       <module-trees-item
         v-for="(child, index) in module.children"
         class="module-tree-main__children-item"
+        v-model:is-shown="isOpenModuleTree"
         :key="index"
         :id="module.id"
         :module-name="module.type"
@@ -131,6 +134,13 @@ const deleteUserFromModule = async () => {
 .module-tree-main__name {
   align-items: center;
   gap: toRem(4);
+  text-transform: capitalize;
+
+  &:disabled,
+  &--disabled {
+    filter: none;
+    opacity: 1;
+  }
 }
 
 .module-tree-main__name-text {
@@ -153,5 +163,11 @@ const deleteUserFromModule = async () => {
 
 .module-tree-main__item-btn {
   font-weight: 400;
+}
+
+.module-tree-main__collection-loader {
+  margin-top: toRem(10);
+  display: flex;
+  justify-content: center;
 }
 </style>

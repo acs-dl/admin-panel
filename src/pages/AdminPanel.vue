@@ -21,11 +21,11 @@ import { ref } from 'vue'
 import { AppSidebar, AppButton, StatusModal } from '@/common'
 import { usePlatformStore } from '@/store'
 
-const { getAllPositions, getAllModules } = usePlatformStore()
+const { getAllPositions, getAllModules, getAllRoles } = usePlatformStore()
 const isStatusModalOpened = ref(false)
 
 const init = async () => {
-  await Promise.allSettled([getAllPositions(), getAllModules()])
+  await Promise.allSettled([getAllPositions(), getAllModules(), getAllRoles()])
 }
 
 const openStatusModal = () => {

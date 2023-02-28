@@ -32,7 +32,7 @@
       </div>
 
       <div
-        v-if="accessList.length && isAccesLevelRequired"
+        v-if="accessList.length && isAccessLevelRequired"
         class="permission-form__field"
       >
         <h5 class="permission-form__field-title">
@@ -103,7 +103,7 @@ import {
   ModulePermissions,
 } from '@/types'
 import { debounce } from 'lodash-es'
-import { usePlatformStore } from '@/store'
+import { useAuthStore, usePlatformStore } from '@/store'
 import { storeToRefs } from 'pinia'
 
 const props = withDefaults(
@@ -125,7 +125,8 @@ const emit = defineEmits<{
 
 const { $t } = useContext()
 const { modules } = storeToRefs(usePlatformStore())
-const isAccesLevelRequired = ref(false)
+const { currentUserId } = useAuthStore()
+const isAccessLevelRequired = ref(false)
 const accessList = ref<ModulePermissions[]>([])
 const modulesNames = computed(() => modules.value.map(item => item.name))
 const accessNameList = computed(() => accessList.value.map(item => item.name))
@@ -146,7 +147,7 @@ const { isFormValid, getFieldErrorMessage, touchField } = useFormValidation(
     module: { required },
     link: { required },
     username: { required },
-    accessLevel: isAccesLevelRequired.value ? { required } : {},
+    accessLevel: isAccessLevelRequired.value ? { required } : {},
   },
 )
 
@@ -162,6 +163,8 @@ const submit = async () => {
       data: {
         attributes: {
           module: form.module.toLowerCase(),
+          from_user: String(currentUserId),
+          to_user: String(props.id),
           payload: {
             action: isEditForm.value ? 'update_user' : 'add_user',
             user_id: String(props.id),
@@ -195,7 +198,7 @@ const cancelForm = () => {
 const getAccessLevelList = async () => {
   try {
     if (!form.module || !form.link) return
-    isAccesLevelRequired.value = false
+    isAccessLevelRequired.value = false
     accessList.value = []
     const { data } = await api.get<ModulePermissionsResponse>(
       `/integrations/${form.module.toLowerCase()}/get_available_roles`,
@@ -205,7 +208,7 @@ const getAccessLevelList = async () => {
         },
       },
     )
-    isAccesLevelRequired.value = data.req
+    isAccessLevelRequired.value = data.req
     accessList.value = data.list
 
     if (props.module) {

@@ -50,5 +50,6 @@ defineProps<{
   border-radius: toRem(8);
   background: var(--app-bg);
   align-self: flex-start;
+  gap: toRem(15);
 }
 </style>

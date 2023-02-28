@@ -29,7 +29,7 @@ import { Icon } from '@/common'
 .login-page {
   display: flex;
   flex-direction: column;
-  background: url('static/images/login-page-background.png');
+  background: url('@static/images/login-page-background.png');
   background-size: 100%;
 
   @include respond-to(small) {

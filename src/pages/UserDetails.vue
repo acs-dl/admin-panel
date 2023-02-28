@@ -133,10 +133,14 @@ const getModuleTreeList = async () => {
         const { data } = await api.get<UserPermissionInfo[]>(
           `/integrations/${item.module}/permissions`,
           {
-            filter: { userId: props.id, link: '' },
+            filter: { userId: props.id },
           },
         )
-        return { children: data, type: item.module, id: props.id }
+        return {
+          children: data,
+          type: item.module,
+          id: props.id,
+        }
       }) ?? [],
     )
   } catch (e) {
@@ -181,6 +185,7 @@ getUser()
 .user-details__content-wrapper {
   display: flex;
   gap: toRem(24);
+  margin-bottom: toRem(65);
 
   @include respond-to(large) {
     flex-direction: column;

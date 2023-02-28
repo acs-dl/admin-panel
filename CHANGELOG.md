@@ -10,8 +10,12 @@ for further information about branching and tagging conventions.
 ## [Unreleased]
 #### Added
 - Request statuses modal
+- Pagination for modules tree
+- GitHub module
+- Git tree for git modules
 
 #### Fixed
+- Request modal fields
 - Validation for user creating
 
 ## [0.2.0] - 2023-02-14
