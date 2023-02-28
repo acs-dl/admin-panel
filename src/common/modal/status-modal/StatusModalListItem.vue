@@ -15,7 +15,7 @@
       {{ accessLevel }}
     </span>
     <span class="status-modal-list-item__info">
-      {{ request.payload.username }}
+      {{ formatMDY(request.created_at) }}
     </span>
     <div
       class="status-modal-list-item__status-wrapper"
@@ -38,8 +38,9 @@ import { usePlatformStore } from '@/store'
 import { UserRequest } from '@/types'
 import { ICON_NAMES, REQUEST_STATUSES } from '@/enums'
 import { Icon } from '@/common'
+import { formatMDY } from '@/helpers'
 
-const { modules } = usePlatformStore()
+const { modules, roles } = usePlatformStore()
 
 const props = defineProps<{
   request: UserRequest
@@ -52,7 +53,11 @@ const iconLink = computed(() => {
 
 const module = computed(() => props.request.payload?.link || '-')
 
-const accessLevel = computed(() => props.request.payload?.access_level || '-')
+const accessLevel = computed(() =>
+  props.request.payload?.access_level && props.request.module
+    ? roles[props.request.module][props.request.payload.access_level]
+    : '-',
+)
 
 const requestStatusIcon = computed(() => {
   switch (props.request.status) {
@@ -89,6 +94,7 @@ const requestStatusIcon = computed(() => {
 
 .status-modal-list-item__info {
   color: var(--text-secondary-light);
+  line-height: 1.2;
 
   @include text-ellipsis;
 }

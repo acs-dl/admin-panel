@@ -46,6 +46,10 @@ export type ModuleBaseInfo = {
   type: string
 }
 
+export type UserRole = Record<string, string>
+
+export type UserRoles = Record<string, UserRole>
+
 export type ModulePermissions = {
   name: string
   value: number
@@ -70,6 +74,7 @@ export type UserPermissionInfo = {
   user_id: number
   username: string
   level: number
+  children: UserPermissionInfo[]
 }
 
 export type ModuleTree = {
@@ -89,6 +94,7 @@ export type UserRequest = {
   error: string
   status: REQUEST_STATUSES
   relationshipNames?: string[]
+  created_at: string
   user?: {
     type: string
     id: number

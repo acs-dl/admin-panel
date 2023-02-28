@@ -38,7 +38,14 @@ export function formatYMD(date: DataConfigType) {
 
 export function formatYMDHMS(date: DataConfigType) {
   return DateUtil.format(
-    typeof date == 'number' ? DateUtil.fromTimestampSec(date) : date,
+    typeof date === 'number' ? DateUtil.fromTimestampSec(date) : date,
     'YYYY-MM-DD HH:mm:ss',
+  )
+}
+
+export function formatMDY(date: DataConfigType) {
+  return DateUtil.format(
+    typeof date === 'number' ? DateUtil.fromTimestampSec(date) : date,
+    'MMM DD YYYY',
   )
 }

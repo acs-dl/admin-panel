@@ -90,7 +90,7 @@ const updateList = async () => {
 }
 
 const getModuleImage = (moduleName: string) => {
-  const selectedModule = modules.value.find(item => item.name === moduleName)
+  const selectedModule = modules.value.find(item => item.id === moduleName)
   return selectedModule?.icon
 }
 

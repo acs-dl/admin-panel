@@ -49,7 +49,7 @@ const props = defineProps<{
 const { $t } = useContext()
 const { modules } = storeToRefs(usePlatformStore())
 const moduleBaseInfo = computed(() =>
-  modules.value.find(item => item.name === props.module.module),
+  modules.value.find(item => item.id === props.module.module),
 )
 const isShownDeleteModal = ref(false)
 
@@ -119,6 +119,10 @@ const deleteUserFromModule = async () => {
   font-size: toRem(14);
   font-weight: 400;
   line-height: 1.2;
+}
+
+.module-info-item__details-module-name {
+  text-transform: capitalize;
 }
 
 .module-info-item__details-nickname {

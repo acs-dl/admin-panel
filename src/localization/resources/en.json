@@ -196,5 +196,8 @@
   },
   "status-modal-list-item": {
     "icon-description": "Request Module"
+  },
+  "collection-loader": {
+    "button-text": "View more"
   }
 }

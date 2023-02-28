@@ -4,13 +4,14 @@
       <app-button
         color="default"
         class="module-tree-item__name"
+        :disabled="!item.deployable"
         @click="toggleTree"
       >
-        <div class="module-tree-item__name-text">
+        <div class="module-tree-item__name-text" :title="item?.path">
           {{ item?.path }}
         </div>
         <icon
-          v-if="isFolder"
+          v-if="item.deployable"
           class="module-tree-item__name-icon"
           :class="{ 'module-tree-item__name-icon--open': isOpenTree }"
           :name="$icons.chevronFullDown"
@@ -26,21 +27,22 @@
       />
 
       <app-button
+        v-if="item.username"
         class="module-tree-item__item-btn"
         color="error"
         :text="$t('module-tree-item.delete-btn')"
         @click="toggleDeleteModal"
       />
     </li>
-    <template v-if="isOpenTree">
+    <li v-show="isOpenTree" class="module-tree-item__children-wrapper">
       <module-trees-item
-        v-for="(child, index) in children"
+        v-for="(child, index) in loadedTreeLevel"
         :key="index"
         :id="id"
         :module-name="moduleName"
         :item="child"
       />
-    </template>
+    </li>
     <permission-modal
       :is-shown="isShownPermissionModal"
       :id="id"
@@ -68,14 +70,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { api } from '@/api'
 import { AppButton, Icon, PermissionModal, DeleteModal } from '@/common'
 import { ErrorHandler } from '@/helpers'
 import { UserPermissionInfo } from '@/types'
 import { Bus } from '@/helpers'
 import { useContext } from '@/composables'
-import ModuleTreesItem from './ModuleTreesItem.vue'
+import ModuleTreesItem from '@/pages/user-details/ModuleTreesItem.vue'
 
 const props = defineProps<{
   moduleName: string
@@ -84,30 +86,28 @@ const props = defineProps<{
 }>()
 
 const { $t } = useContext()
+const loadedTreeLevel = ref<UserPermissionInfo[]>([])
 const isShownDeleteModal = ref(false)
 const isShownPermissionModal = ref(false)
 const isOpenTree = ref(false)
-const children = ref<UserPermissionInfo[]>([])
-const isFolder = computed(() => props.item.deployable)
+
+const loadNextLevelTree = async () => {
+  try {
+    const { data } = await api.get<UserPermissionInfo[]>(
+      `/integrations/${props.moduleName}/permissions`,
+      {
+        filter: { userId: props.id, parentLink: props.item.link },
+      },
+    )
+    loadedTreeLevel.value = data
+  } catch (e) {
+    ErrorHandler.process(e)
+  }
+}
 
 const toggleTree = async () => {
-  try {
-    if (isFolder.value && !children.value.length) {
-      const { data } = await api.get<UserPermissionInfo[]>(
-        `/integrations/${props.moduleName}/permissions`,
-        {
-          filter: {
-            userId: props.id,
-            link: props.item.link,
-          },
-        },
-      )
-      children.value = data
-    }
-    isOpenTree.value = !isOpenTree.value
-  } catch (e) {
-    ErrorHandler.processWithoutFeedback(e)
-  }
+  if (!isOpenTree.value) await loadNextLevelTree()
+  isOpenTree.value = !isOpenTree.value
 }
 
 const togglePermissionModal = () => {
@@ -185,12 +185,21 @@ const deleteUserFromModule = async () => {
     minmax(toRem(100), toRem(150))
     toRem(100);
   gap: toRem(10);
+  min-height: toRem(24);
 }
 
 .module-tree-item__name {
   white-space: nowrap;
   align-items: center;
   gap: toRem(4);
+
+  &:disabled,
+  &--disabled {
+    cursor: default;
+    pointer-events: auto;
+    filter: none;
+    opacity: 1;
+  }
 }
 
 .module-tree-item__name-text {
