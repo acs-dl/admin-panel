@@ -71,7 +71,9 @@
     "success-delete": "Request for remove module sent successfully",
     "submodule-column": "Submodule",
     "access-level-column": "Access Level",
-    "delete-btn": "Delete"
+    "delete-btn": "Delete",
+    "search-placeholder": "Search by submodule name",
+    "icon-description": "Module Icon"
   },
   "module-tree-item": {
     "delete-main-title": "Remove user from {module}",
@@ -79,7 +81,8 @@
     "success-delete": "Request for remove module sent successfully",
     "submodule-column": "Submodule",
     "access-level-column": "Access Level",
-    "delete-btn": "Delete"
+    "delete-btn": "Delete",
+    "no-date-message": "Unlimited"
   },
   "errors": {
     "default": "Something went wrong"
@@ -112,7 +115,8 @@
     "access-level-text": "Access level",
     "edit-text": "Edit",
     "no-data-title": "Nothing found",
-    "no-data-message": "Module does not exist in the system."
+    "no-data-message": "Module does not exist in the system.",
+    "expiration-date-text": "Expiration date"
   },
   "user-details": {
     "main-title": "User details",
@@ -148,7 +152,7 @@
     "verify-btn": "Verify"
   },
   "users-list-section": {
-    "navigation-text": "{currentPage} of {totalPage}"
+    "navigation-text": "of {totalPage}"
   },
   "notification": {
     "default-title-success": "Success",

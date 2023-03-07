@@ -24,6 +24,7 @@
       :secondary-title="
         $t('module-info-item.delete-secondary-title', { module: module.module })
       "
+      :is-disabled="isProcessing"
       :icon="$icons.trash"
       @cancel="toggleDeleteModal"
       @delete="deleteUserFromModule"
@@ -37,7 +38,7 @@ import { api } from '@/api'
 import { AppButton, DeleteModal, Icon } from '@/common'
 import { ErrorHandler, Bus } from '@/helpers'
 import { ModuleInfo } from '@/types'
-import { usePlatformStore } from '@/store'
+import { useAuthStore, usePlatformStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { useContext } from '@/composables'
 
@@ -48,21 +49,26 @@ const props = defineProps<{
 
 const { $t } = useContext()
 const { modules } = storeToRefs(usePlatformStore())
+const { currentUserId } = useAuthStore()
 const moduleBaseInfo = computed(() =>
   modules.value.find(item => item.id === props.module.module),
 )
 const isShownDeleteModal = ref(false)
+const isProcessing = ref(false)
 
 const toggleDeleteModal = async () => {
   isShownDeleteModal.value = !isShownDeleteModal.value
 }
 
 const deleteUserFromModule = async () => {
+  isProcessing.value = true
   try {
     await api.post('/integrations/orchestrator/requests', {
       data: {
         attributes: {
           module: moduleBaseInfo.value?.name,
+          from_user: String(currentUserId),
+          to_user: String(props.id),
           payload: {
             action: 'delete_user',
             user_id: String(props.id),
@@ -81,8 +87,9 @@ const deleteUserFromModule = async () => {
     Bus.info($t('module-info-item.success-delete'))
     isShownDeleteModal.value = false
   } catch (e) {
-    ErrorHandler.processWithoutFeedback(e)
+    ErrorHandler.process(e)
   }
+  isProcessing.value = false
 }
 </script>
 

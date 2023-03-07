@@ -1,5 +1,14 @@
 <template>
   <ul class="module-tree-main__wrapper">
+    <input-field
+      v-if="isOpenModuleTree"
+      scheme="tertiary"
+      class="module-tree-main__search"
+      v-model="searchValue"
+      :placeholder="$t('module-tree-main.search-placeholder')"
+      :icon-left="$icons.search"
+      @input="updateList"
+    />
     <li class="module-tree-main">
       <app-button
         color="default"
@@ -7,6 +16,11 @@
         :disabled="!module.children.length"
         @click="toggleModuleTree"
       >
+        <img
+          class="module-tree-main__module-icon"
+          :src="moduleIcon"
+          :alt="$t('module-tree-main.icon-description')"
+        />
         <span class="module-tree-main__name-text">
           {{ module.type }}
         </span>
@@ -44,6 +58,8 @@
         :id="module.id"
         :module-name="module.type"
         :item="child"
+        :is-was-found="module.isWasFound"
+        :search-value="searchValue"
       />
     </ul>
     <delete-modal
@@ -62,21 +78,35 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { AppButton, Icon, DeleteModal } from '@/common'
-import { ModuleTree } from '@/types'
-import ModuleTreesItem from './ModuleTreesItem.vue'
+import { ModuleTree, UserModuleSearch } from '@/types'
 import { api } from '@/api'
 import { ErrorHandler, Bus } from '@/helpers'
 import { useContext } from '@/composables'
+import { useAuthStore, usePlatformStore } from '@/store'
+import { InputField } from '@/fields'
+import ModuleTreesItem from './ModuleTreesItem.vue'
 
 const props = defineProps<{
   module: ModuleTree
 }>()
 
+const emit = defineEmits<{
+  (e: 'updateList', value: UserModuleSearch): void
+}>()
+
 const { $t } = useContext()
+const { modules } = usePlatformStore()
+const { currentUserId } = useAuthStore()
 const isShownDeleteModal = ref(false)
 const isOpenModuleTree = ref(false)
+const searchValue = ref('')
+
+const moduleIcon = computed(() => {
+  const foundModule = modules.find(el => el.id === props.module.type)
+  return foundModule?.icon ?? ''
+})
 
 const toggleModuleTree = () => {
   isOpenModuleTree.value = !isOpenModuleTree.value
@@ -92,6 +122,8 @@ const deleteUserFromModule = async () => {
       data: {
         attributes: {
           module: props.module.type,
+          from_user: String(currentUserId),
+          to_user: String(props.module.id),
           payload: {
             action: 'delete_user',
             user_id: String(props.module.id),
@@ -101,7 +133,7 @@ const deleteUserFromModule = async () => {
         relationships: {
           user: {
             data: {
-              id: '1',
+              id: String(currentUserId),
             },
           },
         },
@@ -110,8 +142,15 @@ const deleteUserFromModule = async () => {
     Bus.info($t('module-tree-main.success-delete'))
     isShownDeleteModal.value = false
   } catch (e) {
-    ErrorHandler.processWithoutFeedback(e)
+    ErrorHandler.process(e)
   }
+}
+
+const updateList = () => {
+  emit('updateList', {
+    searchValue: searchValue.value,
+    moduleName: props.module.type,
+  })
 }
 </script>
 
@@ -124,7 +163,7 @@ const deleteUserFromModule = async () => {
 .module-tree-main {
   display: grid;
   grid-template-columns:
-    toRem(100)
+    toRem(150)
     minmax(toRem(100), 1fr)
     minmax(toRem(100), toRem(150))
     toRem(100);
@@ -169,5 +208,15 @@ const deleteUserFromModule = async () => {
   margin-top: toRem(10);
   display: flex;
   justify-content: center;
+}
+
+.module-tree-main__search {
+  max-width: toRem(265);
+  margin-bottom: toRem(24);
+}
+
+.module-tree-main__module-icon {
+  width: toRem(24);
+  height: toRem(24);
 }
 </style>

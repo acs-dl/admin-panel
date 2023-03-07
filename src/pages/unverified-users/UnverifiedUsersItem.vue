@@ -59,7 +59,7 @@ import { api } from '@/api'
 import { AppButton, VerifyUserModal, DeleteModal } from '@/common'
 import { UnverifiedModuleUser } from '@/types'
 import { Bus, ErrorHandler, formatDMYHM } from '@/helpers'
-import { usePlatformStore } from '@/store'
+import { useAuthStore, usePlatformStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { useContext } from '@/composables'
 
@@ -74,6 +74,7 @@ const emit = defineEmits<{
 
 const { $t } = useContext()
 const { modules } = storeToRefs(usePlatformStore())
+const { currentUserId } = useAuthStore()
 const isShownDeleteModal = ref(false)
 const isShownVerifyUserModal = ref(false)
 
@@ -100,6 +101,8 @@ const deleteUnverifiedUsers = async () => {
       data: {
         attributes: {
           module: props.user.module,
+          from_user: String(currentUserId),
+          to_user: String(props.user.id),
           payload: {
             action: 'delete_user',
             user_id: String(props.user.id),
@@ -109,7 +112,7 @@ const deleteUnverifiedUsers = async () => {
         relationships: {
           user: {
             data: {
-              id: '1',
+              id: String(currentUserId),
             },
           },
         },

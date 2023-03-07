@@ -44,6 +44,7 @@ export type ModuleBaseInfo = {
   id: string
   name: string
   type: string
+  prefix: string
 }
 
 export type UserRole = Record<string, string>
@@ -66,6 +67,7 @@ export type UserPermissionInfo = {
   type: string
   id: string
   access_level: ModulePermissions
+  expires_at: string
   deployable: boolean
   link: string
   module_id: number
@@ -79,6 +81,7 @@ export type UserPermissionInfo = {
 
 export type ModuleTree = {
   children: UserPermissionInfo[]
+  isWasFound: boolean
   type: string
   id: string
 }
@@ -106,4 +109,9 @@ export type UserRequest = {
     link?: string
     access_level?: number
   }
+}
+
+export type UserModuleSearch = {
+  searchValue: string
+  moduleName: string
 }

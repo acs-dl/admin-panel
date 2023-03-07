@@ -6,7 +6,7 @@ import { computed, getCurrentInstance, ref, useAttrs, useSlots } from 'vue'
 
 type INPUT_TYPES = 'text' | 'number' | 'password'
 
-type SCHEMES = 'primary' | 'primary-gray' | 'flat' | 'secondary'
+type SCHEMES = 'primary' | 'primary-gray' | 'flat' | 'secondary' | 'tertiary'
 
 const props = withDefaults(
   defineProps<{
@@ -229,6 +229,11 @@ $z-index-side-nodes: 1;
     background: var(--field-bg-secondary);
   }
 
+  .input-field--tertiary & {
+    padding: 0;
+    background: transparent;
+  }
+
   .input-field--flat & {
     background: var(--field-bg-secondary);
   }
@@ -355,6 +360,14 @@ $z-index-side-nodes: 1;
     border-radius: toRem(10);
   }
 
+  .input-field--tertiary & {
+    background: transparent;
+    box-shadow: inset 0 0 0 toRem(50) var(--field-bg-secondary);
+    border: toRem(1) solid var(--border-primary-light);
+    border-radius: toRem(10);
+    padding: toRem(12) toRem(14);
+  }
+
   transition-property: all;
 
   &::-webkit-input-placeholder {
@@ -432,6 +445,11 @@ $z-index-side-nodes: 1;
   }
 
   .input-field--error.input-field--secondary & {
+    border-color: var(--field-error);
+    box-shadow: inset 0 0 0 toRem(50) var(--field-bg-secondary);
+  }
+
+  .input-field--error.input-field--tertiary {
     border-color: var(--field-error);
     box-shadow: inset 0 0 0 toRem(50) var(--field-bg-secondary);
   }

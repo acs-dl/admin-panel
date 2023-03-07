@@ -18,6 +18,7 @@
           size="large"
           modification="border-rounded"
           scheme="flat"
+          :disabled="isDisabled"
           :text="$t('delete-modal.cancel-btn')"
           @click="cancelForm"
         />
@@ -27,6 +28,7 @@
           modification="border-rounded"
           scheme="flat"
           color="error"
+          :disabled="isDisabled"
           :text="$t('delete-modal.submit-btn')"
           @click="deleteUser"
         />
@@ -43,10 +45,12 @@ withDefaults(
     isShown: boolean
     mainTitle?: string
     secondaryTitle?: string
+    isDisabled?: boolean
   }>(),
   {
     mainTitle: '',
     secondaryTitle: '',
+    isDisabled: false,
   },
 )
 
