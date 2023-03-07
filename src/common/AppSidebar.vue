@@ -82,7 +82,7 @@ const adminInfo = ref<VerifiedUser | null>(null)
 const getUnverifiedUsersCount = async () => {
   try {
     const { meta } = await api.get<UnverifiedModuleUser[]>(
-      '/integrations/gitlab/users/unverified',
+      '/integrations/unverified-svc/users',
     )
     unverifiedUsersCount.value = Number(meta?.total_count)
   } catch (e) {

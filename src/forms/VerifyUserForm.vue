@@ -126,7 +126,7 @@ const submit = async () => {
         relationships: {
           user: {
             data: {
-              id: '1',
+              id: String(currentUserId),
             },
           },
         },

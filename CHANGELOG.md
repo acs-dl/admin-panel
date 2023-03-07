@@ -9,10 +9,14 @@ for further information about branching and tagging conventions.
 
 ## [Unreleased]
 #### Added
+- Search by module
 - Request statuses modal
 - Pagination for modules tree
 - GitHub module
 - Git tree for git modules
+
+#### Changed
+- User details page
 
 #### Fixed
 - Request modal fields

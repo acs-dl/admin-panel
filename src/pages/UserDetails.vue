@@ -24,8 +24,13 @@
         </template>
         <template v-else>
           <div v-if="modulesList?.length" class="user-details__content-wrapper">
-            <module-info-list :id="id" :modules="modulesList" />
-            <module-trees :id="id" :module-trees-list="moduleTreesList" />
+            <!--TODO: DELETE OR EDIT AFTER DISCUSSION-->
+            <module-info-list v-if="false" :id="id" :modules="modulesList" />
+            <module-trees
+              :id="id"
+              :module-trees-list="moduleTreesList"
+              @update-list="searchByModuleName($event)"
+            />
           </div>
           <template v-else>
             <no-data-message
@@ -64,6 +69,7 @@ import { ErrorHandler } from '@/helpers'
 import {
   ModuleInfo,
   ModuleTree,
+  UserModuleSearch,
   UserPermissionInfo,
   VerifiedUser,
 } from '@/types'
@@ -130,14 +136,10 @@ const getModuleTreeList = async () => {
   try {
     moduleTreesList.value = await Promise.all(
       modulesList.value?.map(async (item: ModuleInfo) => {
-        const { data } = await api.get<UserPermissionInfo[]>(
-          `/integrations/${item.module}/permissions`,
-          {
-            filter: { userId: props.id },
-          },
-        )
+        const data = await getModulePermissions(item.module)
         return {
           children: data,
+          isWasFound: false,
           type: item.module,
           id: props.id,
         }
@@ -148,6 +150,40 @@ const getModuleTreeList = async () => {
     ErrorHandler.processWithoutFeedback(e)
   }
   isLoaded.value = true
+}
+
+const getModulePermissions = async (moduleName: string, searchBy?: string) => {
+  let res = [] as UserPermissionInfo[]
+  try {
+    const { data } = await api.get<UserPermissionInfo[]>(
+      `/integrations/${moduleName}/permissions`,
+      {
+        filter: {
+          userId: props.id,
+          ...(searchBy ? { link: searchBy } : {}),
+        },
+      },
+    )
+    res = data
+  } catch (e) {
+    ErrorHandler.process(e)
+  }
+  return res
+}
+
+const searchByModuleName = async ({
+  searchValue,
+  moduleName,
+}: UserModuleSearch) => {
+  try {
+    const foundModule = moduleTreesList.value.find(el => el.type === moduleName)
+    if (foundModule) {
+      foundModule.isWasFound = Boolean(searchValue)
+      foundModule.children = await getModulePermissions(moduleName, searchValue)
+    }
+  } catch (e) {
+    ErrorHandler.process(e)
+  }
 }
 
 const togglePermissionModal = async () => {

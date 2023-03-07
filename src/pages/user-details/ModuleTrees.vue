@@ -13,6 +13,11 @@
       </div>
       <div class="module-trees__header-item">
         <span class="module-trees__header-item-text">
+          {{ $t('module-trees.expiration-date-text') }}
+        </span>
+      </div>
+      <div class="module-trees__header-item">
+        <span class="module-trees__header-item-text">
           {{ $t('module-trees.access-level-text') }}
         </span>
       </div>
@@ -26,10 +31,12 @@
     <div class="module-trees__content">
       <div v-if="moduleTreesList.length" class="module-trees__item-wrapper">
         <module-tree-main
-          v-for="item in moduleTreesList"
+          v-for="(item, idx) in moduleTreesList"
+          v-model:search-value="searchValue"
           class="module-trees__item"
-          :key="item.id"
+          :key="idx"
           :module="item"
+          @update-list="emit('updateList', $event)"
         />
       </div>
       <template v-else>
@@ -44,14 +51,21 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue'
 import { NoDataMessage } from '@/common'
-import { ModuleTree } from '@/types'
+import { ModuleTree, UserModuleSearch } from '@/types'
 import ModuleTreeMain from './ModuleTreeMain.vue'
 
 defineProps<{
   id: string
   moduleTreesList: ModuleTree[]
 }>()
+
+const emit = defineEmits<{
+  (e: 'updateList', value: UserModuleSearch): void
+}>()
+
+const searchValue = ref('')
 </script>
 
 <style scoped lang="scss">
@@ -67,9 +81,9 @@ defineProps<{
   display: grid;
   align-items: center;
   grid-template-columns:
-    toRem(100)
+    toRem(150)
     minmax(toRem(100), 1fr)
-    minmax(toRem(100), toRem(150))
+    repeat(2, minmax(toRem(100), toRem(150)))
     toRem(100);
   gap: toRem(10);
 }

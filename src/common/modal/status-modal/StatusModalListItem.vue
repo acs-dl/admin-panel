@@ -47,7 +47,7 @@ const props = defineProps<{
 }>()
 
 const iconLink = computed(() => {
-  const foundModule = modules.find(el => el.name === props.request.module)
+  const foundModule = modules.find(el => el.id === props.request.module)
   return foundModule?.icon ?? ''
 })
 

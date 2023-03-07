@@ -4,19 +4,25 @@
       <app-button
         color="default"
         class="module-tree-item__name"
-        :disabled="!item.deployable"
+        :disabled="!item.deployable || isWasFound"
         @click="toggleTree"
       >
-        <div class="module-tree-item__name-text" :title="item?.path">
-          {{ item?.path }}
+        <div class="module-tree-item__name-text" :title="branchName">
+          {{ branchName }}
         </div>
         <icon
-          v-if="item.deployable"
+          v-if="item.deployable && !isWasFound"
           class="module-tree-item__name-icon"
           :class="{ 'module-tree-item__name-icon--open': isOpenTree }"
           :name="$icons.chevronFullDown"
         />
       </app-button>
+
+      <div class="module-tree-item__date-wrapper">
+        <span class="module-tree-item__date-text">
+          {{ expirationDate }}
+        </span>
+      </div>
 
       <app-button
         v-if="item.access_level"
@@ -34,7 +40,10 @@
         @click="toggleDeleteModal"
       />
     </li>
-    <li v-show="isOpenTree" class="module-tree-item__children-wrapper">
+    <li
+      v-show="isOpenTree && !isWasFound"
+      class="module-tree-item__children-wrapper"
+    >
       <module-trees-item
         v-for="(child, index) in loadedTreeLevel"
         :key="index"
@@ -42,6 +51,19 @@
         :module-name="moduleName"
         :item="child"
       />
+      <template v-if="isPaginationButtonViewed">
+        <ul class="module-tree-item__wrapper">
+          <li class="module-tree-item">
+            <app-button
+              class="module-tree-item__pagination-button"
+              color="default"
+              :disabled="isProcessing"
+              :icon-left="$icons.dotsHorizontal"
+              @click="loadNextLevelTree"
+            />
+          </li>
+        </ul>
+      </template>
     </li>
     <permission-modal
       :is-shown="isShownPermissionModal"
@@ -70,39 +92,79 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { api } from '@/api'
 import { AppButton, Icon, PermissionModal, DeleteModal } from '@/common'
-import { ErrorHandler } from '@/helpers'
-import { UserPermissionInfo } from '@/types'
+import { ErrorHandler, formatYMD } from '@/helpers'
+import { UserPermissionInfo, UserMeta } from '@/types'
 import { Bus } from '@/helpers'
 import { useContext } from '@/composables'
 import ModuleTreesItem from '@/pages/user-details/ModuleTreesItem.vue'
+import { useAuthStore } from '@/store'
 
-const props = defineProps<{
-  moduleName: string
-  id: string
-  item: UserPermissionInfo
-}>()
+const FIRST_PAGE = 0
+const PAGE_LIMIT = 10
+
+const props = withDefaults(
+  defineProps<{
+    moduleName: string
+    id: string
+    item: UserPermissionInfo
+    searchValue?: string
+    isWasFound?: boolean
+  }>(),
+  { isWasFound: false, searchValue: '' },
+)
 
 const { $t } = useContext()
+const { currentUserId } = useAuthStore()
+const isProcessing = ref(false)
 const loadedTreeLevel = ref<UserPermissionInfo[]>([])
 const isShownDeleteModal = ref(false)
 const isShownPermissionModal = ref(false)
 const isOpenTree = ref(false)
+const currentPage = ref(FIRST_PAGE)
+const branchesCount = ref(0)
+
+const pagesCount = computed(() => Math.ceil(branchesCount.value / PAGE_LIMIT))
+
+const isPaginationButtonViewed = computed(
+  () => pagesCount.value - 1 >= currentPage.value,
+)
+
+const branchName = computed(() =>
+  props.isWasFound ? props.item.link : props.item.path,
+)
+
+const expirationDate = computed(() =>
+  props.item.expires_at
+    ? formatYMD(props.item.expires_at)
+    : $t('module-tree-item.no-date-message'),
+)
 
 const loadNextLevelTree = async () => {
+  isProcessing.value = true
   try {
-    const { data } = await api.get<UserPermissionInfo[]>(
+    const { data, meta } = await api.get<UserPermissionInfo[], UserMeta>(
       `/integrations/${props.moduleName}/permissions`,
       {
-        filter: { userId: props.id, parentLink: props.item.link },
+        page: {
+          limit: PAGE_LIMIT,
+          number: currentPage.value,
+        },
+        filter: {
+          userId: props.id,
+          parentLink: props.item.link,
+        },
       },
     )
-    loadedTreeLevel.value = data
+    branchesCount.value = meta.total_count
+    loadedTreeLevel.value = loadedTreeLevel.value.concat(data)
+    currentPage.value = currentPage.value + 1
   } catch (e) {
     ErrorHandler.process(e)
   }
+  isProcessing.value = false
 }
 
 const toggleTree = async () => {
@@ -128,6 +190,8 @@ const deleteUserFromModule = async () => {
       data: {
         attributes: {
           module: props.moduleName,
+          from_user: String(currentUserId),
+          to_user: String(props.id),
           payload: {
             action: 'remove_user',
             user_id: String(props.id),
@@ -138,7 +202,7 @@ const deleteUserFromModule = async () => {
         relationships: {
           user: {
             data: {
-              id: '1',
+              id: String(currentUserId),
             },
           },
         },
@@ -182,13 +246,14 @@ const deleteUserFromModule = async () => {
   display: grid;
   grid-template-columns:
     minmax(toRem(100), 1fr)
-    minmax(toRem(100), toRem(150))
+    repeat(2, minmax(toRem(100), toRem(150)))
     toRem(100);
   gap: toRem(10);
   min-height: toRem(24);
 }
 
 .module-tree-item__name {
+  max-width: 100%;
   white-space: nowrap;
   align-items: center;
   gap: toRem(4);
@@ -203,7 +268,7 @@ const deleteUserFromModule = async () => {
 }
 
 .module-tree-item__name-text {
-  max-width: toRem(200);
+  width: 100%;
   text-align: start;
   font-weight: 400;
   line-height: 1.2;
@@ -225,5 +290,9 @@ const deleteUserFromModule = async () => {
 
 .module-tree-item__item-btn {
   font-weight: 400;
+}
+
+.module-tree-item__pagination-button {
+  padding-top: toRem(4);
 }
 </style>

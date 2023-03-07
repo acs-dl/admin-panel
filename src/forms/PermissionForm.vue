@@ -24,11 +24,20 @@
           v-model="form.link"
           scheme="secondary"
           class="permission-form__field-input"
+          :class="`permission-form__field-input--${form.module}`"
           :placeholder="$t('permission-form.link-lbl')"
           :error-message="getFieldErrorMessage('link')"
           :disabled="isFormDisabled || isEditForm"
           @blur="touchField('link')"
-        />
+        >
+          <template v-if="prefix" #nodeLeft>
+            <div class="permission-form__origin">
+              <span class="permission-form__origin-text">
+                {{ prefix }}
+              </span>
+            </div>
+          </template>
+        </input-field>
       </div>
 
       <div
@@ -131,6 +140,9 @@ const accessList = ref<ModulePermissions[]>([])
 const modulesNames = computed(() => modules.value.map(item => item.name))
 const accessNameList = computed(() => accessList.value.map(item => item.name))
 const isEditForm = computed(() => Boolean(props.module))
+const prefix = computed(() => {
+  return modules.value.find(el => el.id === form.module.toLowerCase())?.prefix
+})
 
 const form = reactive({
   module: props.moduleName ?? '',
@@ -176,7 +188,7 @@ const submit = async () => {
         relationships: {
           user: {
             data: {
-              id: '1',
+              id: String(currentUserId),
             },
           },
         },
@@ -271,5 +283,29 @@ watch(
 .permission-form__actions {
   display: flex;
   gap: toRem(16);
+}
+
+.permission-form__origin {
+  padding-right: toRem(8);
+  border-right: toRem(1) solid var(--border-primary-main);
+}
+
+.permission-form__origin-text {
+  line-height: 1.2;
+  color: var(--border-primary-main);
+}
+
+.permission-form__field-input {
+  &--GitHub {
+    &:deep(.input-field__input) {
+      padding-left: toRem(180);
+    }
+  }
+
+  &--GitLab {
+    &:deep(.input-field__input) {
+      padding-left: toRem(175);
+    }
+  }
 }
 </style>
