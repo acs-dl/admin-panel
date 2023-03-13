@@ -114,7 +114,8 @@ const submit = async () => {
     await api.post('/integrations/orchestrator/requests', {
       data: {
         attributes: {
-          module: form.module.toLowerCase(),
+          // TODO: EDIT WHEN BACKEND WILL BE READY
+          module: form.module[0].toLowerCase(),
           from_user: String(currentUserId),
           to_user: selectedUser.value.id,
           payload: {

@@ -30,7 +30,7 @@
           :disabled="isFormDisabled || isEditForm"
           @blur="touchField('link')"
         >
-          <template v-if="prefix" #nodeLeft>
+          <template v-if="prefix && isModulePrefix" #nodeLeft>
             <div class="permission-form__origin">
               <span class="permission-form__origin-text">
                 {{ prefix }}
@@ -61,13 +61,13 @@
 
       <div class="permission-form__field">
         <h5 class="permission-form__field-title">
-          {{ $t('permission-form.username-lbl') }}
+          {{ usernameTitle }}
         </h5>
         <input-field
           v-model="form.username"
           scheme="secondary"
           class="permission-form__field-input"
-          :placeholder="$t('permission-form.username-lbl')"
+          :placeholder="usernameTitle"
           :error-message="getFieldErrorMessage('username')"
           :disabled="isFormDisabled || isEditForm"
           @blur="touchField('username')"
@@ -140,9 +140,18 @@ const accessList = ref<ModulePermissions[]>([])
 const modulesNames = computed(() => modules.value.map(item => item.name))
 const accessNameList = computed(() => accessList.value.map(item => item.name))
 const isEditForm = computed(() => Boolean(props.module))
-const prefix = computed(() => {
-  return modules.value.find(el => el.id === form.module.toLowerCase())?.prefix
-})
+const prefix = computed(
+  () => modules.value.find(el => el.id === form.module.toLowerCase())?.prefix,
+)
+
+// TODO: EDIT WHEN BACKEND WILL BE READY
+const isModulePrefix = computed(() => prefix.value !== '+')
+
+const usernameTitle = computed(() =>
+  isModulePrefix.value
+    ? $t('permission-form.username-lbl')
+    : $t('permission-form.username-or-phone-lbl'),
+)
 
 const form = reactive({
   module: props.moduleName ?? '',

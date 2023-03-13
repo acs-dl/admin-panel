@@ -143,7 +143,8 @@ const verifyUser = async (newUser: VerifiedUser) => {
   await api.post('/integrations/orchestrator/requests', {
     data: {
       attributes: {
-        module: props.user?.module,
+        // TODO: EDIT WHEN BACKEND WILL BE READY
+        module: props.user?.module[0],
         from_user: String(currentUserId),
         to_user: newUser.id,
         payload: {

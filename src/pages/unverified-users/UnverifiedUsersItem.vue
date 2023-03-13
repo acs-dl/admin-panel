@@ -8,9 +8,11 @@
     </span>
     <span class="unverified-users-item__text">
       <img
+        v-for="(module, idx) in user.module"
+        :key="idx"
         class="unverified-users-item__img"
-        :src="getModuleImage(user.module)"
-        :alt="user.module"
+        :src="getModuleImage(module)"
+        :alt="user.module[idx]"
       />
     </span>
     <span
@@ -167,5 +169,11 @@ const deleteUnverifiedUsers = async () => {
   width: 100%;
   height: 100%;
   border-radius: 50%;
+
+  &:not(:first-child) {
+    position: relative;
+    left: toRem(-5);
+    border: toRem(1) solid var(--border-primary-main-inverted);
+  }
 }
 </style>

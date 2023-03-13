@@ -9,6 +9,7 @@ for further information about branching and tagging conventions.
 
 ## [Unreleased]
 #### Added
+- Group for unverified users
 - Search by module
 - Request statuses modal
 - Pagination for modules tree

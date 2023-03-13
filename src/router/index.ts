@@ -18,7 +18,7 @@ enum ROUTE_METAS {
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/:catchAll(.*)',
-    redirect: { name: ROUTE_NAMES.uiKit },
+    redirect: { name: ROUTE_NAMES.login },
   },
   {
     path: '/',

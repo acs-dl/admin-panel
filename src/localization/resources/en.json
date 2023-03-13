@@ -20,6 +20,7 @@
     "link-lbl": "Submodule",
     "link-placeholder": "Input submodule",
     "username-lbl": "Username",
+    "username-or-phone-lbl": "Username or Phone",
     "username-placeholder": "Input username",
     "success-msg": "Successful sent request for user permission",
     "access-level-lbl": "Access level",
@@ -183,7 +184,7 @@
     "error-message": "Something went wrong"
   },
   "admin-panel": {
-    "status-button": "Status of adding modules"
+    "status-button": "Status of requests"
   },
   "status-modal": {
     "title": "Status of requests"

@@ -25,7 +25,8 @@ export function attachStaleTokenHandler(axios: AxiosInstance): void {
       const config = error?.config
       const isUnauthorized =
         error?.response?.status === HTTP_STATUS_CODES.UNAUTHORIZED &&
-        !config?._retry
+        !config?._retry &&
+        error.config.url !== '/integrations/auth/refresh'
 
       if (!isUnauthorized) return Promise.reject(error)
 

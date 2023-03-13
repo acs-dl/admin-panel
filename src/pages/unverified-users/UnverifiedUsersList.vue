@@ -54,15 +54,17 @@
       </template>
     </div>
 
-    <div v-if="isLoaded" class="unverified-users-list__pagination">
-      <table-navigation
-        v-if="pageCount > MIN_PAGE_AMOUNT"
-        v-model:current-page="currentPage"
-        class="filters-list-section__navigation"
-        :page-count="pageCount"
-        :total-amount="unverifiedUsersCount"
-      />
-    </div>
+    <template v-if="isPaginationShown">
+      <div class="unverified-users-list__pagination">
+        <table-navigation
+          v-if="pageCount > MIN_PAGE_AMOUNT"
+          v-model:current-page="currentPage"
+          class="filters-list-section__navigation"
+          :page-count="pageCount"
+          :total-amount="unverifiedUsersCount"
+        />
+      </div>
+    </template>
   </div>
 </template>
 
@@ -84,8 +86,12 @@ const isLoaded = ref(false)
 const unverifiedUsers = ref<UnverifiedModuleUser[]>([])
 const unverifiedUsersCount = ref(0)
 const currentPage = ref(MIN_PAGE_AMOUNT)
+
 const pageCount = computed(() =>
   Math.ceil(unverifiedUsersCount.value / PAGE_LIMIT),
+)
+const isPaginationShown = computed(
+  () => isLoaded.value && unverifiedUsers.value.length && !isLoadFailed.value,
 )
 
 const getUnverifiedUsersList = async () => {
