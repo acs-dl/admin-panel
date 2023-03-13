@@ -5,6 +5,7 @@
         {{ mainTitle }}
       </h2>
       <app-button
+        v-if="mainTitle"
         class="user-details__add-user-btn"
         size="medium"
         modification="border-rounded"
@@ -94,7 +95,7 @@ const userDetails = ref<VerifiedUser | null>(null)
 const mainTitle = computed(() =>
   userDetails.value
     ? `${userDetails.value.name} ${userDetails.value.surname}`
-    : $t('user-details.main-title'),
+    : '',
 )
 
 const getUser = async () => {

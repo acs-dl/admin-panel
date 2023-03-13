@@ -226,6 +226,7 @@ const getAccessLevelList = async () => {
       {
         filter: {
           link: form.link,
+          username: form.username,
         },
       },
     )

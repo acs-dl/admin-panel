@@ -19,9 +19,11 @@
       </app-button>
 
       <div class="module-tree-item__date-wrapper">
-        <span class="module-tree-item__date-text">
-          {{ expirationDate }}
-        </span>
+        <template v-if="item.expires_at">
+          <span class="module-tree-item__date-text">
+            {{ formatYMD(item.expires_at) }}
+          </span>
+        </template>
       </div>
 
       <app-button
@@ -134,12 +136,6 @@ const isPaginationButtonViewed = computed(
 
 const branchName = computed(() =>
   props.isWasFound ? props.item.link : props.item.path,
-)
-
-const expirationDate = computed(() =>
-  props.item.expires_at
-    ? formatYMD(props.item.expires_at)
-    : $t('module-tree-item.no-date-message'),
 )
 
 const loadNextLevelTree = async () => {
