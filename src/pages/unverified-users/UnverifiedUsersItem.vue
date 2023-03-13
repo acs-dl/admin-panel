@@ -1,7 +1,7 @@
 <template>
   <div class="unverified-users-item">
     <span class="unverified-users-item__text">
-      {{ $t('unverified-users-item.unverified-name') }}
+      {{ userName }}
     </span>
     <span class="unverified-users-item__text">
       {{ user.username }}
@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { api } from '@/api'
 import { AppButton, VerifyUserModal, DeleteModal } from '@/common'
 import { UnverifiedModuleUser } from '@/types'
@@ -79,6 +79,9 @@ const { modules } = storeToRefs(usePlatformStore())
 const { currentUserId } = useAuthStore()
 const isShownDeleteModal = ref(false)
 const isShownVerifyUserModal = ref(false)
+const userName = computed(
+  () => props.user.name ?? $t('unverified-users-item.unverified-name'),
+)
 
 const toggleCreateNewMemberModal = async () => {
   isShownVerifyUserModal.value = !isShownVerifyUserModal.value
@@ -88,7 +91,7 @@ const toggleDeleteModal = () => {
   isShownDeleteModal.value = !isShownDeleteModal.value
 }
 
-const updateList = async () => {
+const updateList = () => {
   emit('update')
 }
 

@@ -9,6 +9,7 @@ for further information about branching and tagging conventions.
 
 ## [Unreleased]
 #### Added
+- Clear button to inputs
 - Group for unverified users
 - Search by module
 - Request statuses modal
@@ -20,6 +21,7 @@ for further information about branching and tagging conventions.
 - User details page
 
 #### Fixed
+- Name on details page
 - Request modal fields
 - Validation for user creating
 

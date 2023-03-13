@@ -25,6 +25,7 @@ export type UnverifiedModuleUser = {
   module: string[]
   username: string
   type: string
+  name: string
 }
 
 export type ModuleInfo = {

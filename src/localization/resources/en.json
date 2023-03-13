@@ -120,7 +120,6 @@
     "expiration-date-text": "Expiration date"
   },
   "user-details": {
-    "main-title": "User details",
     "add-user-btn": "Add module",
     "error-message": "Error while loading.",
     "no-data-title": "Nothing found",

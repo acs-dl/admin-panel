@@ -143,6 +143,8 @@ defineExpose({
 <style scoped lang="scss">
 .unverified-users-list {
   width: 100%;
+  display: flex;
+  flex-direction: column;
   background: var(--app-bg-tertiary);
   border-radius: toRem(15);
   color: var(--text-secondary-main);
@@ -162,6 +164,7 @@ defineExpose({
 
 .unverified-users-list__content {
   margin-bottom: toRem(20);
+  flex: 1;
 }
 
 .unverified-users-list__message {

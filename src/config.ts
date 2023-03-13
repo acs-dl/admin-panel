@@ -10,7 +10,7 @@ export const config = {
 } as const
 
 Object.assign(config, _mapEnvCfg(import.meta.env))
-Object.assign(config, _mapEnvCfg(document.ENV))
+Object.assign(config, document.ENV)
 
 function _mapEnvCfg(env: ImportMetaEnv | typeof document.ENV): {
   [k: string]: string | boolean | undefined

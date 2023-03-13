@@ -25,7 +25,11 @@
       </div>
     </div>
 
-    <unverified-users-list :search-text="searchValue" ref="usersList" />
+    <unverified-users-list
+      class="unverified-users__list"
+      :search-text="searchValue"
+      ref="usersList"
+    />
 
     <create-user-modal
       :is-shown="isShownCreateUserModal"
@@ -65,6 +69,11 @@ const clearInput = () => {
 </script>
 
 <style scoped lang="scss">
+.unverified-users {
+  display: flex;
+  flex-direction: column;
+}
+
 .unverified-users__title {
   font-size: toRem(24);
   font-weight: 700;
@@ -83,5 +92,9 @@ const clearInput = () => {
 
 .unverified-users__search-input {
   width: toRem(250);
+}
+
+.unverified-users__list {
+  flex: 1;
 }
 </style>

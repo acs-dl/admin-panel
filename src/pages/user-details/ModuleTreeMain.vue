@@ -7,7 +7,10 @@
       v-model="searchValue"
       :placeholder="$t('module-tree-main.search-placeholder')"
       :icon-left="$icons.search"
-      @input="updateList"
+      :icon-right="iconRight"
+      @right-icon-click="clearInput"
+      @keyup.enter="updateList"
+      @blur="updateList"
     />
     <li class="module-tree-main">
       <app-button
@@ -87,6 +90,7 @@ import { useContext } from '@/composables'
 import { useAuthStore, usePlatformStore } from '@/store'
 import { InputField } from '@/fields'
 import ModuleTreesItem from './ModuleTreesItem.vue'
+import { ICON_NAMES } from '@/enums'
 
 const props = defineProps<{
   module: ModuleTree
@@ -103,15 +107,15 @@ const isShownDeleteModal = ref(false)
 const isOpenModuleTree = ref(false)
 const searchValue = ref('')
 
-const moduleIcon = computed(() => {
-  const foundModule = modules.find(el => el.id === props.module.type)
-  return foundModule?.icon ?? ''
-})
+const moduleIcon = computed(
+  () => modules.find(el => el.id === props.module.type)?.icon ?? '',
+)
 
-const moduleName = computed(() => {
-  const foundModule = modules.find(el => el.id === props.module.type)
-  return foundModule?.name ?? ''
-})
+const iconRight = computed(() => (searchValue.value ? ICON_NAMES.x : undefined))
+
+const moduleName = computed(
+  () => modules.find(el => el.id === props.module.type)?.name ?? '',
+)
 
 const toggleModuleTree = () => {
   isOpenModuleTree.value = !isOpenModuleTree.value
@@ -149,6 +153,11 @@ const deleteUserFromModule = async () => {
   } catch (e) {
     ErrorHandler.process(e)
   }
+}
+
+const clearInput = () => {
+  searchValue.value = ''
+  updateList()
 }
 
 const updateList = () => {
