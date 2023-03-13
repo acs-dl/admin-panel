@@ -71,6 +71,10 @@
   --border-primary-main: #{$border-primary-main};
   --border-primary-dark: #{$border-primary-dark};
 
+  --border-primary-light-inverted: #{$border-primary-light-inverted};
+  --border-primary-main-inverted: #{$border-primary-main-inverted};
+  --border-primary-dark-inverted: #{$border-primary-dark-inverted};
+
   /* App variables */
   --app-txt: #{$text-primary-main};
   --app-font-family: 'Poppins', 'Arial', sans-serif;
@@ -78,6 +82,11 @@
   --app-padding-left: #{toRem(92)};
   --app-bg: var(--white);
   --shadow-primary: #{0 toRem(40) toRem(60) $shadow-primary};
+  --shadow-secondary:
+    #{
+    0 toRem(20) toRem(16) toRem(-4) $shadow-secondary,
+    0 toRem(8) toRem(8) toRem(-4) $shadow-secondary
+    };
 
   @include respond-to(tablet) {
     --app-padding-right: #{toRem(40)};

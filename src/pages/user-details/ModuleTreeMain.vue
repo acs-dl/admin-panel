@@ -22,7 +22,7 @@
           :alt="$t('module-tree-main.icon-description')"
         />
         <span class="module-tree-main__name-text">
-          {{ module.type }}
+          {{ moduleName }}
         </span>
         <icon
           v-if="module.children.length"
@@ -108,6 +108,11 @@ const moduleIcon = computed(() => {
   return foundModule?.icon ?? ''
 })
 
+const moduleName = computed(() => {
+  const foundModule = modules.find(el => el.id === props.module.type)
+  return foundModule?.name ?? ''
+})
+
 const toggleModuleTree = () => {
   isOpenModuleTree.value = !isOpenModuleTree.value
 }
@@ -171,8 +176,11 @@ const updateList = () => {
 }
 
 .module-tree-main__name {
+  width: toRem(125);
+  display: grid;
+  grid-template-columns: toRem(24) minmax(toRem(75), 1fr) toRem(8);
   align-items: center;
-  gap: toRem(4);
+  gap: toRem(8);
   text-transform: capitalize;
 
   &:disabled,
@@ -184,6 +192,7 @@ const updateList = () => {
 
 .module-tree-main__name-text {
   font-weight: 400;
+  text-align: left;
 }
 
 .module-tree-main__name-icon {
@@ -197,7 +206,7 @@ const updateList = () => {
 }
 
 .module-tree-main__children {
-  margin-left: toRem(110);
+  margin-left: toRem(120);
 }
 
 .module-tree-main__item-btn {

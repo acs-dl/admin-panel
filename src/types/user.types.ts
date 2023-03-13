@@ -22,7 +22,7 @@ export type UnverifiedUser = {
 export type UnverifiedModuleUser = {
   id: string
   created_at: string
-  module: string
+  module: string[]
   username: string
   type: string
 }
