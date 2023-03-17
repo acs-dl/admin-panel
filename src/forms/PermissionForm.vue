@@ -24,7 +24,7 @@
           v-model="form.link"
           scheme="secondary"
           class="permission-form__field-input"
-          :class="`permission-form__field-input--${form.module}`"
+          :class="`permission-form__field-input--${moduleId}`"
           :placeholder="$t('permission-form.link-lbl')"
           :error-message="getFieldErrorMessage('link')"
           :disabled="isFormDisabled || isEditForm"
@@ -143,6 +143,8 @@ const isEditForm = computed(() => Boolean(props.module))
 const prefix = computed(
   () => modules.value.find(el => el.id === form.module.toLowerCase())?.prefix,
 )
+
+const moduleId = computed(() => props.module.id || props.moduleName)
 
 // TODO: EDIT WHEN BACKEND WILL BE READY
 const isModulePrefix = computed(() => prefix.value !== '+')
@@ -306,13 +308,13 @@ watch(
 }
 
 .permission-form__field-input {
-  &--GitHub {
+  &--github {
     &:deep(.input-field__input) {
       padding-left: toRem(180);
     }
   }
 
-  &--GitLab {
+  &--gitlab {
     &:deep(.input-field__input) {
       padding-left: toRem(175);
     }

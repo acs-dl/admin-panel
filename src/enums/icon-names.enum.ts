@@ -241,4 +241,5 @@ export enum ICON_NAMES {
   zoomOut = 'zoom-out',
   viewFilledGridAdd = 'view-filled-grid-add',
   loading = 'loading',
+  smallArrow = 'small-arrow',
 }

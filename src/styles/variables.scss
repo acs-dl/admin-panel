@@ -16,6 +16,10 @@
   --background-secondary-main: #{$background-secondary-main};
   --background-secondary-dark: #{$background-secondary-dark};
 
+  --background-tertiary-light: #{$background-tertiary-light};
+  --background-tertiary-main: #{$background-tertiary-main};
+  --background-tertiary-dark: #{$background-tertiary-dark};
+
   /* status colors */
   --success-light: #{$success-light};
   --success-main: #{$success-main};
@@ -105,6 +109,7 @@
   /* --------------------------------------- */
   --field-bg-primary: var(--background-primary-main);
   --field-bg-secondary: var(--background-secondary-light);
+  --field-bg-tertiary: var(--background-tertiary-light);
 
   /* label */
   --field-label: var(--text-primary-main);

@@ -9,6 +9,7 @@ for further information about branching and tagging conventions.
 
 ## [Unreleased]
 #### Added
+- Sorting and filtering for unverified users
 - Clear button to inputs
 - Group for unverified users
 - Search by module

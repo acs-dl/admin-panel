@@ -142,7 +142,8 @@
     "date-text": "Date",
     "error-message": "Error while loading.",
     "no-data-title": "Nothing found",
-    "no-data-message": "Users don't exist in the system."
+    "no-data-message": "Users don't exist in the system.",
+    "select-field-btn-text": "Filter by {filter}"
   },
   "unverified-users-item": {
     "delete-main-title": "Remove unverify user",
