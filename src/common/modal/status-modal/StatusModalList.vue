@@ -100,6 +100,7 @@ const loadRequests = async () => {
           ...(props.status === REQUEST_STATUSES.all
             ? {}
             : { status: props.status }),
+          action: 'verify_user',
         },
       },
     )

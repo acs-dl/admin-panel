@@ -146,6 +146,7 @@ const deleteUnverifiedUsers = async () => {
 }
 
 .unverified-users-item__text {
+  position: relative;
   font-weight: 400;
   font-size: toRem(16);
   line-height: 1.2;

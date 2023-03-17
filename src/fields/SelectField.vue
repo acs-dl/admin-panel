@@ -367,10 +367,10 @@ $z-local-index: 2;
   width: 100%;
   max-height: 500%;
   z-index: $z-local-index;
-  background: var(--field-bg-primary);
+  background: var(--background-secondary-main);
   box-shadow: 0 toRem(1) toRem(2) rgba(var(--black-rgb), 0.3),
     0 toRem(2) toRem(6) toRem(2) rgba(var(--black-rgb), 0.15);
-  border-radius: toRem(4);
+  border-radius: toRem(8);
 
   .select-field--secondary & {
     background: var(--field-bg-secondary);
@@ -401,17 +401,20 @@ $z-local-index: 2;
 }
 
 .select-field__select-dropdown-item {
+  font-size: toRem(16);
+  font-weight: 400;
   text-align: left;
   width: 100%;
   padding: toRem(8) var(--field-padding-right) toRem(8)
     var(--field-padding-left);
+  transition: background 0.2s ease-in-out;
 
   &:hover {
-    background: rgba(var(--primary-dark-rgb), 0.15);
+    background: var(--background-primary-dark);
   }
 
   &--active {
-    background: rgba(var(--primary-main-rgb), 0.25);
+    background: var(--background-tertiary-main);
   }
 }
 
