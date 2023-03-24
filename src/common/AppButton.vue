@@ -271,9 +271,9 @@ const buttonClasses = computed(() =>
   }
 
   &--gray {
-    --app-button-text: var(--primary-main);
-    --app-button-text-hover: var(--primary-dark);
-    --app-button-text-active: var(--primary-dark);
+    --app-button-text: var(--text-primary-light);
+    --app-button-text-hover: var(--text-secondary-light);
+    --app-button-text-active: var(--text-secondary-light);
   }
 
   &--border-circle {

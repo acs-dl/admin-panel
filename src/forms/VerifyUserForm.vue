@@ -71,9 +71,11 @@ import { useAuthStore } from '@/store'
 const props = withDefaults(
   defineProps<{
     user?: UnverifiedModuleUser
+    currentModule?: string
   }>(),
   {
     user: undefined,
+    currentModule: '',
   },
 )
 
@@ -87,7 +89,7 @@ const { currentUserId } = useAuthStore()
 const selectedUser = ref<VerifiedUser | null>(null)
 const form = reactive({
   name: '',
-  module: props.user.module ?? '',
+  module: props.currentModule ?? '',
   nickname: props.user?.username ?? '',
 })
 
@@ -114,7 +116,7 @@ const submit = async () => {
     await api.post('/integrations/orchestrator/requests', {
       data: {
         attributes: {
-          module: form.module[0].toLowerCase(),
+          module: form.module,
           from_user: String(currentUserId),
           to_user: selectedUser.value.id,
           payload: {

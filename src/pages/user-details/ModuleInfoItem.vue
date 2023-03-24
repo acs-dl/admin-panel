@@ -16,26 +16,30 @@
     <app-button class="module-info-item__btn" @click="toggleDeleteModal">
       <icon class="module-info-item__btn-icon" :name="$icons.trash" />
     </app-button>
-    <delete-modal
-      :is-shown="isShownDeleteModal"
-      :main-title="
-        $t('module-info-item.delete-main-title', { module: module.module })
-      "
-      :secondary-title="
-        $t('module-info-item.delete-secondary-title', { module: module.module })
-      "
-      :is-disabled="isProcessing"
-      :icon="$icons.trash"
-      @cancel="toggleDeleteModal"
-      @delete="deleteUserFromModule"
-    />
+    <transition-modal>
+      <delete-modal
+        v-if="isShownDeleteModal"
+        :main-title="
+          $t('module-info-item.delete-main-title', { module: module.module })
+        "
+        :secondary-title="
+          $t('module-info-item.delete-secondary-title', {
+            module: module.module,
+          })
+        "
+        :is-disabled="isProcessing"
+        :icon="$icons.trash"
+        @cancel="toggleDeleteModal"
+        @delete="deleteUserFromModule"
+      />
+    </transition-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { api } from '@/api'
-import { AppButton, DeleteModal, Icon } from '@/common'
+import { AppButton, DeleteModal, Icon, TransitionModal } from '@/common'
 import { ErrorHandler, Bus } from '@/helpers'
 import { ModuleInfo } from '@/types'
 import { useAuthStore, usePlatformStore } from '@/store'

@@ -12,24 +12,40 @@
       :icon-left="$icons.viewFilledGridAdd"
       @click="openStatusModal"
     />
-    <status-modal v-model:is-shown="isStatusModalOpened" />
+    <transition-modal>
+      <status-modal
+        v-if="isStatusModalOpened"
+        @close="closeStatusModal"
+      />
+    </transition-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { AppSidebar, AppButton, StatusModal } from '@/common'
-import { usePlatformStore } from '@/store'
+import { AppSidebar, AppButton, StatusModal, TransitionModal } from '@/common'
+import { useAuthStore, usePlatformStore } from '@/store'
+import { ErrorHandler } from '@/helpers'
 
+const { logout } = useAuthStore()
 const { getAllPositions, getAllModules, getAllRoles } = usePlatformStore()
 const isStatusModalOpened = ref(false)
 
 const init = async () => {
-  await Promise.allSettled([getAllPositions(), getAllModules(), getAllRoles()])
+  try {
+    await Promise.all([getAllPositions(), getAllModules(), getAllRoles()])
+  } catch (e) {
+    logout()
+    ErrorHandler.process(e)
+  }
 }
 
 const openStatusModal = () => {
   isStatusModalOpened.value = true
+}
+
+const closeStatusModal = () => {
+  isStatusModalOpened.value = false
 }
 
 init()
@@ -58,14 +74,14 @@ init()
 
 .admin-panel__inner {
   width: 100%;
-  padding: toRem(35) toRem(40) toRem(20);
+  padding: toRem(35) toRem(40) toRem(38);
   overflow-y: scroll;
   background: var(--background-primary-dark);
 }
 
 .admin-panel__status-button {
   position: absolute;
-  bottom: toRem(20);
+  bottom: toRem(38);
   right: toRem(40);
   gap: toRem(8);
   height: toRem(45);

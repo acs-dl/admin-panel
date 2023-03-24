@@ -9,6 +9,7 @@ for further information about branching and tagging conventions.
 
 ## [Unreleased]
 #### Added
+- Multiple verify modules for user
 - Sorting and filtering for unverified users
 - Clear button to inputs
 - Group for unverified users
@@ -19,9 +20,12 @@ for further information about branching and tagging conventions.
 - Git tree for git modules
 
 #### Changed
+- Trash icons
 - User details page
 
 #### Fixed
+- Add module popup
+- User details page
 - Name on details page
 - Request modal fields
 - Validation for user creating

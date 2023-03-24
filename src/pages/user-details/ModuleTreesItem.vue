@@ -67,36 +67,47 @@
         </ul>
       </template>
     </li>
-    <permission-modal
-      :is-shown="isShownPermissionModal"
-      :id="id"
-      :module="item"
-      :module-name="moduleName"
-      @submit="reloadPermissionModal"
-      @cancel="togglePermissionModal"
-    />
-    <delete-modal
-      :is-shown="isShownDeleteModal"
-      :icon="$icons.trash"
-      :main-title="
-        $t('module-tree-item.delete-main-title', { module: moduleName })
-      "
-      :secondary-title="
-        $t('module-tree-item.delete-secondary-title', {
-          module: moduleName,
-          link: item.link,
-        })
-      "
-      @cancel="toggleDeleteModal"
-      @delete="deleteUserFromModule"
-    />
+    <transition-modal>
+      <permission-modal
+        v-if="isShownPermissionModal"
+        :id="id"
+        :module="item"
+        :module-name="moduleName"
+        @submit="reloadPermissionModal"
+        @cancel="togglePermissionModal"
+      />
+    </transition-modal>
+
+    <transition-modal>
+      <delete-modal
+        v-if="isShownDeleteModal"
+        :icon="$icons.trash"
+        :main-title="
+          $t('module-tree-item.delete-main-title', { module: moduleName })
+        "
+        :secondary-title="
+          $t('module-tree-item.delete-secondary-title', {
+            module: moduleName,
+            link: item.link,
+          })
+        "
+        @cancel="toggleDeleteModal"
+        @delete="deleteUserFromModule"
+      />
+    </transition-modal>
   </ul>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { api } from '@/api'
-import { AppButton, Icon, PermissionModal, DeleteModal } from '@/common'
+import {
+  AppButton,
+  Icon,
+  PermissionModal,
+  DeleteModal,
+  TransitionModal,
+} from '@/common'
 import { ErrorHandler, formatYMD } from '@/helpers'
 import { UserPermissionInfo, UserMeta } from '@/types'
 import { Bus } from '@/helpers'

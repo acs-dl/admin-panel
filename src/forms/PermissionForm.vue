@@ -16,6 +16,24 @@
           @blur="touchField('module')"
         />
       </div>
+      <div
+        v-if="accessList.length && isAccessLevelRequired"
+        class="permission-form__field"
+      >
+        <h5 class="permission-form__field-title">
+          {{ $t('permission-form.access-level-lbl') }}
+        </h5>
+        <select-field
+          v-model="form.accessLevel"
+          scheme="secondary"
+          class="permission-form__field-select"
+          :value-options="accessNameList"
+          :placeholder="$t('permission-form.access-level-placeholder')"
+          :error-message="getFieldErrorMessage('accessLevel')"
+          :disabled="isFormDisabled"
+          @blur="touchField('accessLevel')"
+        />
+      </div>
       <div class="permission-form__field">
         <h5 class="permission-form__field-title">
           {{ $t('permission-form.link-lbl') }}
@@ -40,25 +58,6 @@
         </input-field>
       </div>
 
-      <div
-        v-if="accessList.length && isAccessLevelRequired"
-        class="permission-form__field"
-      >
-        <h5 class="permission-form__field-title">
-          {{ $t('permission-form.access-level-lbl') }}
-        </h5>
-        <select-field
-          v-model="form.accessLevel"
-          scheme="secondary"
-          class="permission-form__field-select"
-          :value-options="accessNameList"
-          :placeholder="$t('permission-form.access-level-placeholder')"
-          :error-message="getFieldErrorMessage('accessLevel')"
-          :disabled="isFormDisabled"
-          @blur="touchField('accessLevel')"
-        />
-      </div>
-
       <div class="permission-form__field">
         <h5 class="permission-form__field-title">
           {{ usernameTitle }}
@@ -69,10 +68,38 @@
           class="permission-form__field-input"
           :placeholder="usernameTitle"
           :error-message="getFieldErrorMessage('username')"
-          :disabled="isFormDisabled || isEditForm"
+          :disabled="isFormDisabled || isEditForm || isUsernameInputDisabled"
           @blur="touchField('username')"
         />
       </div>
+      <template v-if="!isModulePrefix">
+        <div class="permission-form__field">
+          <h5 class="permission-form__field-title">
+            {{ $t('permission-form.phone-lbl') }}
+          </h5>
+          <input-field
+            v-model="form.phoneNumber"
+            scheme="secondary"
+            v-mask="'## ### ## ##'"
+            :class="[
+              'permission-form__field-input',
+              'permission-form__field-input--phone',
+            ]"
+            :placeholder="$t('permission-form.phone-lbl')"
+            :error-message="getFieldErrorMessage('phoneNumber')"
+            :disabled="isFormDisabled || isEditForm || isPhoneInputDisabled"
+            @blur="touchField('phoneNumber')"
+          >
+            <template v-if="prefix && !isModulePrefix" #nodeLeft>
+              <div class="permission-form__origin">
+                <span class="permission-form__origin-text">
+                  {{ prefix }}
+                </span>
+              </div>
+            </template>
+          </input-field>
+        </div>
+      </template>
     </div>
 
     <div class="permission-form__actions">
@@ -92,14 +119,14 @@
         scheme="filled"
         type="submit"
         :text="$t('permission-form.submit-btn')"
-        :disabled="isFormDisabled"
+        :disabled="isFormDisabled || isSubmitButtonDisabled"
       />
     </div>
   </form>
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, watch, ref } from 'vue'
+import { reactive, computed, ref, watch } from 'vue'
 import { AppButton } from '@/common'
 import { api } from '@/api'
 import { InputField, SelectField } from '@/fields'
@@ -111,7 +138,6 @@ import {
   UserPermissionInfo,
   ModulePermissions,
 } from '@/types'
-import { debounce } from 'lodash-es'
 import { useAuthStore, usePlatformStore } from '@/store'
 import { storeToRefs } from 'pinia'
 
@@ -140,14 +166,6 @@ const accessList = ref<ModulePermissions[]>([])
 const modulesNames = computed(() => modules.value.map(item => item.name))
 const accessNameList = computed(() => accessList.value.map(item => item.name))
 const isEditForm = computed(() => Boolean(props.module))
-const prefix = computed(
-  () => modules.value.find(el => el.id === form.module.toLowerCase())?.prefix,
-)
-
-const moduleId = computed(() => props.module.id || props.moduleName)
-
-// TODO: EDIT WHEN BACKEND WILL BE READY
-const isModulePrefix = computed(() => prefix.value !== '+')
 
 const usernameTitle = computed(() =>
   isModulePrefix.value
@@ -155,11 +173,39 @@ const usernameTitle = computed(() =>
     : $t('permission-form.username-or-phone-lbl'),
 )
 
+const prefix = computed(
+  () => modules.value.find(el => el.id === form.module.toLowerCase())?.prefix,
+)
+
+const isUsernameInputDisabled = computed(() => Boolean(form.phoneNumber))
+
+const isPhoneInputDisabled = computed(() => Boolean(form.username))
+
+const moduleId = computed(
+  () =>
+    props.module?.id || modules.value.find(el => el.name === form.module)?.id,
+)
+
+const isSubmitButtonDisabled = computed(
+  () =>
+    isFormDisabled.value ||
+    !form.accessLevel ||
+    !(isUsernameInputDisabled.value || isPhoneInputDisabled.value),
+)
+
+// TODO: EDIT WHEN BACKEND WILL BE READY
+const isModulePrefix = computed(() => prefix.value !== '+380')
+
+const isAccessLevelCanBeChosen = computed(
+  () => form.link && (form.username || form.phoneNumber),
+)
+
 const form = reactive({
   module: props.moduleName ?? '',
   username: props.module?.username ?? '',
   link: props.module?.link ?? '',
   accessLevel: '',
+  phoneNumber: props.module?.phone ?? '',
 })
 
 const { isFormDisabled, disableForm, enableForm } = useForm()
@@ -169,8 +215,10 @@ const { isFormValid, getFieldErrorMessage, touchField } = useFormValidation(
   {
     module: { required },
     link: { required },
-    username: { required },
+    username: isPhoneInputDisabled.value ? { required } : {},
     accessLevel: isAccessLevelRequired.value ? { required } : {},
+    phoneNumber:
+      isModulePrefix.value || isPhoneInputDisabled.value ? {} : { required },
   },
 )
 
@@ -191,9 +239,12 @@ const submit = async () => {
           payload: {
             action: isEditForm.value ? 'update_user' : 'add_user',
             user_id: String(props.id),
-            username: form.username,
             link: form.link,
             access_level: accessLevelValue?.value,
+            ...(form.username ? { username: form.username } : {}),
+            ...(form.phoneNumber
+              ? { phone: prefix.value + form.phoneNumber.split(' ').join('') }
+              : {}),
           },
         },
         relationships: {
@@ -228,7 +279,10 @@ const getAccessLevelList = async () => {
       {
         filter: {
           link: form.link,
-          username: form.username,
+          ...(form.username ? { username: form.username } : {}),
+          ...(form.phoneNumber
+            ? { phone: prefix.value + form.phoneNumber.split(' ').join('') }
+            : {}),
         },
       },
     )
@@ -246,18 +300,12 @@ const getAccessLevelList = async () => {
   }
 }
 
-const loadAccessLevelList = debounce(getAccessLevelList, 200)
-
 watch(
-  () => [form.module, form.link],
+  [isAccessLevelCanBeChosen],
   async () => {
-    if (props.module) {
-      disableForm()
+    if (isAccessLevelCanBeChosen.value || isEditForm.value) {
       await getAccessLevelList()
-      enableForm()
-      return
     }
-    loadAccessLevelList()
   },
   { immediate: true },
 )
@@ -308,15 +356,21 @@ watch(
 }
 
 .permission-form__field-input {
+  &--phone {
+    &:deep(.input-field__input) {
+      padding-left: toRem(70);
+    }
+  }
+
   &--github {
     &:deep(.input-field__input) {
-      padding-left: toRem(180);
+      padding-left: toRem(190);
     }
   }
 
   &--gitlab {
     &:deep(.input-field__input) {
-      padding-left: toRem(175);
+      padding-left: toRem(185);
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <transition-modal :is-shown="isShown" @click-outside="closeModal">
+  <modal is-close-by-click-outside is-center @click-outside="emit('close')">
     <div class="status-modal__inner">
       <div class="status-modal__header">
         <h4 class="status-modal__title">
@@ -8,7 +8,7 @@
         <app-button
           class="status-modal__close-button"
           :icon-left="$icons.x"
-          @click="closeModal"
+          @click="emit('close')"
         />
       </div>
       <status-modal-tabs
@@ -17,32 +17,24 @@
       />
       <status-modal-list :status="currentStatus" />
     </div>
-  </transition-modal>
+  </modal>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 import {
-  TransitionModal,
   AppButton,
   StatusModalTabs,
   StatusModalList,
+  Modal,
 } from '@/common'
 import { REQUEST_STATUSES } from '@/enums'
 
-defineProps<{
-  isShown: boolean
-}>()
-
 const emit = defineEmits<{
-  (e: 'update:isShown', value: boolean): void
+  (e: 'close'): void
 }>()
 
 const currentStatus = ref(REQUEST_STATUSES.all)
-
-const closeModal = () => {
-  emit('update:isShown', false)
-}
 </script>
 
 <style lang="scss" scoped>

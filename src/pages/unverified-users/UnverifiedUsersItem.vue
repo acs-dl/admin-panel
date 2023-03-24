@@ -31,34 +31,45 @@
       />
       <app-button
         class="unverified-users-item__btn"
-        color="error"
+        color="gray"
         :icon-left="$icons.trash"
         @click="toggleDeleteModal"
       />
     </div>
 
-    <verify-user-modal
-      :is-shown="isShownVerifyUserModal"
-      :user="user"
-      @cancel="toggleCreateNewMemberModal"
-      @submit="updateList"
-    />
+    <transition-modal>
+      <verify-user-modal
+        v-if="isShownVerifyUserModal"
+        :user="user"
+        :is-multiple-modules="user.module.length > 1"
+        @cancel="toggleCreateNewMemberModal"
+        @submit="updateList"
+        @delete-module="toggleDeleteModal($event)"
+      />
+    </transition-modal>
 
-    <delete-modal
-      :is-shown="isShownDeleteModal"
-      :icon="$icons.trash"
-      :main-title="$t('unverified-users-item.delete-main-title')"
-      :secondary-title="$t('unverified-users-item.delete-secondary-title')"
-      @cancel="toggleDeleteModal"
-      @delete="deleteUnverifiedUsers"
-    />
+    <transition-modal>
+      <delete-modal
+        v-if="isShownDeleteModal"
+        :icon="$icons.trash"
+        :main-title="$t('unverified-users-item.delete-main-title')"
+        :secondary-title="$t('unverified-users-item.delete-secondary-title')"
+        @cancel="toggleDeleteModal"
+        @delete="deleteUnverifiedUsers"
+      />
+    </transition-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { api } from '@/api'
-import { AppButton, VerifyUserModal, DeleteModal } from '@/common'
+import {
+  AppButton,
+  VerifyUserModal,
+  DeleteModal,
+  TransitionModal,
+} from '@/common'
 import { UnverifiedModuleUser } from '@/types'
 import { Bus, ErrorHandler, formatDMYHM } from '@/helpers'
 import { useAuthStore, usePlatformStore } from '@/store'
@@ -79,6 +90,7 @@ const { modules } = storeToRefs(usePlatformStore())
 const { currentUserId } = useAuthStore()
 const isShownDeleteModal = ref(false)
 const isShownVerifyUserModal = ref(false)
+const currentModule = ref(props.user.module[0])
 const userName = computed(
   () => props.user.name ?? $t('unverified-users-item.unverified-name'),
 )
@@ -87,8 +99,11 @@ const toggleCreateNewMemberModal = async () => {
   isShownVerifyUserModal.value = !isShownVerifyUserModal.value
 }
 
-const toggleDeleteModal = () => {
+const toggleDeleteModal = (module?: string) => {
   isShownDeleteModal.value = !isShownDeleteModal.value
+  if (module?.length) {
+    currentModule.value = module
+  }
 }
 
 const updateList = () => {
@@ -105,7 +120,7 @@ const deleteUnverifiedUsers = async () => {
     await api.post('/integrations/orchestrator/requests', {
       data: {
         attributes: {
-          module: props.user.module,
+          module: currentModule.value,
           from_user: String(currentUserId),
           to_user: String(props.user.id),
           payload: {
@@ -143,6 +158,7 @@ const deleteUnverifiedUsers = async () => {
   height: 100%;
   background: var(--background-primary-light);
   margin-bottom: toRem(8);
+  border-radius: toRem(8);
 }
 
 .unverified-users-item__text {
@@ -165,6 +181,11 @@ const deleteUnverifiedUsers = async () => {
 .unverified-users-item__btn {
   font-size: toRem(16);
   font-weight: 400;
+
+  &:deep(.app-button__icon-left) {
+    width: toRem(24);
+    height: toRem(24);
+  }
 }
 
 .unverified-users-item__img {

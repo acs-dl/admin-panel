@@ -27,17 +27,19 @@
     </div>
     <verified-users-list :search-text="searchValue" ref="usersList" />
 
-    <create-user-modal
-      :is-shown="isShownCreateUserModal"
-      @submit="reloadCreateUserModal"
-      @cancel="toggleCreateUserModal"
-    />
+    <transition-modal>
+      <create-user-modal
+        v-if="isShownCreateUserModal"
+        @submit="reloadCreateUserModal"
+        @cancel="toggleCreateUserModal"
+      />
+    </transition-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { AppButton, CreateUserModal } from '@/common'
+import { AppButton, CreateUserModal, TransitionModal } from '@/common'
 import { InputField } from '@/fields'
 import VerifiedUsersList from '@/pages/verified-users/VerifiedUsersList.vue'
 import { ICON_NAMES } from '@/enums'
@@ -79,7 +81,7 @@ const reloadCreateUserModal = async () => {
 
 .verified-users__actions {
   display: flex;
-  gap: toRem(10);
+  gap: toRem(23);
 }
 
 .verified-users__search-input {

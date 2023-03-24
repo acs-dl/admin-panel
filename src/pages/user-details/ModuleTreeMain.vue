@@ -52,7 +52,7 @@
         @click="toggleDeleteModal"
       />
     </li>
-    <ul v-show="isOpenModuleTree" class="module-tree-main__children">
+    <li v-show="isOpenModuleTree" class="module-tree-main__children">
       <module-trees-item
         v-for="(child, index) in module.children"
         class="module-tree-main__children-item"
@@ -64,25 +64,27 @@
         :is-was-found="module.isWasFound"
         :search-value="searchValue"
       />
-    </ul>
-    <delete-modal
-      :is-shown="isShownDeleteModal"
-      :icon="$icons.trash"
-      :main-title="
-        $t('module-tree-main.delete-main-title', { module: module.type })
-      "
-      :secondary-title="
-        $t('module-tree-main.delete-secondary-title', { module: module.type })
-      "
-      @cancel="toggleDeleteModal"
-      @delete="deleteUserFromModule"
-    />
+    </li>
+    <transition-modal>
+      <delete-modal
+        v-if="isShownDeleteModal"
+        :icon="$icons.trash"
+        :main-title="
+          $t('module-tree-main.delete-main-title', { module: module.type })
+        "
+        :secondary-title="
+          $t('module-tree-main.delete-secondary-title', { module: module.type })
+        "
+        @cancel="toggleDeleteModal"
+        @delete="deleteUserFromModule"
+      />
+    </transition-modal>
   </ul>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { AppButton, Icon, DeleteModal } from '@/common'
+import { AppButton, Icon, DeleteModal, TransitionModal } from '@/common'
 import { ModuleTree, UserModuleSearch } from '@/types'
 import { api } from '@/api'
 import { ErrorHandler, Bus } from '@/helpers'

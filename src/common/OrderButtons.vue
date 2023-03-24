@@ -52,6 +52,7 @@ const emit = defineEmits<{
 const isCurrentOrder = computed(
   () => props.sortingTypeForPick === props.currentSortingType,
 )
+
 const isAscOrder = computed(
   () => props.order === REQUEST_ORDER.asc && isCurrentOrder.value,
 )

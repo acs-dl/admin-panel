@@ -16,26 +16,28 @@
     <div class="verified-users-item__buttons">
       <app-button
         class="verified-users-item__btn"
-        color="error"
+        color="gray"
         :icon-left="$icons.trash"
         @click="toggleDeleteModal"
       />
     </div>
 
-    <delete-modal
-      :is-shown="isShownDeleteModal"
-      :icon="$icons.trash"
-      :main-title="$t('verified-users-item.delete-main-title')"
-      :secondary-title="$t('verified-users-item.delete-secondary-title')"
-      @cancel="toggleDeleteModal"
-      @delete="deleteUser"
-    />
+    <transition-modal>
+      <delete-modal
+        v-if="isShownDeleteModal"
+        :icon="$icons.trash"
+        :main-title="$t('verified-users-item.delete-main-title')"
+        :secondary-title="$t('verified-users-item.delete-secondary-title')"
+        @cancel="toggleDeleteModal"
+        @delete="deleteUser"
+      />
+    </transition-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { AppButton, DeleteModal } from '@/common'
+import { AppButton, DeleteModal, TransitionModal } from '@/common'
 import { VerifiedUser } from '@/types'
 
 const props = defineProps<{
@@ -69,6 +71,7 @@ const deleteUser = () => {
   height: 100%;
   background: var(--background-primary-light);
   margin-bottom: toRem(8);
+  border-radius: toRem(8);
 }
 
 .verified-users-item__text {
@@ -96,5 +99,10 @@ const deleteUser = () => {
 
 .verified-users-item__btn {
   font-size: toRem(16);
+
+  &:deep(.app-button__icon-left) {
+    width: toRem(24);
+    height: toRem(24);
+  }
 }
 </style>

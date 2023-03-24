@@ -1,5 +1,5 @@
 <template>
-  <transition-modal :is-shown="isShown" @click-outside="cancelForm">
+  <modal is-close-by-click-outside is-center @click-outside="cancelForm">
     <div class="create-user-modal__inner">
       <div class="create-user-modal__icon-wrapper">
         <icon
@@ -17,15 +17,14 @@
       </div>
       <create-user-form @cancel="cancelForm" @submit="submitForm" />
     </div>
-  </transition-modal>
+  </modal>
 </template>
 
 <script lang="ts" setup>
-import { TransitionModal, Icon } from '@/common'
+import { Modal, Icon } from '@/common'
 import { CreateUserForm } from '@/forms'
 
 defineProps<{
-  isShown?: boolean
   secondaryTitle?: string
 }>()
 

@@ -6,7 +6,7 @@
       :alt="$t('status-modal-list-item.icon-description')"
     />
     <span class="status-modal-list-item__username">
-      {{ request.payload.username }}
+      {{ request.payload.username || request.payload.phone }}
     </span>
     <span class="status-modal-list-item__info">
       {{ module }}
