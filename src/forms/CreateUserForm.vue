@@ -101,9 +101,11 @@ import { MAX_LENGTH, ROUTE_NAMES } from '@/enums'
 const props = withDefaults(
   defineProps<{
     user?: UnverifiedModuleUser
+    currentModule?: string
   }>(),
   {
     user: undefined,
+    currentModule: '',
   },
 )
 
@@ -143,7 +145,7 @@ const verifyUser = async (newUser: VerifiedUser) => {
   await api.post('/integrations/orchestrator/requests', {
     data: {
       attributes: {
-        module: props.user?.module[0],
+        module: props.currentModule ?? '',
         from_user: String(currentUserId),
         to_user: newUser.id,
         payload: {

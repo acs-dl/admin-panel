@@ -219,7 +219,8 @@ defineExpose({
 }
 
 .unverified-users-list__header {
-  padding: toRem(20) toRem(24);
+  margin-top: toRem(16);
+  padding: toRem(16) toRem(24);
   display: grid;
   align-items: center;
   grid-template-columns: repeat(4, minmax(toRem(50), 4fr)) toRem(155);

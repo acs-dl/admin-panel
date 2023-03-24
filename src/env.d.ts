@@ -2,6 +2,7 @@
 import { config } from '@config'
 import { ICON_NAMES, ROUTE_NAMES } from '@/enums'
 import { WritableComputedRef } from 'vue'
+import { GlobalFilter } from '@/types'
 
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
@@ -9,6 +10,7 @@ declare module '@vue/runtime-core' {
     $icons: typeof ICON_NAMES
     $config: typeof config
     $locale: WritableComputedRef
+    $filter: GlobalFilter
   }
 }
 

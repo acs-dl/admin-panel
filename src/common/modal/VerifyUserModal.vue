@@ -1,115 +1,61 @@
 <template>
-  <transition-modal :is-shown="isShown" @click-outside="cancelForm">
-    <div class="verify-user-modal__inner">
-      <div class="verify-user-modal__icon-wrapper">
-        <icon
-          :name="$icons.doubleCircleCheck"
-          class="verify-user-modal__icon"
-        />
-      </div>
-      <div class="verify-user-modal__title-wrapper">
-        <h2 class="verify-user-modal__title">
-          {{ $t('verify-user-modal.main-title') }}
-        </h2>
-        <h3 class="verify-user-modal__title-secondary">
-          {{ $t('verify-user-modal.secondary-title') }}
-        </h3>
-      </div>
-      <tabs v-model="currentTab" class="verify-user-modal__tabs" :tabs="TABS" />
-      <verify-user-form
-        v-if="currentTab === TABS[0].id"
-        :user="user"
-        @cancel="cancelForm"
-        @submit="submitForm"
-      />
-      <create-user-form
-        v-else
-        :user="user"
-        @cancel="cancelForm"
-        @submit="submitForm"
-      />
-    </div>
-  </transition-modal>
+  <modal is-close-by-click-outside is-center @click-outside="emit('cancel')">
+    <verify-module-step
+      v-if="currentStep === STEPS.moduleChoosingStep"
+      :user="user"
+      @cancel="emit('cancel')"
+      @verify="moveToNextStep"
+      @delete="emit('delete-module', $event)"
+    />
+    <verify-user-step
+      v-else
+      :user="user"
+      :chosen-module="chosenModule"
+      @submit="emit('submit')"
+      @cancel="verifyCancel"
+    />
+  </modal>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { TransitionModal, Icon, Tabs } from '@/common'
+import { Modal } from '@/common'
 import { UnverifiedModuleUser } from '@/types'
-import { useContext } from '@/composables'
-import { CreateUserForm, VerifyUserForm } from '@/forms'
+import VerifyUserStep from '@/common/modal/verify-user-modal/VerifyUserStep.vue'
+import VerifyModuleStep from '@/common/modal/verify-user-modal/VerifyModuleStep.vue'
 
-defineProps<{
-  isShown: boolean
+enum STEPS {
+  moduleChoosingStep = 1,
+  verifyUserStep = 2,
+}
+
+const props = defineProps<{
+  isMultipleModules: boolean
   user: UnverifiedModuleUser
 }>()
 
 const emit = defineEmits<{
   (e: 'cancel'): void
   (e: 'submit'): void
+  (e: 'delete-module', value: string): void
 }>()
 
-const { $t } = useContext()
-const TABS = [
-  {
-    title: $t('verify-user-modal.add-account-title'),
-    message: $t('verify-user-modal.add-account-msg'),
-    id: 'add-account-tab',
-  },
-  {
-    title: $t('verify-user-modal.create-account-title'),
-    message: $t('verify-user-modal.create-account-msg'),
-    id: 'create-account-tab',
-  },
-]
-const currentTab = ref(TABS[0].id)
+const chosenModule = ref(props.user.module[0])
 
-const cancelForm = () => {
+const currentStep = ref(
+  props.isMultipleModules ? STEPS.moduleChoosingStep : STEPS.verifyUserStep,
+)
+
+const moveToNextStep = (module: string) => {
+  currentStep.value = STEPS.verifyUserStep
+  chosenModule.value = module
+}
+
+const verifyCancel = () => {
+  if (props.isMultipleModules) {
+    currentStep.value = STEPS.moduleChoosingStep
+    return
+  }
   emit('cancel')
 }
-
-const submitForm = () => {
-  emit('submit')
-}
 </script>
-
-<style lang="scss" scoped>
-.verify-user-modal__inner {
-  width: toRem(600);
-}
-
-.verify-user-modal__icon-wrapper {
-  width: toRem(48);
-  height: toRem(48);
-  border-radius: toRem(10);
-  background: transparent;
-  margin-bottom: toRem(12);
-}
-
-.verify-user-modal__icon {
-  font-size: toRem(12);
-  color: var(--primary-main);
-}
-
-.verify-user-modal__title-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: toRem(4);
-  margin-bottom: toRem(12);
-}
-
-.verify-user-modal__title {
-  font-weight: 600;
-  font-size: toRem(14);
-}
-
-.verify-user-modal__title-secondary {
-  font-size: toRem(14);
-  color: var(--text-secondary-light);
-}
-
-.verify-user-modal__tabs {
-  grid-template-columns: repeat(2, minmax(toRem(100), 1fr));
-  margin-bottom: toRem(24);
-}
-</style>

@@ -47,12 +47,14 @@
       </template>
     </div>
 
-    <permission-modal
-      :is-shown="isShownPermissionModal"
-      :id="id"
-      @submit="reloadPermissionModal"
-      @cancel="togglePermissionModal"
-    />
+    <transition-modal>
+      <permission-modal
+        v-if="isShownPermissionModal"
+        :id="id"
+        @submit="reloadPermissionModal"
+        @cancel="togglePermissionModal"
+      />
+    </transition-modal>
   </div>
 </template>
 
@@ -64,6 +66,7 @@ import {
   NoDataMessage,
   PermissionModal,
   AppButton,
+  TransitionModal,
 } from '@/common'
 import { api } from '@/api'
 import { ErrorHandler } from '@/helpers'
@@ -201,6 +204,7 @@ getUser()
 
 <style scoped lang="scss">
 .user-details__title {
+  line-height: 1.2;
   font-size: toRem(24);
   font-weight: 700;
 

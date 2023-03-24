@@ -77,6 +77,7 @@ export type UserPermissionInfo = {
   user_id: number
   username: string
   level: number
+  phone?: string
   children: UserPermissionInfo[]
 }
 
@@ -107,6 +108,7 @@ export type UserRequest = {
     action: string
     user_id: string
     username: string
+    phone: string
     link?: string
     access_level?: number
   }

@@ -129,14 +129,14 @@ init()
   text-transform: uppercase;
   font-weight: 600;
   font-size: toRem(14);
-  margin-bottom: toRem(12);
+  margin-bottom: toRem(14);
   color: var(--text-primary-light);
 }
 
 .sidebar__links-list {
   display: flex;
   flex-direction: column;
-  row-gap: toRem(15);
+  row-gap: toRem(8);
   flex: 1;
 }
 

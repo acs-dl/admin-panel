@@ -242,4 +242,5 @@ export enum ICON_NAMES {
   viewFilledGridAdd = 'view-filled-grid-add',
   loading = 'loading',
   smallArrow = 'small-arrow',
+  verified = 'verified',
 }

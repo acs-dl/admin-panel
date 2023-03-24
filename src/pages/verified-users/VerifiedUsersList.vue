@@ -189,7 +189,8 @@ defineExpose({
 }
 
 .verified-users-list__header {
-  padding: toRem(20) toRem(24);
+  margin-top: toRem(16);
+  padding: toRem(16) toRem(24);
   display: grid;
   align-items: center;
   grid-template-columns: repeat(3, minmax(toRem(100), 1fr)) toRem(250);

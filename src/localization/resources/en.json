@@ -20,6 +20,7 @@
     "link-lbl": "Submodule",
     "link-placeholder": "Input submodule",
     "username-lbl": "Username",
+    "phone-lbl": "Phone",
     "username-or-phone-lbl": "Username or Phone",
     "username-placeholder": "Input username",
     "success-msg": "Successful sent request for user permission",
@@ -31,14 +32,6 @@
     "cancel-btn": "Cancel",
     "submit-btn": "Delete",
     "secondary-title": "To delete, you must click button"
-  },
-  "verify-user-modal": {
-    "main-title": "New member verification",
-    "add-account-title": "Add to existing account",
-    "add-account-msg": "Link an account to an existing one",
-    "create-account-title": "Create new account",
-    "create-account-msg": "Add new member",
-    "secondary-title": "Create a new account for this user"
   },
   "create-user-form": {
     "name-lbl": "Name",
@@ -191,7 +184,7 @@
   },
   "status-modal-list": {
     "module-title": "Module",
-    "user-title": "User",
+    "user-title": "Username or Phone",
     "submodule-title": "Submodule",
     "level-title": "Access level",
     "date-title": "Date",
@@ -204,5 +197,26 @@
   },
   "collection-loader": {
     "button-text": "View more"
+  },
+  "verify-user-step": {
+    "main-title": "New member verification",
+    "add-account-title": "Add to existing account",
+    "add-account-msg": "Link an account to an existing one",
+    "create-account-title": "Create new account",
+    "create-account-msg": "Add new member",
+    "secondary-title": "Create a new account for this user"
+  },
+  "verify-module-step": {
+    "title": "Verify modules for {username}",
+    "subtitle": "Select the module in which you want to verify the user",
+    "list-header-module-text": "Module",
+    "list-header-submodule-text": "Submodule",
+    "cancel-button": "Cancel"
+  },
+  "verify-module-item": {
+    "delete-main-title": "Remove unverified user",
+    "delete-secondary-title": "Click to remove a user from the module",
+    "verify-btn": "Verify",
+    "success-delete": "Request for remove user from module sent successfully"
   }
 }

@@ -4,3 +4,8 @@ declare module '*.vue' {
   const component: DefineComponent<{}, {}, any>
   export default component
 }
+
+declare module 'vue-the-mask' {
+  import VueTheMask from 'vue-the-mask'
+  export default VueTheMask
+}
