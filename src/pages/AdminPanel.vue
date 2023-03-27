@@ -13,10 +13,7 @@
       @click="openStatusModal"
     />
     <transition-modal>
-      <status-modal
-        v-if="isStatusModalOpened"
-        @close="closeStatusModal"
-      />
+      <status-modal v-if="isStatusModalOpened" @close="closeStatusModal" />
     </transition-modal>
   </div>
 </template>

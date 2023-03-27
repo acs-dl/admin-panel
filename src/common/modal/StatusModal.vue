@@ -22,12 +22,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import {
-  AppButton,
-  StatusModalTabs,
-  StatusModalList,
-  Modal,
-} from '@/common'
+import { AppButton, StatusModalTabs, StatusModalList, Modal } from '@/common'
 import { REQUEST_STATUSES } from '@/enums'
 
 const emit = defineEmits<{
