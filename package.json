@@ -14,8 +14,9 @@
     "test": "yarn test:unit",
     "test:unit": "vitest run",
     "lint": "yarn lint:styles && yarn lint:scripts",
+    "lint-fix": "yarn lint --fix",
     "lint:styles": "stylelint \"src/**/*.{vue,scss,css}\" --max-warnings=0",
-    "lint:scripts": "eslint \"{src,config}/**/*.{vue,js,ts}\" --cache --fix --max-warnings=0",
+    "lint:scripts": "eslint \"{src,config}/**/*.{vue,js,ts}\" --max-warnings=0",
     "preview": "vite preview",
     "rsc": "node scripts/release-sanity-check.mjs"
   },

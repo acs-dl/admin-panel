@@ -7,15 +7,15 @@
         :disabled="!item.deployable || isWasFound"
         @click="toggleTree"
       >
-        <div class="module-tree-item__name-text" :title="branchName">
-          {{ branchName }}
-        </div>
         <icon
           v-if="item.deployable && !isWasFound"
           class="module-tree-item__name-icon"
           :class="{ 'module-tree-item__name-icon--open': isOpenTree }"
           :name="$icons.chevronFullDown"
         />
+        <span class="module-tree-item__name-text" :title="branchName">
+          {{ branchName }}
+        </span>
       </app-button>
 
       <div class="module-tree-item__date-wrapper">
@@ -264,6 +264,7 @@ const deleteUserFromModule = async () => {
   white-space: nowrap;
   align-items: center;
   gap: toRem(4);
+  justify-content: flex-start;
 
   &:disabled,
   &--disabled {

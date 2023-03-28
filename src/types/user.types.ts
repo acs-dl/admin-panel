@@ -23,6 +23,7 @@ export type UnverifiedModuleUser = {
   id: string
   created_at: string
   module: string[]
+  submodule: string[]
   username: string
   type: string
   name: string
@@ -54,7 +55,7 @@ export type UserRoles = Record<string, UserRole>
 
 export type ModulePermissions = {
   name: string
-  value: number
+  value: number | string
 }
 
 export type ModulePermissionsResponse = {

@@ -1,16 +1,18 @@
 <template>
   <div class="order-buttons">
     <app-button
+      v-if="isAscOrder || isClearOrder || !isCurrentOrder"
       class="order-buttons__button"
-      :class="{
-        'order-buttons__button--active': isAscOrder || !isCurrentOrder,
-      }"
+      :class="{ 'order-buttons__button--active': isCurrentOrder && isAscOrder }"
       :icon-left="$icons.smallArrow"
       @click="updateState(REQUEST_ORDER.asc)"
     />
     <app-button
-      class="order-buttons__button"
-      :class="{ 'order-buttons__button--active': isDescOrder }"
+      v-if="isDescOrder || isClearOrder || !isCurrentOrder"
+      class="order-buttons__button order-buttons__button--desc"
+      :class="{
+        'order-buttons__button--desc-active': isDescOrder && isCurrentOrder,
+      }"
       :icon-left="$icons.smallArrow"
       @click="updateState(REQUEST_ORDER.desc)"
     />
@@ -40,8 +42,8 @@ import { computed } from 'vue'
 
 const props = defineProps<{
   order: REQUEST_ORDER
-  currentSortingType?: string
-  sortingTypeForPick?: string
+  currentSortingType: string
+  sortingTypeForPick: string
 }>()
 
 const emit = defineEmits<{
@@ -50,21 +52,21 @@ const emit = defineEmits<{
 }>()
 
 const isCurrentOrder = computed(
-  () => props.sortingTypeForPick === props.currentSortingType,
+  () => props.currentSortingType === props.sortingTypeForPick,
 )
 
-const isAscOrder = computed(
-  () => props.order === REQUEST_ORDER.asc && isCurrentOrder.value,
-)
-const isDescOrder = computed(
-  () => props.order === REQUEST_ORDER.desc && isCurrentOrder.value,
-)
+const isAscOrder = computed(() => props.order === REQUEST_ORDER.asc)
+
+const isClearOrder = computed(() => props.order === REQUEST_ORDER.empty)
+
+const isDescOrder = computed(() => props.order === REQUEST_ORDER.desc)
 
 const updateState = (order: REQUEST_ORDER) => {
-  if (props.sortingTypeForPick) {
-    emit('update:currentSortingType', props.sortingTypeForPick)
-  }
-  emit('update:order', order)
+  emit('update:currentSortingType', props.sortingTypeForPick)
+  emit(
+    'update:order',
+    isClearOrder.value || !isCurrentOrder.value ? order : REQUEST_ORDER.empty,
+  )
 }
 </script>
 
@@ -73,6 +75,8 @@ const updateState = (order: REQUEST_ORDER) => {
   display: flex;
   flex-direction: column;
   gap: toRem(3);
+  align-items: center;
+  justify-content: center;
 }
 
 .order-buttons__button {
@@ -80,12 +84,16 @@ const updateState = (order: REQUEST_ORDER) => {
   max-width: toRem(8);
   max-height: toRem(8);
 
-  &:last-child {
+  &--active {
+    transform: translateY(-25%);
+  }
+
+  &--desc {
     transform: rotate(180deg);
   }
 
-  &--active {
-    color: var(--text-primary-main);
+  &--desc-active {
+    transform: rotate(180deg) translateY(-25%);
   }
 }
 </style>

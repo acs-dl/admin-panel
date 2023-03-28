@@ -189,10 +189,8 @@ const deleteUnverifiedUsers = async () => {
 }
 
 .unverified-users-item__img {
-  max-width: toRem(24);
-  max-height: toRem(24);
-  width: 100%;
-  height: 100%;
+  width: toRem(24);
+  height: toRem(24);
   border-radius: 50%;
 
   &:not(:first-child) {
