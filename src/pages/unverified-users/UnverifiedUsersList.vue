@@ -138,8 +138,8 @@ const isLoaded = ref(false)
 const unverifiedUsers = ref<UnverifiedModuleUser[]>([])
 const unverifiedUsersCount = ref(0)
 const currentPage = ref(MIN_PAGE_AMOUNT)
-const currentOrder = ref(REQUEST_ORDER.asc)
-const currentSortingType = ref(UNVERIFIED_USER_SORTING_PARAMS.name)
+const currentOrder = ref(REQUEST_ORDER.desc)
+const currentSortingType = ref(UNVERIFIED_USER_SORTING_PARAMS.createdAt)
 const currentModuleFilter = ref(ALL_FILTER)
 
 const moduleNames = computed(() =>
@@ -196,7 +196,7 @@ watch(
 )
 
 watch(
-  () => props.searchText,
+  () => [props.searchText, currentModuleFilter],
   async () => {
     currentPage.value = 1
     await getUnverifiedUsersList()
@@ -229,6 +229,7 @@ defineExpose({
 .unverified-users-list__item {
   display: flex;
   gap: toRem(5);
+  height: toRem(19);
 }
 
 .unverified-users-list__item-text {

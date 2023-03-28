@@ -1,7 +1,7 @@
 <template>
   <div class="verify-user-step">
     <div class="verify-user-step__icon-wrapper">
-      <icon :name="$icons.doubleCircleCheck" class="verify-user-step__icon" />
+      <icon class="verify-user-step__icon" :name="$icons.doubleCircleCheck" />
     </div>
     <div class="verify-user-step__title-wrapper">
       <h2 class="verify-user-step__title">

@@ -1,5 +1,10 @@
 <template>
-  <modal is-close-by-click-outside is-center @click-outside="cancelForm">
+  <modal
+    is-shown
+    is-close-by-click-outside
+    is-center
+    @click-outside="cancelForm"
+  >
     <div class="permission-modal__inner">
       <div class="permission-modal__icon-wrapper">
         <icon class="permission-modal__icon" :name="$icons.informationCircle" />
@@ -15,7 +20,7 @@
       <permission-form
         :id="id"
         :module="module"
-        :module-name="moduleName"
+        :module-name="foundModuleName"
         @cancel="cancelForm"
         @submit="submitForm"
       />
@@ -27,8 +32,11 @@
 import { Icon, Modal } from '@/common'
 import { UserPermissionInfo } from '@/types'
 import { PermissionForm } from '@/forms'
+import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import { usePlatformStore } from '@/store'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     module?: UserPermissionInfo
     moduleName?: string
@@ -44,6 +52,12 @@ const emit = defineEmits<{
   (e: 'cancel'): void
   (e: 'submit'): void
 }>()
+
+const { modules } = storeToRefs(usePlatformStore())
+
+const foundModuleName = computed(
+  () => modules.value.find(el => el.id === props.moduleName)?.name ?? '',
+)
 
 const cancelForm = () => {
   emit('cancel')

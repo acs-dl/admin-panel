@@ -24,6 +24,7 @@ for further information about branching and tagging conventions.
 - User details page
 
 #### Fixed
+- `VerifyUserModal` working flow
 - Spacing in status modal
 - Add module popup
 - User details page
