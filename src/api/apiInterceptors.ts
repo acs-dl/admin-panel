@@ -1,8 +1,6 @@
 import { HTTP_STATUS_CODES } from '@distributedlab/json-api-client'
 import { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { useAuthStore } from '@/store'
-import { router } from '@/router'
-import { ROUTE_NAMES } from '@/enums'
 import { DateUtil } from '@/utils'
 
 export function attachBearerInjector(axios: AxiosInstance): void {
@@ -23,6 +21,7 @@ export function attachStaleTokenHandler(axios: AxiosInstance): void {
     response => response,
     async error => {
       const config = error?.config
+      const { restoreSession, logout } = useAuthStore()
       const isUnauthorized =
         error?.response?.status === HTTP_STATUS_CODES.UNAUTHORIZED &&
         !config?._retry &&
@@ -30,18 +29,12 @@ export function attachStaleTokenHandler(axios: AxiosInstance): void {
 
       if (!isUnauthorized) return Promise.reject(error)
 
-      const { restoreSession, accessToken, logout } = useAuthStore()
-
       try {
         config._retry = true
         await restoreSession()
-        axios.defaults.headers.common[
-          'Authorization'
-        ] = `Bearer ${accessToken?.token}`
         return axios(config)
       } catch (_error) {
         logout()
-        router.push({ name: ROUTE_NAMES.login })
         return Promise.reject(_error)
       }
     },

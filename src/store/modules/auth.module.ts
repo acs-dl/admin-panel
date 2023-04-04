@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { api } from '@/api'
-import { Jwt, AuthorizeUserResponse, RefreshAuthUserResponse } from '@/types'
+import { Jwt, AuthorizeUserResponse } from '@/types'
 import { router } from '@/router'
 import { ROUTE_NAMES } from '@/enums'
-import { parseJwt } from '@/helpers'
+import { parseJwt, memorizedJwtRefresh } from '@/helpers'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -33,26 +33,20 @@ export const useAuthStore = defineStore('auth', {
     },
 
     logout(): void {
-      this.accessToken = null
-      this.refreshToken = null
-      this.isLoggedIn = false
-      router.push({ name: ROUTE_NAMES.login })
+      if (this.isLoggedIn) {
+        this.accessToken = null
+        this.refreshToken = null
+        this.isLoggedIn = false
+        router.push({ name: ROUTE_NAMES.login })
+      }
     },
 
     async restoreSession(): Promise<void> {
-      const { data } = await api.post<RefreshAuthUserResponse>(
-        '/integrations/auth/refresh',
-        {
-          data: {
-            type: 'refresh',
-            attributes: {
-              token: this.refreshToken?.token ?? '',
-            },
-          },
-        },
+      const { access, refresh } = await memorizedJwtRefresh(
+        this.refreshToken?.token,
       )
-      this.accessToken = parseJwt(data.access)
-      this.refreshToken = parseJwt(data.refresh)
+      this.accessToken = parseJwt(access)
+      this.refreshToken = parseJwt(refresh)
     },
   },
   getters: {
