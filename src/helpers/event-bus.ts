@@ -7,6 +7,7 @@ enum EVENTS {
   success = 'success',
   info = 'info',
   default = 'default',
+  toggleSidebar = 'toggle-sidebar',
 }
 
 export class EventBus {
@@ -42,6 +43,10 @@ export class EventBus {
 
   info(payload: string | NotificationObjectPayload): void {
     this.emit(this.eventList.info, payload)
+  }
+
+  toggleSidebar(): void {
+    this.emit(this.eventList.toggleSidebar)
   }
 }
 

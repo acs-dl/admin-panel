@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+// TODO: EDIT LOGIC WITH OBJECT { id?: number, label: string }
 import { Icon } from '@/common'
 
 import {
@@ -14,11 +15,16 @@ import { onClickOutside } from '@vueuse/core'
 
 type SCHEMES = 'primary' | 'secondary'
 
+type SELECT_WITH_ID = {
+  id: number
+  text: string
+}
+
 const props = withDefaults(
   defineProps<{
     scheme?: SCHEMES
     modelValue: string | number
-    valueOptions?: string[] | number[]
+    valueOptions?: string[] | number[] | SELECT_WITH_ID[]
     label?: string
     placeholder?: string
     errorMessage?: string
@@ -35,6 +41,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: number | string): void
+  (e: 'update-id', value: number): void
 }>()
 
 const attrs = useAttrs()
@@ -92,10 +99,11 @@ const closeDropdown = () => {
   isDropdownOpen.value = false
 }
 
-const select = (value: string | number) => {
+const select = (value: string | number | SELECT_WITH_ID) => {
   if (isDisabled.value || isReadonly.value) return
 
-  emit('update:modelValue', value)
+  emit('update:modelValue', value?.text ?? value)
+  if (Number.isInteger(value?.id)) emit('update-id', value.id)
   closeDropdown()
 }
 
@@ -182,7 +190,7 @@ watch(
                 'select-field__select-dropdown-item',
                 {
                   'select-field__select-dropdown-item--active':
-                    modelValue === option,
+                    modelValue === (option?.text || option),
                 },
               ]"
               type="button"
@@ -190,7 +198,7 @@ watch(
               :key="`[${idx}] ${option}`"
               @click="select(option)"
             >
-              {{ option }}
+              {{ option?.text ?? option }}
             </button>
           </template>
         </div>
@@ -363,7 +371,8 @@ $z-local-index: 2;
   position: absolute;
   overflow: hidden auto;
   top: 105%;
-  right: 0;
+  right: 50%;
+  transform: translateX(50%);
   width: 100%;
   max-height: 500%;
   z-index: $z-local-index;
@@ -389,14 +398,10 @@ $z-local-index: 2;
 @keyframes dropdown {
   from {
     opacity: 0;
-    transform: translateY(20%);
-    max-height: 0;
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
-    max-height: 250%;
   }
 }
 

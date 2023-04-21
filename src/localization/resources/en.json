@@ -9,7 +9,8 @@
     "secondary-title": "To add a new member, you must complete all fields"
   },
   "permission-modal": {
-    "main-title": "Add new user in module",
+    "main-title": "Add new module",
+    "edit-main-title": "Edit module",
     "secondary-title": "To add, select a module and its details"
   },
   "permission-form": {
@@ -20,7 +21,7 @@
     "link-lbl": "Submodule",
     "name-lbl": "Name",
     "surname-lbl": "Surname",
-    "link-placeholder": "Input submodule",
+    "link-placeholder": "Submodule name",
     "username-lbl": "Username",
     "email-lbl": "Email address",
     "phone-lbl": "Phone",
@@ -28,7 +29,8 @@
     "username-placeholder": "Input username",
     "success-msg": "Successful sent request for user permission",
     "access-level-lbl": "Access level",
-    "access-level-placeholder": "Select access level"
+    "access-level-placeholder": "Select access level",
+    "modules-loading-error": "User or module with such data was not found. Try again."
   },
   "delete-modal": {
     "main-title": "Delete",
@@ -40,10 +42,11 @@
     "name-lbl": "Name",
     "surname-lbl": "Surname",
     "main-lbl": "Add new member",
-    "email-lbl": "Email",
+    "email-lbl": "Email address",
     "position-lbl": "Position",
     "position-placeholder": "Select Position",
-    "success-msg": "Successful sent request for create user",
+    "success-msg": "The create request was successful. Please wait a moment, the module will appear here.",
+    "success-creation-msg": "The create request was successful.",
     "cancel-btn": "Cancel",
     "submit-btn": "Create"
   },
@@ -68,9 +71,9 @@
     "success-delete": "Request for remove module sent successfully",
     "submodule-column": "Submodule",
     "access-level-column": "Access Level",
-    "delete-btn": "Delete",
     "search-placeholder": "Search by submodule name",
-    "icon-description": "Module Icon"
+    "icon-description": "Module Icon",
+    "delete-button": "Delete"
   },
   "module-tree-item": {
     "delete-main-title": "Remove user from {module}",
@@ -84,10 +87,12 @@
   "errors": {
     "default": "Something went wrong"
   },
-  "sidebar": {
-    "main-title": "Employee List",
+  "app-sidebar": {
+    "employee-title": "Employee List",
+    "tools-title": "Tools",
     "verified-users-link": "Verified",
-    "unverified-users-link": "Unverified"
+    "unverified-users-link": "Unverified",
+    "status-button": "Status of requests"
   },
   "verified-users": {
     "main-title": "Employee List",
@@ -101,7 +106,9 @@
     "select-field-btn-text": "Filter by",
     "error-message": "Error while loading.",
     "no-data-title": "Nothing found",
-    "no-data-message": "Users don't exist in the system."
+    "no-data-message": "Users don't exist in the system.",
+    "all-filter": "All Positions",
+    "success-deleting": "Successfully deleted user."
   },
   "module-info-list": {
     "header": "Modules"
@@ -110,7 +117,7 @@
     "module-text": "Module",
     "submodule-text": "Submodule",
     "access-level-text": "Access level",
-    "edit-text": "Edit",
+    "delete-text": "Delete",
     "no-data-title": "Nothing found",
     "no-data-message": "Module does not exist in the system.",
     "expiration-date-text": "Expiration date"
@@ -118,13 +125,20 @@
   "user-details": {
     "add-user-btn": "Add module",
     "error-message": "Error while loading.",
-    "no-data-title": "Nothing found",
     "no-data-message": "User doesn't have any modules yet."
   },
   "verified-users-item": {
     "telegram": "No Info",
     "delete-main-title": "Remove verify user",
     "delete-secondary-title": "Click to remove a user from the database"
+  },
+  "verified-users-item-mobile": {
+    "telegram-text": "Telegram",
+    "telegram-value": "No Info",
+    "delete-main-title": "Remove verify user",
+    "position-text": "Position",
+    "delete-secondary-title": "Click to remove a user from the database",
+    "delete-text": "Delete"
   },
   "unverified-users": {
     "main-title": "Employee List",
@@ -139,7 +153,8 @@
     "error-message": "Error while loading.",
     "no-data-title": "Nothing found",
     "no-data-message": "Users don't exist in the system.",
-    "select-field-btn-text": "Filter by {filter}"
+    "select-field-btn-text": "Filter by",
+    "all-filter": "All Modules"
   },
   "unverified-users-item": {
     "delete-main-title": "Remove unverify user",
@@ -179,9 +194,6 @@
     "empty-message": "No users",
     "error-message": "Something went wrong"
   },
-  "admin-panel": {
-    "status-button": "Status of requests"
-  },
   "status-modal": {
     "title": "Status of requests"
   },
@@ -204,10 +216,10 @@
   "verify-user-step": {
     "main-title": "New member verification",
     "add-account-title": "Add to existing account",
-    "add-account-msg": "Link an account to an existing one",
+    "add-account-msg": "Link the user from this module to an existing account",
     "create-account-title": "Create new account",
-    "create-account-msg": "Add new member",
-    "secondary-title": "Create a new account for this user"
+    "create-account-msg": "Create a new unique account for the user from this module, if it doesn't exist",
+    "secondary-title": "Verify this user by selecting one of the options below"
   },
   "verify-module-step": {
     "title": "Verify modules for {username}",
@@ -220,6 +232,29 @@
     "delete-main-title": "Remove unverified user",
     "delete-secondary-title": "Click to remove a user from the module",
     "verify-btn": "Verify",
-    "success-delete": "Request for remove user from module sent successfully"
+    "success-delete": "Request for remove user from module sent successfully",
+    "submodule-loading-error": "Error while loading",
+    "no-submodule-info": "No info"
+  },
+  "unverified-users-item-mobile": {
+    "modules-text": "Modules",
+    "date-text": "Date",
+    "delete-text": "Delete",
+    "verify-text": "Verify"
+  },
+  "unverified-users-list-header-mobile": {
+    "sorting-by": "Sorting by:",
+    "sorting-all": "All",
+    "sorting-name-desc": "Name (descending)",
+    "sorting-name-asc": "Name (ascending)",
+    "sorting-date-desc": "Date (descending)",
+    "sorting-date-asc": "Date (ascending)",
+    "sorting-username-desc": "Username (descending)",
+    "sorting-username-asc": "Username (ascending)"
+  },
+  "status-modal-list-item-mobile": {
+    "submodule-text": "Submodule",
+    "access-level-text": "Access level",
+    "date-text": "Date"
   }
 }

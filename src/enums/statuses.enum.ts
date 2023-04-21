@@ -1,7 +1,7 @@
 export enum REQUEST_STATUSES {
   all = 'all',
-  failed = 'failed',
+  success = 'success',
+  inProgress = 'in progress',
   pending = 'pending',
-  created = 'created',
-  finished = 'finished',
+  failed = 'failed',
 }

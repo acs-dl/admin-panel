@@ -2,10 +2,7 @@
   <modal is-close-by-click-outside is-center @click-outside="cancelForm">
     <div class="create-user-modal__inner">
       <div class="create-user-modal__icon-wrapper">
-        <icon
-          :name="$icons.informationCircle"
-          class="create-user-modal__icon"
-        />
+        <icon :name="$icons.addUser" class="create-user-modal__icon" />
       </div>
       <div class="create-user-modal__title-wrapper">
         <h2 class="create-user-modal__title">
@@ -45,6 +42,10 @@ const submitForm = () => {
 <style lang="scss" scoped>
 .create-user-modal__inner {
   width: toRem(500);
+
+  @include respond-to(small) {
+    max-width: 100%;
+  }
 }
 
 .create-user-modal__icon-wrapper {
@@ -65,7 +66,7 @@ const submitForm = () => {
   display: flex;
   flex-direction: column;
   gap: toRem(4);
-  margin-bottom: toRem(12);
+  margin-bottom: toRem(24);
 }
 
 .create-user-modal__title {

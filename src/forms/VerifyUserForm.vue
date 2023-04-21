@@ -37,7 +37,7 @@
     <div class="verify-user-form__actions">
       <app-button
         class="verify-user-form__submit-btn"
-        size="large"
+        size="medium"
         modification="border-rounded"
         scheme="flat"
         :text="$t('verify-user-form.cancel-btn')"
@@ -46,7 +46,7 @@
       />
       <app-button
         class="verify-user-form__submit-btn"
-        size="large"
+        size="medium"
         modification="border-rounded"
         scheme="filled"
         type="submit"
@@ -159,6 +159,11 @@ const submit = async () => {
 .verify-user-form__group-field {
   display: flex;
   gap: toRem(8);
+
+  @include respond-to(tablet) {
+    flex-direction: column;
+    gap: toRem(16);
+  }
 }
 
 .verify-user-form__field {
@@ -180,5 +185,11 @@ const submit = async () => {
 .verify-user-form__actions {
   display: flex;
   gap: toRem(16);
+}
+
+.verify-user-form__field-input {
+  &:deep(.select-field__select-dropdown) {
+    color: var(--primary-dark);
+  }
 }
 </style>

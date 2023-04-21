@@ -7,11 +7,11 @@
   >
     <div class="permission-modal__inner">
       <div class="permission-modal__icon-wrapper">
-        <icon class="permission-modal__icon" :name="$icons.informationCircle" />
+        <icon class="permission-modal__icon" :name="$icons.plusCircle" />
       </div>
       <div class="permission-modal__title-wrapper">
         <h2 class="permission-modal__title">
-          {{ $t('permission-modal.main-title') }}
+          {{ mainTitle }}
         </h2>
         <h3 class="permission-modal__title-secondary">
           {{ $t('permission-modal.secondary-title') }}
@@ -35,6 +35,7 @@ import { PermissionForm } from '@/forms'
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePlatformStore } from '@/store'
+import { useContext } from '@/composables'
 
 const props = withDefaults(
   defineProps<{
@@ -53,10 +54,17 @@ const emit = defineEmits<{
   (e: 'submit'): void
 }>()
 
+const { $t } = useContext()
 const { modules } = storeToRefs(usePlatformStore())
 
 const foundModuleName = computed(
   () => modules.value.find(el => el.id === props.moduleName)?.name ?? '',
+)
+
+const mainTitle = computed(() =>
+  props.moduleName
+    ? $t('permission-modal.edit-main-title')
+    : $t('permission-modal.main-title'),
 )
 
 const cancelForm = () => {
@@ -71,6 +79,10 @@ const submitForm = () => {
 <style lang="scss" scoped>
 .permission-modal__inner {
   width: toRem(500);
+
+  @include respond-to(medium) {
+    max-width: 100%;
+  }
 }
 
 .permission-modal__icon-wrapper {

@@ -35,24 +35,29 @@
         />
       </app-button>
 
-      <div>
-        <span v-if="!isOpenModuleTree">
-          {{ $t('module-tree-main.submodule-column') }}
-        </span>
-      </div>
-      <div>
-        <span v-if="!isOpenModuleTree">
-          {{ $t('module-tree-main.access-level-column') }}
-        </span>
-      </div>
-      <app-button
-        class="module-tree-main__item-btn"
-        color="error"
-        :text="$t('module-tree-main.delete-btn')"
-        @click="toggleDeleteModal"
-      />
+      <template v-if="!isOpenModuleTree">
+        <div class="module-tree-main__column-wrapper">
+          <span class="module-tree-main__column-text">
+            {{ $t('module-tree-main.submodule-column') }}
+          </span>
+        </div>
+        <div class="module-tree-main__column-wrapper">
+          <span class="module-tree-main__column-text">
+            {{ $t('module-tree-main.access-level-column') }}
+          </span>
+        </div>
+        <app-button
+          class="module-tree-main__item-btn"
+          color="gray"
+          :icon-left="$icons.trash"
+          @click="toggleDeleteModal"
+        />
+      </template>
     </li>
     <li v-show="isOpenModuleTree" class="module-tree-main__children">
+      <span class="module-tree-main__children-title">
+        {{ $t('module-tree-main.submodule-column') }}
+      </span>
       <module-trees-item
         v-for="(child, index) in module.children"
         class="module-tree-main__children-item"
@@ -65,6 +70,12 @@
         :search-value="searchValue"
       />
     </li>
+    <app-button
+      class="module-tree-main__delete-button"
+      color="error"
+      :text="$t('module-tree-main.delete-button')"
+      @click="toggleDeleteModal"
+    />
     <transition-modal>
       <delete-modal
         v-if="isShownDeleteModal"
@@ -174,6 +185,10 @@ const updateList = () => {
 .module-tree-main__wrapper {
   padding-left: 0.5em;
   line-height: 1.5em;
+
+  @include respond-to(tablet) {
+    padding: 0;
+  }
 }
 
 .module-tree-main {
@@ -184,6 +199,11 @@ const updateList = () => {
     minmax(toRem(100), toRem(150))
     toRem(100);
   gap: toRem(10);
+
+  @include respond-to(tablet) {
+    display: block;
+    padding: toRem(12);
+  }
 }
 
 .module-tree-main__name {
@@ -199,11 +219,21 @@ const updateList = () => {
     filter: none;
     opacity: 1;
   }
+
+  @include respond-to(tablet) {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+  }
 }
 
 .module-tree-main__name-text {
   font-weight: 400;
   text-align: left;
+
+  @include respond-to(tablet) {
+    font-size: toRem(14);
+  }
 }
 
 .module-tree-main__name-icon {
@@ -214,14 +244,35 @@ const updateList = () => {
   &--open {
     transform: rotate(90deg);
   }
+
+  @include respond-to(tablet) {
+    margin-left: auto;
+  }
 }
 
 .module-tree-main__children {
   margin-left: toRem(120);
+
+  @include respond-to(tablet) {
+    padding: toRem(12);
+    margin-left: 0;
+    border-top: toRem(1) solid var(--border-primary-light);
+  }
 }
 
 .module-tree-main__item-btn {
   font-weight: 400;
+  margin-left: auto;
+  padding-right: toRem(10);
+
+  &:deep(.app-button__icon-left) {
+    width: toRem(24);
+    height: toRem(24);
+  }
+
+  @include respond-to(tablet) {
+    display: none;
+  }
 }
 
 .module-tree-main__collection-loader {
@@ -233,10 +284,50 @@ const updateList = () => {
 .module-tree-main__search {
   max-width: toRem(265);
   margin-bottom: toRem(24);
+
+  @include respond-to(tablet) {
+    display: none;
+  }
 }
 
 .module-tree-main__module-icon {
   width: toRem(24);
   height: toRem(24);
+}
+
+.module-tree-main__column-wrapper {
+  @include respond-to(tablet) {
+    display: none;
+  }
+}
+
+.module-tree-main__children-title {
+  display: none;
+
+  @include respond-to(tablet) {
+    display: block;
+    font-size: toRem(14);
+    color: var(--text-primary-light);
+    margin-bottom: toRem(16);
+  }
+}
+
+.module-tree-main__delete-button {
+  display: none;
+
+  @include respond-to(tablet) {
+    display: flex;
+    width: 100%;
+    padding: toRem(12);
+    border-top: toRem(1) solid var(--border-primary-light);
+    font-weight: 400;
+    font-size: toRem(14);
+
+    &:not([disabled]):hover,
+    &:not([disabled]):focus,
+    &:not([disabled]):active {
+      border-top: toRem(1) solid var(--border-primary-light);
+    }
+  }
 }
 </style>

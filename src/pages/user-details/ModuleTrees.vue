@@ -23,7 +23,7 @@
       </div>
       <div class="module-trees__header-item">
         <span class="module-trees__header-item-text">
-          {{ $t('module-trees.edit-text') }}
+          {{ $t('module-trees.delete-text') }}
         </span>
       </div>
     </div>
@@ -86,6 +86,16 @@ const searchValue = ref('')
     repeat(2, minmax(toRem(100), toRem(150)))
     toRem(100);
   gap: toRem(10);
+
+  @include respond-to(tablet) {
+    display: none;
+  }
+}
+
+.module-trees__header-item {
+  &:last-child {
+    text-align: right;
+  }
 }
 
 .module-trees__header-item-text {
@@ -111,5 +121,9 @@ const searchValue = ref('')
   background: var(--white);
   border-radius: toRem(8);
   padding: toRem(24);
+
+  @include respond-to(tablet) {
+    padding: 0;
+  }
 }
 </style>

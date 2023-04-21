@@ -7,7 +7,7 @@
           {{ $t('login-page.logo-text') }}
         </h4>
       </div>
-      <h4 class="login-page__header-text">
+      <h4 class="login-page__header-text login-page__header-text--title">
         {{ $t('login-page.header-title') }}
       </h4>
     </div>
@@ -17,6 +17,9 @@
       </div>
       <login-form />
     </div>
+    <h4 class="login-page__header-text login-page__header-text--footer">
+      {{ $t('login-page.header-title') }}
+    </h4>
   </div>
 </template>
 
@@ -50,8 +53,9 @@ import { Icon } from '@/common'
   color: var(--primary-dark);
   gap: toRem(24);
 
-  @include respond-to(xsmall) {
-    flex-direction: column;
+  @include respond-to(small) {
+    justify-content: center;
+    margin-top: toRem(32);
   }
 }
 
@@ -81,12 +85,26 @@ import { Icon } from '@/common'
   font-size: toRem(20);
   font-weight: 600;
 
+  &--footer {
+    display: none;
+  }
+
   @include respond-to(tablet) {
     font-size: toRem(16);
   }
 
   @include respond-to(small) {
     font-size: toRem(14);
+
+    &--title {
+      display: none;
+    }
+
+    &--footer {
+      display: inline;
+      margin-top: auto;
+      margin-bottom: toRem(32);
+    }
   }
 }
 

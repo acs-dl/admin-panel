@@ -1,9 +1,7 @@
 <template>
   <div class="unverified-users">
     <div class="unverified-users__title-wrapper">
-      <h2 class="unverified-users__title">
-        {{ $t('unverified-users.main-title') }}
-      </h2>
+      <page-title :title="$t('unverified-users.main-title')" />
       <div class="unverified-users__actions">
         <input-field
           v-model="searchValue"
@@ -43,7 +41,12 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { AppButton, CreateUserModal, TransitionModal } from '@/common'
+import {
+  AppButton,
+  CreateUserModal,
+  TransitionModal,
+  PageTitle,
+} from '@/common'
 import { InputField } from '@/fields'
 import UnverifiedUsersList from '@/pages/unverified-users/UnverifiedUsersList.vue'
 import { ICON_NAMES } from '@/enums'
@@ -76,27 +79,43 @@ const clearInput = () => {
   flex-direction: column;
 }
 
-.unverified-users__title {
-  font-size: toRem(24);
-  font-weight: 700;
-}
-
 .unverified-users__title-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @include respond-to(medium) {
+    flex-direction: column;
+    gap: toRem(12);
+    align-items: inherit;
+  }
 }
 
 .unverified-users__actions {
   display: flex;
   gap: toRem(23);
+
+  @include respond-to(small) {
+    flex-direction: column;
+    gap: toRem(12);
+  }
 }
 
 .unverified-users__search-input {
   width: toRem(250);
+
+  @include respond-to(small) {
+    width: 100%;
+  }
 }
 
 .unverified-users__list {
   flex: 1;
+}
+
+.unverified-users__add-user-btn {
+  @include respond-to(small) {
+    width: 100%;
+  }
 }
 </style>

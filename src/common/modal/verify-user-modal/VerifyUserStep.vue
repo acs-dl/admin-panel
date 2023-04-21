@@ -73,6 +73,10 @@ const submitForm = () => {
 <style lang="scss" scoped>
 .verify-user-step {
   width: toRem(600);
+
+  @include respond-to(medium) {
+    max-width: 100%;
+  }
 }
 
 .verify-user-step__icon-wrapper {
@@ -80,7 +84,7 @@ const submitForm = () => {
   height: toRem(48);
   border-radius: toRem(10);
   background: transparent;
-  margin-bottom: toRem(12);
+  margin-bottom: toRem(20);
 }
 
 .verify-user-step__icon {
@@ -101,12 +105,14 @@ const submitForm = () => {
 }
 
 .verify-user-step__title-secondary {
+  margin-top: toRem(5);
+  font-weight: 400;
   font-size: toRem(14);
   color: var(--text-secondary-light);
 }
 
 .verify-user-step__tabs {
   grid-template-columns: repeat(2, minmax(toRem(100), 1fr));
-  margin-bottom: toRem(24);
+  margin: toRem(24) 0;
 }
 </style>

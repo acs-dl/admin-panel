@@ -9,6 +9,7 @@ for further information about branching and tagging conventions.
 
 ## [Unreleased]
 #### Added
+- `AppTooltip` component
 - Multiple verify modules for user
 - Sorting and filtering for unverified users
 - Clear button to inputs
@@ -24,6 +25,7 @@ for further information about branching and tagging conventions.
 - User details page
 
 #### Fixed
+- Design for unverified page
 - Refresh tokens flow
 - `VerifyUserModal` working flow
 - Spacing in status modal

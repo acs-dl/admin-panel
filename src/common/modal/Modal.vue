@@ -90,15 +90,16 @@ $z-modal: 10;
   left: 50%;
   transform: translate(-50%, -50%);
   overflow: hidden;
-  background: var(--background-primary-light);
+  background: var(--background-secondary-main);
   padding: toRem(24);
   border-radius: toRem(10);
   min-width: toRem(300);
 
   @include respond-to(small) {
-    left: 0;
-    right: 0;
+    left: var(--app-padding-left);
+    right: var(--app-padding-right);
     transform: translateY(-50%);
+    padding: var(--app-padding-right);
     max-width: none;
   }
 }

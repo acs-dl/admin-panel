@@ -1,11 +1,9 @@
 <template>
   <div class="user-details">
     <div class="user-details__title-wrapper">
-      <h2 class="user-details__title">
-        {{ mainTitle }}
-      </h2>
+      <page-title :title="mainTitle" />
       <app-button
-        v-if="mainTitle"
+        v-if="mainTitle && modulesList?.length"
         class="user-details__add-user-btn"
         size="medium"
         modification="border-rounded"
@@ -36,9 +34,18 @@
           <template v-else>
             <no-data-message
               class="user-details__message"
-              :title="$t('user-details.no-data-title')"
               :message="$t('user-details.no-data-message')"
-            />
+            >
+              <app-button
+                v-if="mainTitle"
+                class="user-details__add-user-btn"
+                size="small"
+                modification="border-rounded"
+                scheme="filled"
+                :text="$t('user-details.add-user-btn')"
+                @click="togglePermissionModal"
+              />
+            </no-data-message>
           </template>
         </template>
       </template>
@@ -67,6 +74,7 @@ import {
   PermissionModal,
   AppButton,
   TransitionModal,
+  PageTitle,
 } from '@/common'
 import { api } from '@/api'
 import { ErrorHandler } from '@/helpers'
@@ -77,7 +85,6 @@ import {
   UserPermissionInfo,
   VerifiedUser,
 } from '@/types'
-import { useContext } from '@/composables'
 import ModuleTrees from '@/pages/user-details/ModuleTrees.vue'
 import ModuleInfoList from '@/pages/user-details/ModuleInfoList.vue'
 import { router } from '@/router'
@@ -87,7 +94,6 @@ const props = defineProps<{
   id: string
 }>()
 
-const { $t } = useContext()
 const isLoadFailed = ref(false)
 const isLoaded = ref(false)
 const isShownPermissionModal = ref(false)
@@ -203,6 +209,12 @@ getUser()
 </script>
 
 <style scoped lang="scss">
+.user-details {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
 .user-details__title {
   line-height: 1.2;
   font-size: toRem(24);
@@ -217,10 +229,15 @@ getUser()
   align-items: center;
   margin-bottom: toRem(16);
   gap: toRem(15);
+
+  @include respond-to(small) {
+    flex-direction: column;
+  }
 }
 
 .user-details__content {
   min-height: toRem(540);
+  flex: 1;
 }
 
 .user-details__content-wrapper {
@@ -234,10 +251,17 @@ getUser()
 }
 
 .user-details__message {
-  margin-top: toRem(50);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
 }
 
 .user-details__add-user-btn {
   min-width: toRem(190);
+
+  @include respond-to(small) {
+    width: 100%;
+  }
 }
 </style>

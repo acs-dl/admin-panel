@@ -40,6 +40,7 @@ app.config.globalProperties.$config = config
 app.config.globalProperties.$icons = ICON_NAMES
 app.config.globalProperties.$filter = {
   username: (value: string) => '@' + value,
+  module: (value: string) => '/' + value,
 }
 
 app.config.errorHandler = function (err, vm, info) {

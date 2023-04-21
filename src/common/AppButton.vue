@@ -226,18 +226,18 @@ const buttonClasses = computed(() =>
 
   &--error {
     --app-button-flat-text: var(--error-main);
-    --app-button-flat-text-hover: var(--error-dark);
+    --app-button-flat-text-hover: var(--error-main);
     --app-button-flat-border: #{toRem(1)} solid var(--error-main);
-    --app-button-flat-border-hover: #{toRem(1)} solid var(--error-dark);
-    --app-button-flat-border-active: #{toRem(1)} solid var(--error-dark);
+    --app-button-flat-border-hover: #{toRem(1)} solid var(--error-main);
+    --app-button-flat-border-active: #{toRem(1)} solid var(--error-main);
 
     --app-button-filled-bg: var(--error-main);
-    --app-button-filled-bg-hover: var(--error-dark);
-    --app-button-filled-bg-active: var(--error-dark);
+    --app-button-filled-bg-hover: var(--error-main);
+    --app-button-filled-bg-active: var(--error-main);
 
     --app-button-text: var(--error-main);
-    --app-button-text-hover: var(--error-dark);
-    --app-button-text-active: var(--error-dark);
+    --app-button-text-hover: var(--error-light);
+    --app-button-text-active: var(--error-light);
   }
 
   &--warning {

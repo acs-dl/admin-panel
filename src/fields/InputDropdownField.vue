@@ -161,12 +161,11 @@ $custom-z-index: 1;
   max-height: toRem(90);
   z-index: $custom-z-index;
   background: var(--white);
-  padding: toRem(12) 0;
-  border-radius: toRem(5);
-  box-shadow: var(--shadow-primary);
-  border: toRem(1) solid var(--text-primary-light);
   margin-top: toRem(5);
   overflow-y: scroll;
+  box-shadow: 0 toRem(1) toRem(2) rgba(var(--black-rgb), 0.3),
+    0 toRem(2) toRem(6) toRem(2) rgba(var(--black-rgb), 0.15);
+  border-radius: toRem(8);
 }
 
 .input-dropdown-field-enter-active,
@@ -183,7 +182,8 @@ $custom-z-index: 1;
 
 .input-dropdown-field__inner-list-item,
 .input-dropdown-field__message {
-  padding: toRem(12) toRem(24);
+  padding: toRem(12) var(--field-padding-right) toRem(12)
+    var(--field-padding-left);
   font-weight: 400;
   line-height: 1;
   font-size: toRem(16);
@@ -192,14 +192,18 @@ $custom-z-index: 1;
 }
 
 .input-dropdown-field__inner-list-item {
-  border-bottom: toRem(1) solid var(--text-primary-light);
+  font-size: toRem(16);
+  font-weight: 400;
+  text-align: left;
+  width: 100%;
+  transition: background 0.2s ease-in-out;
 
   &:hover {
-    background: rgba(var(--primary-dark-rgb), 0.15);
+    background: var(--background-primary-dark);
   }
 
   &--active {
-    background: rgba(var(--primary-main-rgb), 0.25);
+    background: var(--background-tertiary-main);
   }
 }
 </style>

@@ -74,15 +74,15 @@ const updateState = (order: REQUEST_ORDER) => {
 .order-buttons {
   display: flex;
   flex-direction: column;
-  gap: toRem(3);
+  gap: toRem(2);
   align-items: center;
   justify-content: center;
 }
 
 .order-buttons__button {
   color: var(--text-primary-light);
-  max-width: toRem(8);
-  max-height: toRem(8);
+  max-width: toRem(9);
+  max-height: toRem(9);
 
   &--active {
     transform: translateY(-25%);
@@ -94,6 +94,10 @@ const updateState = (order: REQUEST_ORDER) => {
 
   &--desc-active {
     transform: rotate(180deg) translateY(-25%);
+  }
+
+  &:not([disabled]):focus {
+    color: var(--text-primary-light);
   }
 }
 </style>
