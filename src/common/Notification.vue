@@ -86,5 +86,6 @@ export default defineComponent({
 
 .notification__message {
   color: var(--text-primary-invert-main);
+  line-height: 1.4;
 }
 </style>

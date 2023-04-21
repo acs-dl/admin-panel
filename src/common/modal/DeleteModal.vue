@@ -2,7 +2,7 @@
   <modal is-close-by-click-outside is-center @click-outside="cancelForm">
     <div class="delete-modal__inner">
       <div class="delete-modal__icon-wrapper">
-        <icon :name="$icons.trash" class="delete-modal__icon" />
+        <icon :name="$icons.filledTrash" class="delete-modal__icon" />
       </div>
       <div class="delete-modal__title-wrapper">
         <h2 class="delete-modal__title">
@@ -14,8 +14,8 @@
       </div>
       <div class="delete-modal__actions">
         <app-button
-          class="delete-modal__submit-btn"
-          size="large"
+          class="delete-modal__action-btn"
+          size="medium"
           modification="border-rounded"
           scheme="flat"
           :disabled="isDisabled"
@@ -23,10 +23,10 @@
           @click="cancelForm"
         />
         <app-button
-          class="delete-modal__submit-btn"
-          size="large"
+          class="delete-modal__action-btn delete-modal__submit-btn"
+          size="medium"
+          scheme="filled"
           modification="border-rounded"
-          scheme="flat"
           color="error"
           :disabled="isDisabled"
           :text="$t('delete-modal.submit-btn')"
@@ -70,20 +70,21 @@ const deleteUser = () => {
 <style lang="scss" scoped>
 .delete-modal__inner {
   width: toRem(400);
+
+  @include respond-to(medium) {
+    width: 100%;
+  }
 }
 
 .delete-modal__icon-wrapper {
-  width: toRem(48);
-  height: toRem(48);
-  border: toRem(1) solid var(--border-primary-light);
-  padding: toRem(12);
-  border-radius: toRem(10);
-  background: transparent;
+  width: toRem(56);
+  height: toRem(56);
   margin-bottom: toRem(12);
 }
 
 .delete-modal__icon {
-  font-size: toRem(12);
+  font-size: toRem(56);
+  color: var(--error-main);
 }
 
 .delete-modal__title-wrapper {
@@ -109,9 +110,19 @@ const deleteUser = () => {
 .delete-modal__actions {
   display: flex;
   gap: toRem(16);
+  margin-top: toRem(24);
+}
+
+.delete-modal__action-btn {
+  width: 100%;
 }
 
 .delete-modal__submit-btn {
-  width: 100%;
+  color: var(--text-primary-invert-main);
+
+  &:not([disabled]):hover,
+  &:not([disabled]):focus {
+    color: var(--text-primary-invert-main);
+  }
 }
 </style>

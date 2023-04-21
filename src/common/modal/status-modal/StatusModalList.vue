@@ -100,7 +100,6 @@ const loadRequests = async () => {
           ...(props.status === REQUEST_STATUSES.all
             ? {}
             : { status: props.status }),
-          action: 'verify_user',
         },
       },
     )
@@ -127,13 +126,25 @@ watch(
 .status-modal-list {
   display: flex;
   flex-direction: column;
-  min-height: toRem(615);
   min-width: toRem(1000);
   position: relative;
+
+  @include respond-to(large) {
+    min-width: toRem(900);
+  }
+
+  @include respond-to(medium) {
+    min-width: auto;
+  }
 }
 
 .status-modal-list__list-items-wrapper {
   flex: 1;
+
+  @include respond-to(medium) {
+    max-height: toRem(350);
+    overflow-y: scroll;
+  }
 }
 
 .status-modal-list__list-item {
@@ -144,8 +155,12 @@ watch(
   display: grid;
   grid-template-columns:
     toRem(80) minmax(toRem(100), 2fr) minmax(toRem(100), 2fr)
-    minmax(toRem(130), 1fr) minmax(toRem(100), 1fr) minmax(toRem(110), 1fr);
+    minmax(toRem(130), 1fr) minmax(toRem(100), 1fr) minmax(toRem(145), 1fr);
   gap: toRem(10);
+
+  @include respond-to(medium) {
+    display: none;
+  }
 }
 
 .status-modal-list__header-text {

@@ -243,4 +243,8 @@ export enum ICON_NAMES {
   loading = 'loading',
   smallArrow = 'small-arrow',
   verified = 'verified',
+  filledTrash = 'filled-trash',
+  triangle = 'triangle',
+  addUser = 'add-user',
+  burger = 'burger',
 }

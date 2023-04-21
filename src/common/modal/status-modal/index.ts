@@ -1,3 +1,5 @@
 export { default as StatusModalList } from '@/common/modal/status-modal/StatusModalList.vue'
 export { default as StatusModalListItem } from '@/common/modal/status-modal/StatusModalListItem.vue'
 export { default as StatusModalTabs } from '@/common/modal/status-modal/StatusModalTabs.vue'
+export { default as StatusModalListMobile } from '@/common/modal/status-modal/StatusModalListItemMobile.vue'
+export { default as StatusModalListDesktop } from '@/common/modal/status-modal/StatusModalListItemDesktop.vue'

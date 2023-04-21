@@ -5,6 +5,7 @@
         <h5 class="permission-form__field-title">
           {{ $t('permission-form.module-lbl') }}
         </h5>
+        <!--TODO: EDIT SELECT LOGIC-->
         <select-field
           v-model="form.module"
           scheme="secondary"
@@ -70,6 +71,7 @@
           <h5 class="permission-form__field-title">
             {{ $t('permission-form.access-level-lbl') }}
           </h5>
+          <!--TODO: EDIT SELECT LOGIC-->
           <select-field
             v-model="form.accessLevel"
             scheme="secondary"
@@ -91,7 +93,7 @@
             scheme="secondary"
             class="permission-form__field-input"
             :class="`permission-form__field-input--${moduleId}`"
-            :placeholder="$t('permission-form.link-lbl')"
+            :placeholder="$t('permission-form.link-placeholder')"
             :error-message="getFieldErrorMessage('link')"
             :disabled="isFormDisabled || isEditForm"
             @blur="touchField('link')"
@@ -151,10 +153,19 @@
       </template>
     </div>
 
+    <div class="permission-form__loading-modules-info">
+      <template v-if="isLoadingPermissionsError && !isEmailModule">
+        <span class="permission-form__loading-modules-info-error">
+          {{ $t('permission-form.modules-loading-error') }}
+        </span>
+      </template>
+      <loader class="permission-form__loader" v-if="isLoadingPermissions" />
+    </div>
+
     <div class="permission-form__actions">
       <app-button
         class="permission-form__submit-btn"
-        size="large"
+        size="medium"
         modification="border-rounded"
         scheme="flat"
         :text="$t('permission-form.cancel-btn')"
@@ -163,7 +174,7 @@
       />
       <app-button
         class="permission-form__submit-btn"
-        size="large"
+        size="medium"
         modification="border-rounded"
         scheme="filled"
         type="submit"
@@ -176,7 +187,7 @@
 
 <script setup lang="ts">
 import { reactive, computed, ref, watch } from 'vue'
-import { AppButton } from '@/common'
+import { AppButton, Loader } from '@/common'
 import { api } from '@/api'
 import { InputField, SelectField } from '@/fields'
 import { useContext, useForm, useFormValidation } from '@/composables'
@@ -191,6 +202,9 @@ import { useAuthStore, usePlatformStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { MAX_LENGTH, MODULES } from '@/enums'
 import { requiredIf } from '@vuelidate/validators'
+import { debounce } from 'lodash-es'
+
+const DEBOUNCE_TIMEOUT = 3000 //ms
 
 const props = withDefaults(
   defineProps<{
@@ -212,6 +226,8 @@ const emit = defineEmits<{
 const { $t } = useContext()
 const { modules } = storeToRefs(usePlatformStore())
 const { currentUserId } = useAuthStore()
+const isLoadingPermissions = ref(false)
+const isLoadingPermissionsError = ref(false)
 const isAccessLevelRequired = ref(false)
 const accessList = ref<ModulePermissions[]>([])
 const modulesNames = computed(() => modules.value.map(item => item.name))
@@ -338,6 +354,9 @@ const cancelForm = () => {
 }
 
 const getAccessLevelList = async () => {
+  if (!isAccessLevelCanBeChosen.value) return
+  isLoadingPermissions.value = true
+  isLoadingPermissionsError.value = false
   try {
     if (!form.module || !form.link) return
     isAccessLevelRequired.value = false
@@ -366,25 +385,26 @@ const getAccessLevelList = async () => {
       form.accessLevel = currentAccessLevel?.name ?? ''
     }
   } catch (e) {
+    isLoadingPermissionsError.value = true
     ErrorHandler.processWithoutFeedback(e)
   }
+  isLoadingPermissions.value = false
 }
 
-watch(
-  isAccessLevelCanBeChosen,
-  async () => {
-    if (isAccessLevelCanBeChosen.value || isEditForm.value) {
-      await getAccessLevelList()
-    }
-  },
-  { immediate: true },
+const deboucedAccessList = debounce(
+  async () => await getAccessLevelList(),
+  DEBOUNCE_TIMEOUT,
 )
+
+watch([() => form.link, () => form.phoneNumber, () => form.username], () => {
+  deboucedAccessList()
+})
+
+getAccessLevelList()
 </script>
 
 <style lang="scss" scoped>
 .permission-form {
-  display: grid;
-  grid-gap: toRem(24);
   width: 100%;
 }
 
@@ -422,7 +442,7 @@ watch(
 
 .permission-form__origin-text {
   line-height: 1.2;
-  color: var(--border-primary-main);
+  color: var(--text-secondary-light);
 }
 
 .permission-form__field-input {
@@ -443,5 +463,37 @@ watch(
       padding-left: toRem(185);
     }
   }
+}
+
+.permission-form__field-select {
+  &:deep(.select-field__select-dropdown) {
+    max-height: toRem(250);
+  }
+}
+
+.permission-form__loader {
+  width: toRem(20);
+  height: toRem(20);
+
+  &:deep(.spinner) {
+    width: toRem(20);
+    height: toRem(20);
+
+    &:after {
+      width: toRem(20);
+      height: toRem(20);
+      border-width: toRem(2);
+      margin: 0;
+    }
+  }
+}
+
+.permission-form__loading-modules-info-error {
+  color: var(--error-main);
+  font-size: toRem(12);
+}
+
+.permission-form__loading-modules-info {
+  padding: toRem(12) 0;
 }
 </style>

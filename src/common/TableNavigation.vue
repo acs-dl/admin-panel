@@ -20,6 +20,9 @@
       @blur="emit('update:currentPage', tablePage || pageCount)"
     />
     <span class="table-navigation__text">
+      <span class="table-navigation__page-number">
+        {{ currentPage }}
+      </span>
       {{
         $t('users-list-section.navigation-text', {
           totalPage: pageCount,
@@ -87,6 +90,30 @@ const decreasePageCount = async () => {
     box-shadow: none;
     padding: toRem(12) toRem(10);
     text-align: center;
+  }
+
+  @include respond-to(medium) {
+    display: none;
+  }
+}
+
+.table-navigation__button {
+  @include respond-to(medium) {
+    border: none;
+
+    &:not([disabled]):hover,
+    &:not([disabled]):active,
+    &:not([disabled]):focus {
+      border: none;
+    }
+  }
+}
+
+.table-navigation__page-number {
+  display: none;
+
+  @include respond-to(medium) {
+    display: inline;
   }
 }
 </style>

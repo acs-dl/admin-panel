@@ -60,25 +60,34 @@ const updateTab = (id: string) => {
 .tabs {
   display: grid;
   grid-gap: toRem(12);
+
+  @include respond-to(xsmall) {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .tabs__btn {
   display: flex;
+  position: relative;
   width: 100%;
   height: 100%;
   justify-content: space-between;
   align-items: flex-start;
   border: toRem(1) solid var(--border-primary-light);
   border-radius: toRem(12);
-  padding: toRem(16);
+  padding: toRem(16) toRem(24) toRem(16) toRem(16);
 
   &--active {
-    background: var(--primary-light);
-    border: toRem(1) solid var(--primary-main);
+    background: var(--background-tertiary-light);
+    border: toRem(2) solid var(--primary-main);
   }
 }
 
 .tabs__btn-icon {
+  position: absolute;
+  right: toRem(16);
+  top: toRem(16);
   width: toRem(16);
   height: toRem(16);
 
@@ -91,21 +100,22 @@ const updateTab = (id: string) => {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  grid-gap: toRem(8);
+  grid-gap: toRem(5);
 }
 
 .tabs__btn-text-message {
   display: flex;
   text-align: left;
-  font-size: toRem(14);
-  max-width: toRem(200);
+  font-size: toRem(13);
+  max-width: toRem(268);
   font-weight: 400;
   color: var(--text-secondary-light);
 }
 
 .tabs__btn-text-title {
   font-weight: 500;
-  font-size: toRem(18);
+  font-size: toRem(14);
   color: var(--text-secondary-main);
+  text-align: left;
 }
 </style>

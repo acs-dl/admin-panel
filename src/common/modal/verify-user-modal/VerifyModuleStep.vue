@@ -63,6 +63,10 @@ const emit = defineEmits<{
 <style lang="scss" scoped>
 .verify-module-step {
   width: toRem(600);
+
+  @include respond-to(medium) {
+    width: 100%;
+  }
 }
 
 .verify-module-step__icon-wrapper {
@@ -103,6 +107,10 @@ const emit = defineEmits<{
   display: grid;
   grid-template-columns: toRem(100) minmax(toRem(80), 1fr);
   margin-top: toRem(24);
+
+  @include respond-to(medium) {
+    grid-template-columns: toRem(75) minmax(toRem(100), 1fr);
+  }
 }
 
 .verify-module-step__list-header-text {
@@ -113,11 +121,5 @@ const emit = defineEmits<{
 .verify-module-step__cancel-button {
   width: 100%;
   margin-top: toRem(24);
-}
-
-.verify-module-step__list {
-  display: flex;
-  flex-direction: column;
-  gap: toRem(12);
 }
 </style>

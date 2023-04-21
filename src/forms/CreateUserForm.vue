@@ -34,6 +34,7 @@
       <h5 class="create-user-form__field-title">
         {{ $t('create-user-form.position-lbl') }}
       </h5>
+      <!--TODO: EDIT SELECT LOGIC-->
       <select-field
         v-model="form.position"
         scheme="secondary"
@@ -63,8 +64,8 @@
     <div class="create-user-form__actions">
       <app-button
         class="create-user-form__submit-btn"
-        size="large"
         modification="border-rounded"
+        size="medium"
         scheme="flat"
         :text="$t('create-user-form.cancel-btn')"
         :disabled="isFormDisabled"
@@ -72,12 +73,12 @@
       />
       <app-button
         class="create-user-form__submit-btn"
-        size="large"
+        size="medium"
         modification="border-rounded"
         scheme="filled"
         type="submit"
         :text="$t('create-user-form.submit-btn')"
-        :disabled="isFormDisabled"
+        :disabled="isFormDisabled || !isFieldsValid"
       />
     </div>
   </form>
@@ -127,15 +128,13 @@ const form = reactive({
 
 const { isFormDisabled, disableForm, enableForm } = useForm()
 
-const { isFormValid, getFieldErrorMessage, touchField } = useFormValidation(
-  form,
-  {
+const { isFormValid, getFieldErrorMessage, touchField, isFieldsValid } =
+  useFormValidation(form, {
     name: { required, maxLength: maxLength(MAX_LENGTH.name) },
     surname: { required, maxLength: maxLength(MAX_LENGTH.surname) },
     emailAddress: { email, required },
     position: { required },
-  },
-)
+  })
 
 const cancelForm = () => {
   emit('cancel')
@@ -190,7 +189,11 @@ const submit = async () => {
       await verifyUser(data)
     }
 
-    Bus.success($t('create-user-form.success-msg'))
+    Bus.success(
+      props.user
+        ? $t('create-user-form.success-msg')
+        : $t('create-user-form.success-creation-msg'),
+    )
     emit('submit')
     await router.push({
       name: ROUTE_NAMES.userDetails,
@@ -213,13 +216,18 @@ const submit = async () => {
 .create-user-form__base-info {
   display: flex;
   gap: toRem(16);
+
+  @include respond-to(tablet) {
+    flex-direction: column;
+    gap: toRem(24);
+  }
 }
 
 .create-user-form__field {
   display: flex;
   flex-direction: column;
   gap: toRem(6);
-  width: 100%;
+  flex: 1;
 }
 
 .create-user-form__field-title {
@@ -228,11 +236,27 @@ const submit = async () => {
 }
 
 .create-user-form__submit-btn {
-  width: 100%;
+  flex: 1;
+
+  @include respond-to(medium) {
+    font-size: toRem(14);
+  }
 }
 
 .create-user-form__actions {
   display: flex;
   gap: toRem(16);
+}
+
+.create-user-form__field-select {
+  &:deep(.select-field__select-dropdown) {
+    max-height: 350%;
+  }
+}
+
+.create-user-form__field-input {
+  @include respond-to(small) {
+    max-width: 100%;
+  }
 }
 </style>

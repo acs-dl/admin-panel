@@ -7,6 +7,11 @@
     <span v-if="message" class="no-data-message__message">
       {{ message }}
     </span>
+    <template v-if="$slots.default">
+      <div class="no-data-message__slot-wrapper">
+        <slot />
+      </div>
+    </template>
   </div>
 </template>
 
@@ -38,17 +43,22 @@ withDefaults(
 .no-data-message__icon {
   width: toRem(300);
   height: toRem(250);
+  color: var(--background-primary-light);
 }
 
 .no-data-message__message {
   font-weight: 500;
   font-size: toRem(14);
-  color: var(--text-secondary-main);
+  color: var(--text-secondary-light);
 }
 
 .no-data-message__title {
   font-weight: 500;
   font-size: toRem(18);
-  color: var(--text-secondary-main);
+  color: var(--text-secondary-light);
+}
+
+.no-data-message__slot-wrapper {
+  margin-top: toRem(10);
 }
 </style>

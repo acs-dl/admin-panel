@@ -17,13 +17,15 @@
         </span>
       </div>
       <div class="verified-users-list__item">
+        <!--TODO: EDIT SELECT LOGIC-->
         <select-field
           v-if="positions.length"
-          v-model="selectedPositions"
-          :value-options="[ALL_FILTER, ...positions]"
+          v-model="selectedPosition"
+          :value-options="positionsList"
+          @update-id="updateSortingId($event)"
         >
           <template #head="{ selectField }">
-            <app-button color="blue" @click="selectField.toggle()">
+            <app-button color="blue" @click="selectField.toggle">
               <icon
                 class="verified-users-list__select-field-btn-icon"
                 :class="{
@@ -32,13 +34,60 @@
                 }"
                 :name="$icons.pyramid"
               />
-              <span>{{ $t('verified-users-list.select-field-btn-text') }}</span>
+              <span class="verified-users-list__select-field-text">
+                {{ $t('verified-users-list.select-field-btn-text') }}
+              </span>
               <span class="verified-users-list__select-field-btn-position">
-                {{ selectedPositions }}
+                {{ localizedSortingOption }}
               </span>
             </app-button>
           </template>
         </select-field>
+      </div>
+    </div>
+
+    <div class="verified-users-list__header-mobile">
+      <div class="verified-users-list__item verified-users-list__header-select">
+        <!--TODO: EDIT SELECT LOGIC-->
+        <select-field
+          v-if="positions.length"
+          v-model="selectedPosition"
+          :value-options="positionsList"
+          @update-id="updateSortingId($event)"
+        >
+          <template #head="{ selectField }">
+            <app-button color="blue" @click="selectField.toggle">
+              <icon
+                class="verified-users-list__select-field-btn-icon"
+                :class="{
+                  'verified-users-list__select-field-btn-icon--opened':
+                    selectField.isOpen,
+                }"
+                :name="$icons.pyramid"
+              />
+              <span class="verified-users-list__select-field-text">
+                {{ $t('verified-users-list.select-field-btn-text') }}
+              </span>
+              <span class="verified-users-list__select-field-btn-position">
+                {{ localizedSortingOption }}
+              </span>
+            </app-button>
+          </template>
+        </select-field>
+      </div>
+      <div class="verified-users-list__navigation-mobile">
+        <div v-if="verifiedUsers.length" class="verified-users-list__item">
+          <span class="verified-users-list__item-text">
+            {{ $t('verified-users-list.name-text') }}
+          </span>
+        </div>
+        <table-navigation
+          v-if="pageCount > MIN_PAGE_AMOUNT && isLoaded"
+          v-model:current-page="currentPage"
+          class="filters-list-section__navigation"
+          :page-count="pageCount"
+          :total-amount="verifiedUsersCount"
+        />
       </div>
     </div>
 
@@ -98,27 +147,51 @@ import {
   AppButton,
   Icon,
 } from '@/common'
-import { ErrorHandler } from '@/helpers'
+import { ErrorHandler, Bus } from '@/helpers'
 import { VerifiedUser, UserMeta } from '@/types'
-import { MIN_PAGE_AMOUNT, PAGE_LIMIT, ALL_FILTER } from '@/consts'
+import { MIN_PAGE_AMOUNT, PAGE_LIMIT } from '@/consts'
 import { usePlatformStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import VerifiedUsersItem from './VerifiedUsersItem.vue'
+import { useContext } from '@/composables'
+
+const ALL_SORTING_ID = 0
 
 const props = defineProps<{
   searchText: string
 }>()
 
+const { $t } = useContext()
 const { positions } = storeToRefs(usePlatformStore())
 const isLoadFailed = ref(false)
 const isLoaded = ref(false)
-const selectedPositions = ref(ALL_FILTER)
 const verifiedUsers = ref<VerifiedUser[]>([])
 const verifiedUsersCount = ref(0)
 const currentPage = ref(MIN_PAGE_AMOUNT)
+
 const pageCount = computed(() =>
   Math.ceil(verifiedUsersCount.value / PAGE_LIMIT),
 )
+
+const positionsList = computed(() => [
+  {
+    id: ALL_SORTING_ID,
+    text: $t('verified-users-list.all-filter'),
+  },
+  ...positions.value.map((position, idx) => ({ text: position, id: idx + 1 })),
+])
+
+const sortingId = ref(ALL_SORTING_ID)
+const localizedSortingOption = computed(
+  () =>
+    positionsList.value.find(item => item.id === sortingId.value)?.text ??
+    positionsList.value[0].text,
+)
+const selectedPosition = ref(localizedSortingOption.value)
+
+const updateSortingId = (id: number) => {
+  sortingId.value = id
+}
 
 const getUserList = async () => {
   isLoaded.value = false
@@ -128,11 +201,9 @@ const getUserList = async () => {
       '/integrations/identity-svc/users',
       {
         filter: {
-          ...(selectedPositions.value !== ALL_FILTER
-            ? {
-                position: selectedPositions.value,
-              }
-            : {}),
+          ...(sortingId.value === ALL_SORTING_ID
+            ? {}
+            : { position: selectedPosition.value }),
           ...(props.searchText ? { name: props.searchText } : {}),
         },
         page: {
@@ -154,6 +225,7 @@ const deleteUser = async (id: string) => {
   try {
     await api.delete(`/integrations/identity-svc/users/${id}`)
     await getUserList()
+    Bus.success($t('verified-users-list.success-deleting'))
   } catch (e) {
     ErrorHandler.processWithoutFeedback(e)
   }
@@ -167,13 +239,10 @@ watch(
   { immediate: true },
 )
 
-watch(
-  () => [props.searchText, selectedPositions.value],
-  async () => {
-    currentPage.value = 1
-    await getUserList()
-  },
-)
+watch([() => props.searchText, selectedPosition], async () => {
+  currentPage.value = 1
+  await getUserList()
+})
 
 defineExpose({
   getUserList,
@@ -194,6 +263,10 @@ defineExpose({
   display: grid;
   align-items: center;
   grid-template-columns: repeat(3, minmax(toRem(100), 1fr)) toRem(250);
+
+  @include respond-to(medium) {
+    display: none;
+  }
 }
 
 .verified-users-list__item-text {
@@ -205,6 +278,10 @@ defineExpose({
   display: flex;
   justify-content: center;
   margin: toRem(16) 0;
+
+  @include respond-to(medium) {
+    display: none;
+  }
 }
 
 .verified-users-list__content {
@@ -216,6 +293,7 @@ defineExpose({
 }
 
 .verified-users-list__select-field-btn-icon {
+  color: var(--text-primary-light);
   width: toRem(14);
   height: toRem(14);
   margin-right: toRem(8);
@@ -226,9 +304,46 @@ defineExpose({
   }
 }
 
+.verified-users-list__select-field-text {
+  color: var(--text-primary-light);
+  font-weight: 400;
+}
+
 .verified-users-list__select-field-btn-position {
   font-weight: 400;
-  margin-left: toRem(8);
+  margin-left: toRem(16);
   color: var(--primary-main);
+}
+
+.verified-users-list__header-mobile {
+  display: none;
+
+  @include respond-to(medium) {
+    display: block;
+    margin-bottom: toRem(15);
+    padding: 0 toRem(12);
+  }
+}
+
+.verified-users-list__header-select {
+  @include respond-to(medium) {
+    width: fit-content;
+    margin: toRem(24) auto;
+  }
+}
+
+.verified-users-list__navigation-mobile {
+  @include respond-to(medium) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: toRem(24);
+  }
+}
+
+.verified-users-list__list-item {
+  @include respond-to(medium) {
+    max-width: 100%;
+  }
 }
 </style>

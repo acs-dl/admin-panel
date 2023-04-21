@@ -1,17 +1,7 @@
 <template>
   <div class="admin-panel">
-    <div class="admin-panel__sidebar-wrapper">
-      <app-sidebar class="admin-panel__sidebar" />
-    </div>
+    <app-sidebar @open-status-modal="openStatusModal" />
     <router-view class="admin-panel__inner" />
-    <app-button
-      class="admin-panel__status-button"
-      modification="border-rounded"
-      size="small"
-      :text="$t('admin-panel.status-button')"
-      :icon-left="$icons.viewFilledGridAdd"
-      @click="openStatusModal"
-    />
     <transition-modal>
       <status-modal v-if="isStatusModalOpened" @close="closeStatusModal" />
     </transition-modal>
@@ -20,7 +10,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { AppSidebar, AppButton, StatusModal, TransitionModal } from '@/common'
+import { AppSidebar, StatusModal, TransitionModal } from '@/common'
 import { useAuthStore, usePlatformStore } from '@/store'
 import { ErrorHandler } from '@/helpers'
 
@@ -57,19 +47,8 @@ init()
   position: relative;
 }
 
-.admin-panel__sidebar-wrapper {
-  width: 100%;
-  max-width: toRem(300);
-  height: 100vh;
-  background: var(--app-bg-tertiary);
-}
-
-.admin-panel__sidebar {
-  max-width: toRem(300);
-  position: fixed;
-}
-
 .admin-panel__inner {
+  max-width: 100vw;
   width: 100%;
   padding: toRem(35) toRem(40) toRem(38);
   overflow-y: scroll;
@@ -91,6 +70,10 @@ init()
     opacity: 0.8;
     background: var(--background-secondary-main);
     box-shadow: var(--shadow-secondary);
+  }
+
+  @include respond-to(medium) {
+    display: none;
   }
 }
 </style>

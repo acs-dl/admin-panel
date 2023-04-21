@@ -1,9 +1,7 @@
 <template>
   <div class="verified-users">
     <div class="verified-users__title-wrapper">
-      <h2 class="verified-users__title">
-        {{ $t('verified-users.main-title') }}
-      </h2>
+      <page-title :title="$t('verified-users.main-title')" />
       <div class="verified-users__actions">
         <input-field
           v-model="searchValue"
@@ -39,7 +37,12 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { AppButton, CreateUserModal, TransitionModal } from '@/common'
+import {
+  AppButton,
+  CreateUserModal,
+  TransitionModal,
+  PageTitle,
+} from '@/common'
 import { InputField } from '@/fields'
 import VerifiedUsersList from '@/pages/verified-users/VerifiedUsersList.vue'
 import { ICON_NAMES } from '@/enums'
@@ -71,20 +74,52 @@ const reloadCreateUserModal = async () => {
 .verified-users__title {
   font-size: toRem(24);
   font-weight: 700;
+
+  @include respond-to(xsmall) {
+    margin-bottom: toRem(12);
+  }
 }
 
 .verified-users__title-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @include respond-to(medium) {
+    display: block;
+  }
 }
 
 .verified-users__actions {
   display: flex;
   gap: toRem(23);
+
+  @include respond-to(medium) {
+    gap: toRem(12);
+    margin-top: toRem(12);
+    justify-content: space-between;
+  }
+
+  @include respond-to(xsmall) {
+    flex-direction: column;
+  }
 }
 
 .verified-users__search-input {
-  width: toRem(250);
+  max-width: toRem(250);
+
+  @include respond-to(medium) {
+    max-width: inherit;
+  }
+}
+
+.verified-users__add-user-btn {
+  @include respond-to(small) {
+    font-size: toRem(14);
+  }
+
+  @include respond-to(xsmall) {
+    width: 100%;
+  }
 }
 </style>

@@ -36,9 +36,22 @@
 
       <app-button
         v-if="item.username"
-        class="module-tree-item__item-btn"
+        :class="[
+          'module-tree-item__item-btn',
+          'module-tree-item__item-btn--delete',
+        ]"
         color="error"
         :text="$t('module-tree-item.delete-btn')"
+        @click="toggleDeleteModal"
+      />
+
+      <app-button
+        v-if="item.username"
+        :class="[
+          'module-tree-item__item-btn',
+          'module-tree-item__item-btn--trash',
+        ]"
+        :icon-left="$icons.trash"
         @click="toggleDeleteModal"
       />
     </li>
@@ -257,6 +270,13 @@ const deleteUserFromModule = async () => {
     toRem(100);
   gap: toRem(10);
   min-height: toRem(24);
+
+  @include respond-to(tablet) {
+    grid-template-columns:
+      minmax(toRem(100), 1fr)
+      toRem(75)
+      toRem(15);
+  }
 }
 
 .module-tree-item__name {
@@ -282,6 +302,10 @@ const deleteUserFromModule = async () => {
   line-height: 1.2;
 
   @include text-ellipsis;
+
+  @include respond-to(tablet) {
+    font-size: toRem(12);
+  }
 }
 
 .module-tree-item__name-icon {
@@ -298,9 +322,33 @@ const deleteUserFromModule = async () => {
 
 .module-tree-item__item-btn {
   font-weight: 400;
+
+  &--trash {
+    display: none;
+  }
+
+  @include respond-to(tablet) {
+    font-size: toRem(14);
+
+    &--delete {
+      display: none;
+    }
+
+    &--trash {
+      width: 100%;
+      color: var(--text-secondary-light);
+      display: block;
+    }
+  }
 }
 
 .module-tree-item__pagination-button {
   padding-top: toRem(4);
+}
+
+.module-tree-item__date-wrapper {
+  @include respond-to(tablet) {
+    display: none;
+  }
 }
 </style>
