@@ -92,7 +92,8 @@
     "tools-title": "Tools",
     "verified-users-link": "Verified",
     "unverified-users-link": "Unverified",
-    "status-button": "Status of requests"
+    "status-button": "Status of requests",
+    "refresh-button": "Refresh"
   },
   "verified-users": {
     "main-title": "Employee List",
@@ -119,8 +120,7 @@
     "access-level-text": "Access level",
     "delete-text": "Delete",
     "no-data-title": "Nothing found",
-    "no-data-message": "Module does not exist in the system.",
-    "expiration-date-text": "Expiration date"
+    "no-data-message": "Module does not exist in the system."
   },
   "user-details": {
     "add-user-btn": "Add module",
@@ -248,6 +248,36 @@
     "sorting-name-desc": "Name (descending)",
     "sorting-name-asc": "Name (ascending)",
     "sorting-date-desc": "Date (descending)",
+    "sorting-date-asc": "Date (ascending)",
+    "sorting-username-desc": "Username (descending)",
+    "sorting-username-asc": "Username (ascending)"
+  },
+  "refresh-modal": {
+    "title": "Refresh",
+    "subtitle": "To edit the access level, change it below.",
+    "error-message": "Error while loading. Please, try again.",
+    "module-title": "Module",
+    "submodule-title": "Submodule",
+    "module-placeholder": "Select module",
+    "submodule-placeholder": "Enter submodule name",
+    "add-submodule-button": "Add",
+    "submodule-search-error": "This submodule doesn't exist. Try another one.",
+    "submodule-clear-module-error": "Module field must be filled.",
+    "success-refresh": "Modules updated successfully!"
+  },
+  "refresh-modal-steps": {
+    "refresh-all": "Refresh all modules",
+    "refresh-module": "Refresh module",
+    "refresh-submodule": "Refresh submodule"
+  },
+  "refresh-modal-actions": {
+    "cancel-button": "Cancel",
+    "refresh-button": "Refresh"
+  },
+  "refresh-estimate": {
+    "update-text": "Update will take a while",
+    "estimate-text": "Exstimated time: {estimate}",
+    "no-estimate-text": "The update time estimate will appear here when you select its options.",
     "sorting-date-asc": "Date (ascending)",
     "sorting-username-desc": "Username (descending)",
     "sorting-username-asc": "Username (ascending)"

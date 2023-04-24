@@ -18,14 +18,6 @@
         </span>
       </app-button>
 
-      <div class="module-tree-item__date-wrapper">
-        <template v-if="item.expires_at">
-          <span class="module-tree-item__date-text">
-            {{ formatYMD(item.expires_at) }}
-          </span>
-        </template>
-      </div>
-
       <app-button
         v-if="item.access_level"
         class="module-tree-item__item-btn"
@@ -121,7 +113,7 @@ import {
   DeleteModal,
   TransitionModal,
 } from '@/common'
-import { ErrorHandler, formatYMD } from '@/helpers'
+import { ErrorHandler } from '@/helpers'
 import { UserPermissionInfo, UserMeta } from '@/types'
 import { Bus } from '@/helpers'
 import { useContext } from '@/composables'
@@ -266,7 +258,7 @@ const deleteUserFromModule = async () => {
   display: grid;
   grid-template-columns:
     minmax(toRem(100), 1fr)
-    repeat(2, minmax(toRem(100), toRem(150)))
+    minmax(toRem(100), toRem(150))
     toRem(100);
   gap: toRem(10);
   min-height: toRem(24);

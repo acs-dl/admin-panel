@@ -22,27 +22,6 @@ export function formatDMYHM(date: DataConfigType) {
   )
 }
 
-export function formatDMY(date: DataConfigType) {
-  return DateUtil.format(
-    typeof date === 'number' ? DateUtil.fromTimestampSec(date) : date,
-    'DD.MM.YYYY',
-  )
-}
-
-export function formatYMD(date: DataConfigType) {
-  return DateUtil.format(
-    typeof date === 'number' ? DateUtil.fromTimestampSec(date) : date,
-    'YYYY-MM-DD',
-  )
-}
-
-export function formatYMDHMS(date: DataConfigType) {
-  return DateUtil.format(
-    typeof date === 'number' ? DateUtil.fromTimestampSec(date) : date,
-    'YYYY-MM-DD HH:mm:ss',
-  )
-}
-
 export function formatMDY(date: DataConfigType) {
   return DateUtil.format(
     typeof date === 'number' ? DateUtil.fromTimestampSec(date) : date,
