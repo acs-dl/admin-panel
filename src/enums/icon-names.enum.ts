@@ -247,4 +247,6 @@ export enum ICON_NAMES {
   triangle = 'triangle',
   addUser = 'add-user',
   burger = 'burger',
+  boldCheckCircle = 'bold-check-circle',
+  boldInfoCircle = 'bold-info-circle',
 }

@@ -1,22 +1,40 @@
 <template>
   <div class="admin-panel">
-    <app-sidebar @open-status-modal="openStatusModal" />
+    <app-sidebar
+      @open-status-modal="toggleStatusModal"
+      @open-refresh-modal="toggleRefreshModal"
+    />
     <router-view class="admin-panel__inner" />
     <transition-modal>
-      <status-modal v-if="isStatusModalOpened" @close="closeStatusModal" />
+      <status-modal v-if="isStatusModalOpened" @close="toggleStatusModal" />
+      <refresh-modal v-if="isRefreshModalOpened" @close="toggleRefreshModal" />
     </transition-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { AppSidebar, StatusModal, TransitionModal } from '@/common'
+import {
+  AppSidebar,
+  StatusModal,
+  TransitionModal,
+  RefreshModal,
+} from '@/common'
 import { useAuthStore, usePlatformStore } from '@/store'
 import { ErrorHandler } from '@/helpers'
 
 const { logout } = useAuthStore()
 const { getAllPositions, getAllModules, getAllRoles } = usePlatformStore()
 const isStatusModalOpened = ref(false)
+const isRefreshModalOpened = ref(false)
+
+const toggleStatusModal = () => {
+  isStatusModalOpened.value = !isStatusModalOpened.value
+}
+
+const toggleRefreshModal = () => {
+  isRefreshModalOpened.value = !isRefreshModalOpened.value
+}
 
 const init = async () => {
   try {
@@ -25,14 +43,6 @@ const init = async () => {
     logout()
     ErrorHandler.process(e)
   }
-}
-
-const openStatusModal = () => {
-  isStatusModalOpened.value = true
-}
-
-const closeStatusModal = () => {
-  isStatusModalOpened.value = false
 }
 
 init()

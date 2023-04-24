@@ -4,3 +4,9 @@ export enum MODULES {
   email = 'mail',
   telegram = 'telegram',
 }
+
+export enum REFRESH_MODULE_STEPS {
+  all = 'all',
+  module = 'module',
+  submodule = 'submodule',
+}

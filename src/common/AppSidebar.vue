@@ -71,22 +71,32 @@
                   @click="openStatusModal"
                 />
               </li>
+              <li class="app-sidebar__action-item">
+                <app-button
+                  class="app-sidebar__action app-sidebar__tool"
+                  modification="border-rounded"
+                  size="small"
+                  :text="$t('app-sidebar.refresh-button')"
+                  :icon-left="$icons.refresh"
+                  @click="openRefreshModal"
+                />
+              </li>
             </ul>
           </div>
         </div>
         <div class="app-sidebar__footer">
           <div
-            v-if="adminInfo?.name && adminInfo?.surname && accessToken?.email"
+            v-if="adminInfo?.name && adminInfo?.surname && accessToken.email"
             class="app-sidebar__user"
           >
             <div class="app-sidebar__user-logo">
               <div>
-                {{ adminInfo.name[0].toUpperCase() }}
+                {{ adminInfo?.name[0].toUpperCase() }}
               </div>
             </div>
             <div class="app-sidebar__user-info">
               <div class="app-sidebar__user-info-name">
-                {{ `${adminInfo.name} ${adminInfo.surname}` }}
+                {{ `${adminInfo?.name} ${adminInfo?.surname}` }}
               </div>
               <div
                 class="app-sidebar__user-info-email"
@@ -127,6 +137,7 @@ import { WINDOW_BREAKPOINTS } from '@/enums'
 
 const emit = defineEmits<{
   (e: 'open-status-modal'): void
+  (e: 'open-refresh-modal'): void
 }>()
 
 const swipe = useSwipe(document.querySelector('#app'))
@@ -174,6 +185,11 @@ const getAdminInfo = async () => {
 const openStatusModal = () => {
   toggleSidebar()
   emit('open-status-modal')
+}
+
+const openRefreshModal = () => {
+  toggleSidebar()
+  emit('open-refresh-modal')
 }
 
 const init = async () => {

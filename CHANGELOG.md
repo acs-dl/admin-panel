@@ -9,6 +9,7 @@ for further information about branching and tagging conventions.
 
 ## [Unreleased]
 #### Added
+- Refresh modal
 - `AppTooltip` component
 - Multiple verify modules for user
 - Sorting and filtering for unverified users

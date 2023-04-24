@@ -13,11 +13,6 @@
       </div>
       <div class="module-trees__header-item">
         <span class="module-trees__header-item-text">
-          {{ $t('module-trees.expiration-date-text') }}
-        </span>
-      </div>
-      <div class="module-trees__header-item">
-        <span class="module-trees__header-item-text">
           {{ $t('module-trees.access-level-text') }}
         </span>
       </div>
@@ -83,7 +78,7 @@ const searchValue = ref('')
   grid-template-columns:
     toRem(150)
     minmax(toRem(100), 1fr)
-    repeat(2, minmax(toRem(100), toRem(150)))
+    minmax(toRem(100), toRem(150))
     toRem(100);
   gap: toRem(10);
 
