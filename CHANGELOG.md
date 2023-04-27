@@ -26,6 +26,7 @@ for further information about branching and tagging conventions.
 - User details page
 
 #### Fixed
+- `SelectField` logic
 - Design for unverified page
 - Refresh tokens flow
 - `VerifyUserModal` working flow

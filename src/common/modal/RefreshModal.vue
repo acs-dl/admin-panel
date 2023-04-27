@@ -28,7 +28,6 @@
                   <h4 class="refresh-modal__field-title">
                     {{ $t('refresh-modal.module-title') }}
                   </h4>
-                  <!--TODO: FIX SELECT LOGIC-->
                   <select-field
                     v-model="module"
                     scheme="secondary"

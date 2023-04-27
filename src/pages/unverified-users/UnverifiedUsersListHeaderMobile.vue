@@ -1,6 +1,5 @@
 <template>
   <div class="unverified-users-list-header-mobile">
-    <!--TODO: EDIT SELECT LOGIC-->
     <select-field
       class="unverified-users-list-header-mobile__select-field"
       :model-value="currentModuleFilter"
@@ -27,12 +26,10 @@
       </template>
     </select-field>
     <div class="unverified-users-list-header-mobile__actions">
-      <!--TODO: EDIT SELECT LOGIC-->
       <select-field
         class="unverified-users-list-header-mobile__select-field"
-        v-model="sortingType"
+        v-model="sortingId"
         :value-options="sortingOptions"
-        @update-id="updateSortingParams($event)"
       >
         <template #head="{ selectField }">
           <app-button
@@ -46,7 +43,7 @@
               {{ $t('unverified-users-list-header-mobile.sorting-by') }}
             </span>
             <span class="unverified-users-list-header-mobile__filter-type">
-              {{ localizedSortingOption }}
+              {{ selectField.chosenLabel }}
             </span>
           </app-button>
         </template>
@@ -68,7 +65,7 @@
 <script lang="ts" setup>
 import { SelectField } from '@/fields'
 import { AppButton, TableNavigation, Icon } from '@/common'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { REQUEST_ORDER, UNVERIFIED_USER_SORTING_PARAMS } from '@/enums'
 import { useContext } from '@/composables'
 
@@ -104,48 +101,41 @@ const { $t } = useContext()
 
 const sortingOptions = computed(() => [
   {
-    id: SORTING_ID.all,
-    text: $t('unverified-users-list-header-mobile.sorting-all'),
+    value: SORTING_ID.all,
+    label: $t('unverified-users-list-header-mobile.sorting-all'),
   },
   {
-    id: SORTING_ID.dateAsc,
-    text: $t('unverified-users-list-header-mobile.sorting-date-asc'),
+    value: SORTING_ID.dateAsc,
+    label: $t('unverified-users-list-header-mobile.sorting-date-asc'),
   },
   {
-    id: SORTING_ID.dateDesc,
-    text: $t('unverified-users-list-header-mobile.sorting-date-desc'),
+    value: SORTING_ID.dateDesc,
+    label: $t('unverified-users-list-header-mobile.sorting-date-desc'),
   },
   {
-    id: SORTING_ID.nameAsc,
-    text: $t('unverified-users-list-header-mobile.sorting-name-asc'),
+    value: SORTING_ID.nameAsc,
+    label: $t('unverified-users-list-header-mobile.sorting-name-asc'),
   },
   {
-    id: SORTING_ID.nameDesc,
-    text: $t('unverified-users-list-header-mobile.sorting-name-desc'),
+    value: SORTING_ID.nameDesc,
+    label: $t('unverified-users-list-header-mobile.sorting-name-desc'),
   },
   {
-    id: SORTING_ID.usernameDesc,
-    text: $t('unverified-users-list-header-mobile.sorting-username-desc'),
+    value: SORTING_ID.usernameDesc,
+    label: $t('unverified-users-list-header-mobile.sorting-username-desc'),
   },
   {
-    id: SORTING_ID.usernameAcs,
-    text: $t('unverified-users-list-header-mobile.sorting-username-asc'),
+    value: SORTING_ID.usernameAcs,
+    label: $t('unverified-users-list-header-mobile.sorting-username-asc'),
   },
 ])
 
 const sortingId = ref(SORTING_ID.all)
-const localizedSortingOption = computed(
-  () =>
-    sortingOptions.value.find(item => item.id === sortingId.value)?.text ??
-    sortingOptions.value[0].text,
-)
-const sortingType = ref(localizedSortingOption.value)
 
-const updateSortingParams = (id: number) => {
-  sortingId.value = id
+const updateSortingParams = () => {
   let orderToSet
   let sortingTypeToSet
-  switch (id) {
+  switch (sortingId.value) {
     case SORTING_ID.dateAsc:
       orderToSet = REQUEST_ORDER.asc
       sortingTypeToSet = UNVERIFIED_USER_SORTING_PARAMS.createdAt
@@ -178,6 +168,8 @@ const updateSortingParams = (id: number) => {
   emit('update:currentSortingType', sortingTypeToSet)
   emit('update:currentOrder', orderToSet)
 }
+
+watch(sortingId, updateSortingParams)
 </script>
 
 <style scoped lang="scss">

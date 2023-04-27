@@ -8,11 +8,10 @@
       :text="status"
       @click="setNewStatus(status)"
     />
-    <!--TODO: EDIT SELECT LOGIC-->
     <select-field
       class="status-tabs__tab-select"
-      :model-value="currentStatus"
       scheme="secondary"
+      :model-value="currentStatus"
       :value-options="statusesForSelect"
       @update:model-value="setNewStatus($event)"
     />
