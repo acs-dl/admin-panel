@@ -34,7 +34,6 @@
       <h5 class="create-user-form__field-title">
         {{ $t('create-user-form.position-lbl') }}
       </h5>
-      <!--TODO: EDIT SELECT LOGIC-->
       <select-field
         v-model="form.position"
         scheme="secondary"

@@ -5,7 +5,6 @@
         <h5 class="permission-form__field-title">
           {{ $t('permission-form.module-lbl') }}
         </h5>
-        <!--TODO: EDIT SELECT LOGIC-->
         <select-field
           v-model="form.module"
           scheme="secondary"
@@ -71,7 +70,6 @@
           <h5 class="permission-form__field-title">
             {{ $t('permission-form.access-level-lbl') }}
           </h5>
-          <!--TODO: EDIT SELECT LOGIC-->
           <select-field
             v-model="form.accessLevel"
             scheme="secondary"

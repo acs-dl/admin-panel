@@ -17,12 +17,10 @@
         </span>
       </div>
       <div class="verified-users-list__item">
-        <!--TODO: EDIT SELECT LOGIC-->
         <select-field
           v-if="positions.length"
           v-model="selectedPosition"
           :value-options="positionsList"
-          @update-id="updateSortingId($event)"
         >
           <template #head="{ selectField }">
             <app-button color="blue" @click="selectField.toggle">
@@ -38,7 +36,7 @@
                 {{ $t('verified-users-list.select-field-btn-text') }}
               </span>
               <span class="verified-users-list__select-field-btn-position">
-                {{ localizedSortingOption }}
+                {{ selectField.chosenLabel }}
               </span>
             </app-button>
           </template>
@@ -48,12 +46,10 @@
 
     <div class="verified-users-list__header-mobile">
       <div class="verified-users-list__item verified-users-list__header-select">
-        <!--TODO: EDIT SELECT LOGIC-->
         <select-field
           v-if="positions.length"
           v-model="selectedPosition"
           :value-options="positionsList"
-          @update-id="updateSortingId($event)"
         >
           <template #head="{ selectField }">
             <app-button color="blue" @click="selectField.toggle">
@@ -69,7 +65,7 @@
                 {{ $t('verified-users-list.select-field-btn-text') }}
               </span>
               <span class="verified-users-list__select-field-btn-position">
-                {{ localizedSortingOption }}
+                {{ selectField.chosenLabel }}
               </span>
             </app-button>
           </template>
@@ -169,29 +165,22 @@ const verifiedUsers = ref<VerifiedUser[]>([])
 const verifiedUsersCount = ref(0)
 const currentPage = ref(MIN_PAGE_AMOUNT)
 
+const positionsList = computed(() => [
+  {
+    label: $t('verified-users-list.all-filter'),
+    value: ALL_SORTING_ID,
+  },
+  ...positions.value.map(position => ({
+    label: position,
+    value: position,
+  })),
+])
+
+const selectedPosition = ref<string | number>(ALL_SORTING_ID)
+
 const pageCount = computed(() =>
   Math.ceil(verifiedUsersCount.value / PAGE_LIMIT),
 )
-
-const positionsList = computed(() => [
-  {
-    id: ALL_SORTING_ID,
-    text: $t('verified-users-list.all-filter'),
-  },
-  ...positions.value.map((position, idx) => ({ text: position, id: idx + 1 })),
-])
-
-const sortingId = ref(ALL_SORTING_ID)
-const localizedSortingOption = computed(
-  () =>
-    positionsList.value.find(item => item.id === sortingId.value)?.text ??
-    positionsList.value[0].text,
-)
-const selectedPosition = ref(localizedSortingOption.value)
-
-const updateSortingId = (id: number) => {
-  sortingId.value = id
-}
 
 const getUserList = async () => {
   isLoaded.value = false
@@ -201,7 +190,7 @@ const getUserList = async () => {
       '/integrations/identity-svc/users',
       {
         filter: {
-          ...(sortingId.value === ALL_SORTING_ID
+          ...(selectedPosition.value === ALL_SORTING_ID
             ? {}
             : { position: selectedPosition.value }),
           ...(props.searchText ? { name: props.searchText } : {}),

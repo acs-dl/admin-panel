@@ -44,7 +44,6 @@
         @update:current-sorting-type="emit('update:currentSortingType', $event)"
       />
     </div>
-    <!--TODO: EDIT SELECT LOGIC-->
     <select-field
       class="unverified-users-list-header-desktop__select-field"
       :model-value="currentModuleFilter"

@@ -115,10 +115,10 @@ const getModuleImage = (moduleName: string) =>
   max-width: toRem(7);
   color: var(--text-primary-main);
   transition: linear 0.1s;
-  transform: rotate(-90deg);
+  transform: rotate(90deg);
 
   &--open {
-    transform: rotate(90deg);
+    transform: rotate(-90deg);
   }
 }
 
