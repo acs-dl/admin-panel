@@ -21,19 +21,10 @@ export function parseJwt(token: string) {
   }
 }
 
-export async function refreshJwt(
-  refreshToken?: string,
-): Promise<RefreshAuthUserResponse> {
+export async function refreshJwt(): Promise<RefreshAuthUserResponse> {
   const { data } = await api.post<RefreshAuthUserResponse>(
     '/integrations/auth/refresh',
-    {
-      data: {
-        type: 'refresh',
-        attributes: {
-          token: refreshToken ?? '',
-        },
-      },
-    },
+    {},
   )
   return data
 }

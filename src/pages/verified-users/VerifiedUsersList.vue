@@ -5,6 +5,7 @@
         <span class="verified-users-list__item-text">
           {{ $t('verified-users-list.name-text') }}
         </span>
+        <order-buttons v-model:order="currentOrder" />
       </div>
       <div class="verified-users-list__item">
         <span class="verified-users-list__item-text">
@@ -20,6 +21,7 @@
         <select-field
           v-if="positions.length"
           v-model="selectedPosition"
+          class="verified-users-list__item-select"
           :value-options="positionsList"
         >
           <template #head="{ selectField }">
@@ -142,6 +144,7 @@ import {
   TableNavigation,
   AppButton,
   Icon,
+  OrderButtons,
 } from '@/common'
 import { ErrorHandler, Bus } from '@/helpers'
 import { VerifiedUser, UserMeta } from '@/types'
@@ -164,6 +167,8 @@ const isLoaded = ref(false)
 const verifiedUsers = ref<VerifiedUser[]>([])
 const verifiedUsersCount = ref(0)
 const currentPage = ref(MIN_PAGE_AMOUNT)
+const currentOrder = ref('')
+const selectedPosition = ref<string | number>(ALL_SORTING_ID)
 
 const positionsList = computed(() => [
   {
@@ -175,8 +180,6 @@ const positionsList = computed(() => [
     value: position,
   })),
 ])
-
-const selectedPosition = ref<string | number>(ALL_SORTING_ID)
 
 const pageCount = computed(() =>
   Math.ceil(verifiedUsersCount.value / PAGE_LIMIT),
@@ -193,11 +196,12 @@ const getUserList = async () => {
           ...(selectedPosition.value === ALL_SORTING_ID
             ? {}
             : { position: selectedPosition.value }),
-          ...(props.searchText ? { name: props.searchText } : {}),
+          ...(props.searchText ? { search: props.searchText } : {}),
         },
         page: {
           limit: PAGE_LIMIT,
           number: currentPage.value - 1,
+          ...(currentOrder.value ? { order: currentOrder.value } : {}),
         },
       },
     )
@@ -221,7 +225,7 @@ const deleteUser = async (id: string) => {
 }
 
 watch(
-  () => currentPage.value,
+  [currentPage, currentOrder],
   async () => {
     await getUserList()
   },
@@ -256,6 +260,12 @@ defineExpose({
   @include respond-to(medium) {
     display: none;
   }
+}
+
+.verified-users-list__item {
+  display: flex;
+  gap: toRem(5);
+  height: toRem(19);
 }
 
 .verified-users-list__item-text {
@@ -333,6 +343,12 @@ defineExpose({
 .verified-users-list__list-item {
   @include respond-to(medium) {
     max-width: 100%;
+  }
+}
+
+.verified-users-list__item-select {
+  &:deep(.select-field__select-dropdown) {
+    max-height: toRem(200);
   }
 }
 </style>

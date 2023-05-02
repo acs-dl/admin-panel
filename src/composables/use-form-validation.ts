@@ -47,10 +47,15 @@ export const useFormValidation = (
     }
   }
 
+  const cleanErrors = (): void => {
+    validationController.value.$reset()
+  }
+
   return {
     isFieldsValid,
     getFieldErrorMessage,
     touchField,
     isFormValid,
+    cleanErrors,
   }
 }

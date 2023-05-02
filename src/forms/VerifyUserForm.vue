@@ -19,13 +19,13 @@
         </div>
         <div class="verify-user-form__field">
           <h5 class="verify-user-form__field-title">
-            {{ $t('verify-user-form.nickname-lbl') }}
+            {{ $t('verify-user-form.username-lbl') }}
           </h5>
           <input-field
             v-model="form.nickname"
             scheme="secondary"
             class="verify-user-form__field-input"
-            :placeholder="$t('verify-user-form.nickname-lbl')"
+            :placeholder="$t('verify-user-form.username-lbl')"
             :error-message="getFieldErrorMessage('nickname')"
             :disabled="isFormDisabled"
             @blur="touchField('nickname')"

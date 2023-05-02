@@ -6,7 +6,11 @@
       <delete-modal
         v-if="isShownDeleteModal"
         :icon="$icons.trash"
-        :main-title="$t('verified-users-item.delete-main-title')"
+        :main-title="
+          $t('verified-users-item.delete-main-title', {
+            name: `${props.user.name} ${props.user.surname}`,
+          })
+        "
         :secondary-title="$t('verified-users-item.delete-secondary-title')"
         @cancel="toggleDeleteModal"
         @delete="deleteUser"

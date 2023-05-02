@@ -10,3 +10,11 @@ export enum UNVERIFIED_USER_SORTING_PARAMS {
   username = 'username',
   name = 'name',
 }
+
+export enum USER_REQUEST_STATUSES {
+  addUser = 'add_user',
+  updateUser = 'update_user',
+  removeUser = 'remove_user',
+  verifyUser = 'verify_user',
+  deleteUser = 'delete_user',
+}

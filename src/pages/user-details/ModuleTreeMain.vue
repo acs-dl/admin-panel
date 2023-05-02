@@ -9,8 +9,7 @@
       :icon-left="$icons.search"
       :icon-right="iconRight"
       @right-icon-click="clearInput"
-      @keyup.enter="updateList"
-      @blur="updateList"
+      @input="updateList"
     />
     <li class="module-tree-main">
       <app-button
@@ -38,12 +37,12 @@
       <template v-if="!isOpenModuleTree">
         <div class="module-tree-main__column-wrapper">
           <span class="module-tree-main__column-text">
-            {{ $t('module-tree-main.submodule-column') }}
+            {{ headSubmoduleName }}
           </span>
         </div>
         <div class="module-tree-main__column-wrapper">
           <span class="module-tree-main__column-text">
-            {{ $t('module-tree-main.access-level-column') }}
+            {{ headAccessLevel }}
           </span>
         </div>
         <app-button
@@ -76,6 +75,12 @@
       :text="$t('module-tree-main.delete-button')"
       @click="toggleDeleteModal"
     />
+    <li
+      v-if="module.isWasFound && !module.children.length"
+      class="module-tree-main__nothing-found-message"
+    >
+      {{ $t('module-tree-main.nothing-found-message') }}
+    </li>
     <transition-modal>
       <delete-modal
         v-if="isShownDeleteModal"
@@ -96,7 +101,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { AppButton, Icon, DeleteModal, TransitionModal } from '@/common'
-import { ModuleTree, UserModuleSearch } from '@/types'
+import { ModuleTree, SubmoduleName, UserModuleSearch } from '@/types'
 import { api } from '@/api'
 import { ErrorHandler, Bus } from '@/helpers'
 import { useContext } from '@/composables'
@@ -107,6 +112,7 @@ import { ICON_NAMES } from '@/enums'
 
 const props = defineProps<{
   module: ModuleTree
+  submoduleNames: SubmoduleName[]
 }>()
 
 const emit = defineEmits<{
@@ -126,8 +132,25 @@ const moduleIcon = computed(
 
 const iconRight = computed(() => (searchValue.value ? ICON_NAMES.x : undefined))
 
-const moduleName = computed(
-  () => modules.find(el => el.id === props.module.type)?.name ?? '',
+const foundModule = computed(() =>
+  modules.find(el => el.id === props.module.type),
+)
+
+const moduleName = computed(() => foundModule.value?.name ?? '')
+
+const foundSubmodule = computed(() =>
+  props.submoduleNames.find(item => item.module === foundModule.value?.id),
+)
+
+const headSubmoduleName = computed(
+  () =>
+    foundSubmodule.value?.submodule ?? $t('module-tree-main.submodule-column'),
+)
+
+const headAccessLevel = computed(
+  () =>
+    foundSubmodule.value?.accessLevel ??
+    $t('module-tree-main.access-level-column'),
 )
 
 const toggleModuleTree = () => {
@@ -329,5 +352,15 @@ const updateList = () => {
       border-top: toRem(1) solid var(--border-primary-light);
     }
   }
+}
+
+.module-tree-main__nothing-found-message {
+  font-size: toRem(14);
+  color: var(--error-main);
+  margin-top: toRem(8);
+}
+
+.module-tree-main__column-text {
+  color: var(--text-primary-light);
 }
 </style>

@@ -59,13 +59,18 @@ import { api } from '@/api'
 import { UserRequest, UserMeta } from '@/types'
 import { REQUEST_STATUSES } from '@/enums'
 import { MIN_COUNT, MIN_PAGE_AMOUNT } from '@/consts'
+import { useWindowSize } from '@vueuse/core'
 
-const PAGE_LIMIT = 5
+const LARGE_HEIGHT_PAGE_LIMIT = 5
+const NORMAL_HEIGHT_PAGE_LIMIT = 4
+
+const MEDIUM_HEIGHT = 850 //px
 
 const props = defineProps<{
   status: REQUEST_STATUSES
 }>()
 
+const { height } = useWindowSize()
 const { t } = useI18n()
 const userRequestsCount = ref(MIN_COUNT)
 const currentPage = ref(MIN_PAGE_AMOUNT)
@@ -73,17 +78,22 @@ const isLoaded = ref(false)
 const isErrored = ref(false)
 const requests = ref<UserRequest[]>([])
 
+const pageLimit = computed(() =>
+  height.value > MEDIUM_HEIGHT
+    ? LARGE_HEIGHT_PAGE_LIMIT
+    : NORMAL_HEIGHT_PAGE_LIMIT,
+)
+
 const LIST_TITLES = [
   t('status-modal-list.module-title'),
   t('status-modal-list.user-title'),
-  t('status-modal-list.submodule-title'),
-  t('status-modal-list.level-title'),
+  t('status-modal-list.request-title'),
   t('status-modal-list.date-title'),
   t('status-modal-list.status-title'),
 ]
 
 const pageCount = computed(() =>
-  Math.ceil(userRequestsCount.value / PAGE_LIMIT),
+  Math.ceil(userRequestsCount.value / pageLimit.value),
 )
 
 const loadRequests = async () => {
@@ -93,7 +103,7 @@ const loadRequests = async () => {
       '/integrations/orchestrator/requests',
       {
         page: {
-          limit: PAGE_LIMIT,
+          limit: pageLimit.value,
           number: currentPage.value - 1,
         },
         filter: {
@@ -128,6 +138,7 @@ watch(
   flex-direction: column;
   min-width: toRem(1000);
   position: relative;
+  min-height: toRem(300);
 
   @include respond-to(large) {
     min-width: toRem(900);
@@ -154,8 +165,8 @@ watch(
 .status-modal-list__header {
   display: grid;
   grid-template-columns:
-    toRem(80) minmax(toRem(100), 2fr) minmax(toRem(100), 2fr)
-    minmax(toRem(130), 1fr) minmax(toRem(100), 1fr) minmax(toRem(145), 1fr);
+    toRem(80) minmax(toRem(100), toRem(200)) minmax(toRem(100), 3fr)
+    minmax(toRem(100), 1fr) minmax(toRem(145), 1fr);
   gap: toRem(10);
 
   @include respond-to(medium) {

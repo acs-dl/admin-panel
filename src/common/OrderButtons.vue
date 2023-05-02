@@ -42,8 +42,8 @@ import { computed } from 'vue'
 
 const props = defineProps<{
   order: REQUEST_ORDER
-  currentSortingType: string
-  sortingTypeForPick: string
+  currentSortingType?: string
+  sortingTypeForPick?: string
 }>()
 
 const emit = defineEmits<{
@@ -62,11 +62,12 @@ const isClearOrder = computed(() => props.order === REQUEST_ORDER.empty)
 const isDescOrder = computed(() => props.order === REQUEST_ORDER.desc)
 
 const updateState = (order: REQUEST_ORDER) => {
-  emit('update:currentSortingType', props.sortingTypeForPick)
   emit(
     'update:order',
     isClearOrder.value || !isCurrentOrder.value ? order : REQUEST_ORDER.empty,
   )
+  if (!props.sortingTypeForPick) return
+  emit('update:currentSortingType', props.sortingTypeForPick)
 }
 </script>
 

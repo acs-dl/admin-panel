@@ -7,14 +7,8 @@ export type Jwt = {
 
 export type AuthorizeUserResponse = {
   access: string
-  refresh: string
 }
 
 export type RefreshAuthUserResponse = {
   access: string
-  refresh: string
-}
-
-export type NonceMessageResponse = {
-  message: string
 }

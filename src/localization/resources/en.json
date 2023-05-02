@@ -30,7 +30,8 @@
     "success-msg": "Successful sent request for user permission",
     "access-level-lbl": "Access level",
     "access-level-placeholder": "Select access level",
-    "modules-loading-error": "User or module with such data was not found. Try again."
+    "modules-loading-error": "Entered username or submodule was not found.",
+    "loader-text": "Please wait, we are checking the data."
   },
   "delete-modal": {
     "main-title": "Delete",
@@ -51,9 +52,9 @@
     "submit-btn": "Create"
   },
   "verify-user-form": {
-    "user-lbl": "User:",
+    "user-lbl": "User",
     "user-placeholder": "Select User",
-    "nickname-lbl": "Nickname:",
+    "username-lbl": "Username",
     "module-lbl": "Module:",
     "module-placeholder": "Select Module",
     "success-msg": "Successful sent request for verify user",
@@ -73,7 +74,8 @@
     "access-level-column": "Access Level",
     "search-placeholder": "Search by submodule name",
     "icon-description": "Module Icon",
-    "delete-button": "Delete"
+    "delete-button": "Delete",
+    "nothing-found-message": "Nothing was found. Try to find another submodule."
   },
   "module-tree-item": {
     "delete-main-title": "Remove user from {module}",
@@ -92,6 +94,7 @@
     "tools-title": "Tools",
     "verified-users-link": "Verified",
     "unverified-users-link": "Unverified",
+    "alt-for-action-button-icon": "Action icon",
     "status-button": "Status of requests",
     "refresh-button": "Refresh"
   },
@@ -129,8 +132,8 @@
   },
   "verified-users-item": {
     "telegram": "No Info",
-    "delete-main-title": "Remove verify user",
-    "delete-secondary-title": "Click to remove a user from the database"
+    "delete-main-title": "Delete { name } from employee list?",
+    "delete-secondary-title": "Are you sure you want to delete this employee and all his modules? This action cannot be undone."
   },
   "verified-users-item-mobile": {
     "telegram-text": "Telegram",
@@ -200,15 +203,19 @@
   "status-modal-list": {
     "module-title": "Module",
     "user-title": "Username or Phone",
-    "submodule-title": "Submodule",
-    "level-title": "Access level",
+    "request-title": "Request",
     "date-title": "Date",
     "status-title": "Status",
     "empty-message": "No requests",
     "error-message": "Something went wrong"
   },
   "status-modal-list-item": {
-    "icon-description": "Request Module"
+    "icon-description": "Request Module",
+    "removing-request": "Removed from {submodule} submodule",
+    "adding-request": "Added to the {submodule} submodule",
+    "updating-request": "Changed access level in {submodule} submodule",
+    "verifying-request": "Verified in {submodule} module",
+    "deleting-request": "Deleted from {submodule} module"
   },
   "collection-loader": {
     "button-text": "View more"
@@ -263,7 +270,7 @@
     "add-submodule-button": "Add",
     "submodule-search-error": "This submodule doesn't exist. Try another one.",
     "submodule-clear-module-error": "Module field must be filled.",
-    "success-refresh": "Modules updated successfully!"
+    "success-sent-refresh": "Modules update request successfully sent!"
   },
   "refresh-modal-steps": {
     "refresh-all": "Refresh all modules",
@@ -276,7 +283,7 @@
   },
   "refresh-estimate": {
     "update-text": "Update will take a while",
-    "estimate-text": "Exstimated time: {estimate}",
+    "estimate-text": "Estimated time: {estimate}",
     "no-estimate-text": "The update time estimate will appear here when you select its options.",
     "sorting-date-asc": "Date (ascending)",
     "sorting-username-desc": "Username (descending)",
