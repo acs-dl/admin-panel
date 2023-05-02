@@ -28,7 +28,8 @@
             <module-trees
               :id="id"
               :module-trees-list="moduleTreesList"
-              @update-list="searchByModuleName($event)"
+              :submodule-names="submoduleNames"
+              @update-list="debouncedSearchByModuleName($event)"
             />
           </div>
           <template v-else>
@@ -81,6 +82,7 @@ import { ErrorHandler } from '@/helpers'
 import {
   ModuleInfo,
   ModuleTree,
+  SubmoduleName,
   UserModuleSearch,
   UserPermissionInfo,
   VerifiedUser,
@@ -89,6 +91,8 @@ import ModuleTrees from '@/pages/user-details/ModuleTrees.vue'
 import ModuleInfoList from '@/pages/user-details/ModuleInfoList.vue'
 import { router } from '@/router'
 import { ROUTE_NAMES } from '@/enums'
+import { debounce } from 'lodash-es'
+import { DEBOUNCE_DEFAULT_TIMEOUT } from '@/consts'
 
 const props = defineProps<{
   id: string
@@ -100,6 +104,7 @@ const isShownPermissionModal = ref(false)
 const modulesList = ref<ModuleInfo[]>([])
 const moduleTreesList = ref<ModuleTree[]>([])
 const userDetails = ref<VerifiedUser | null>(null)
+const submoduleNames = ref<SubmoduleName[]>([])
 
 const mainTitle = computed(() =>
   userDetails.value
@@ -132,6 +137,11 @@ const getUserModules = async () => {
       `/integrations/orchestrator/users/${props.id}`,
     )
     modulesList.value = data || []
+    submoduleNames.value = modulesList.value.map(item => ({
+      submodule: item.submodule,
+      module: item.module,
+      accessLevel: item.access_level,
+    }))
     await getModuleTreeList()
   } catch (e) {
     isLoadFailed.value = true
@@ -195,6 +205,13 @@ const searchByModuleName = async ({
     ErrorHandler.process(e)
   }
 }
+
+const debouncedSearchByModuleName = debounce(
+  async ({ searchValue, moduleName }: UserModuleSearch) => {
+    await searchByModuleName({ searchValue, moduleName })
+  },
+  DEBOUNCE_DEFAULT_TIMEOUT,
+)
 
 const togglePermissionModal = async () => {
   isShownPermissionModal.value = !isShownPermissionModal.value

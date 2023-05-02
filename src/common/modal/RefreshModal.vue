@@ -30,6 +30,7 @@
                   </h4>
                   <select-field
                     v-model="module"
+                    class="refresh-modal__select"
                     scheme="secondary"
                     :value-options="moduleNamesForRefresh"
                     :placeholder="$t('refresh-modal.module-placeholder')"
@@ -114,8 +115,13 @@ import { computed, ref, watch } from 'vue'
 import { Modal, Icon } from '@/common'
 import { REFRESH_MODULE_STEPS } from '@/enums'
 import { storeToRefs } from 'pinia'
-import { usePlatformStore } from '@/store'
+import { useAuthStore, usePlatformStore } from '@/store'
 import { useContext } from '@/composables'
+
+enum REFRESH_ACTIONS {
+  refreshModule = 'refresh_module',
+  refreshSubmodule = 'refresh_submodule',
+}
 
 type IsSubmoduleExist = {
   is_exists: boolean
@@ -126,6 +132,7 @@ const emit = defineEmits<{
 }>()
 
 const { $t } = useContext()
+const { currentUserId } = useAuthStore()
 const { modules } = storeToRefs(usePlatformStore())
 const isLoaded = ref(true)
 const isLoadFailed = ref(false)
@@ -208,7 +215,7 @@ const loadEstimate = async () => {
       data: {
         attributes: {
           ...(currentModuleId.value
-            ? { moduleName: currentModuleId.value }
+            ? { module_name: currentModuleId.value }
             : {}),
           ...(submodules.value.length ? { submodule: submodules.value } : {}),
         },
@@ -223,7 +230,9 @@ const checkIsSubmoduleLinkValid = async () => {
     '/integrations/orchestrator/submodule',
     {
       filter: {
-        ...(currentModuleId.value ? { moduleName: currentModuleId.value } : {}),
+        ...(currentModuleId.value
+          ? { module_name: currentModuleId.value }
+          : {}),
         ...(submoduleToSearch.value
           ? { submodule: submoduleToSearch.value }
           : {}),
@@ -268,13 +277,22 @@ const refresh = async () => {
   isLoaded.value = false
   isLoadFailed.value = false
   try {
-    await api.post('/integrations/orchestrator/refresh', {
+    await api.post('/integrations/orchestrator/requests', {
       data: {
-        ...(currentModuleId.value ? { moduleName: currentModuleId.value } : {}),
-        ...(submodules.value.length ? { submodule: submodules.value } : {}),
+        attributes: {
+          module: currentModuleId.value,
+          payload: {
+            action: submodules.value.length
+              ? REFRESH_ACTIONS.refreshSubmodule
+              : REFRESH_ACTIONS.refreshModule,
+            ...(submodules.value.length ? { links: submodules.value } : {}),
+          },
+          from_user: currentUserId?.toString(),
+          to_user: currentUserId?.toString(),
+        },
       },
     })
-    Bus.success($t('refresh-modal.success-refresh'))
+    Bus.info($t('refresh-modal.success-sent-refresh'))
   } catch (e) {
     isLoadFailed.value = true
     ErrorHandler.process(e)
@@ -394,5 +412,11 @@ watch(
 .refresh-modal__submodule-input-error {
   font-size: toRem(12);
   color: var(--error-main);
+}
+
+.refresh-modal__select {
+  &:deep(.select-field__select-dropdown) {
+    max-height: toRem(200);
+  }
 }
 </style>

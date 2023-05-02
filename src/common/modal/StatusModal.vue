@@ -35,6 +35,14 @@ const currentStatus = ref(REQUEST_STATUSES.all)
 <style lang="scss" scoped>
 .status-modal__inner {
   padding: toRem(32);
+
+  @include respond-to(medium) {
+    min-width: toRem(500);
+  }
+
+  @include respond-to(small) {
+    min-width: auto;
+  }
 }
 
 .status-modal__header {

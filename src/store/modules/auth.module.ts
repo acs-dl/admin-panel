@@ -8,7 +8,6 @@ import { parseJwt, memorizedJwtRefresh } from '@/helpers'
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     accessToken: null as Jwt | null,
-    refreshToken: null as Jwt | null,
     isLoggedIn: false,
   }),
   persist: true,
@@ -28,28 +27,24 @@ export const useAuthStore = defineStore('auth', {
       )
 
       this.accessToken = parseJwt(data.access)
-      this.refreshToken = parseJwt(data.refresh)
       this.isLoggedIn = true
     },
 
-    logout(): void {
+    async logout(): Promise<void> {
       if (this.isLoggedIn) {
+        await api.post('/integrations/auth/logout', {})
         this.accessToken = null
-        this.refreshToken = null
         this.isLoggedIn = false
-        router.push({ name: ROUTE_NAMES.login })
+        await router.push({ name: ROUTE_NAMES.login })
       }
     },
 
     async restoreSession(): Promise<void> {
-      const { access, refresh } = await memorizedJwtRefresh(
-        this.refreshToken?.token,
-      )
+      const { access } = await memorizedJwtRefresh()
       this.accessToken = parseJwt(access)
-      this.refreshToken = parseJwt(refresh)
     },
   },
   getters: {
-    currentUserId: state => state.refreshToken?.userId || null,
+    currentUserId: state => state.accessToken?.userId || null,
   },
 })

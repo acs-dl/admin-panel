@@ -66,20 +66,50 @@
                   class="app-sidebar__action app-sidebar__tool"
                   modification="border-rounded"
                   size="small"
-                  :text="$t('app-sidebar.status-button')"
-                  :icon-left="$icons.viewFilledGridAdd"
                   @click="openStatusModal"
-                />
+                  @mouseover="toggleStatusButtonAnimation"
+                  @mouseenter="toggleStatusButtonAnimation"
+                >
+                  <img
+                    v-if="actionButtonsHoverState.isMouseOverTheStatusButton"
+                    class="app-sidebar__action-icon"
+                    src="@/assets/gifs/view-filled-grid-add-animated.gif"
+                    :alt="$t('app-sidebar.alt-for-action-button-icon')"
+                  />
+                  <icon
+                    v-else
+                    class="app-sidebar__action-icon"
+                    :name="$icons.viewFilledGridAdd"
+                  />
+                  <span class="app-sidebar__action-text">
+                    {{ $t('app-sidebar.status-button') }}
+                  </span>
+                </app-button>
               </li>
               <li class="app-sidebar__action-item">
                 <app-button
                   class="app-sidebar__action app-sidebar__tool"
                   modification="border-rounded"
                   size="small"
-                  :text="$t('app-sidebar.refresh-button')"
-                  :icon-left="$icons.refresh"
                   @click="openRefreshModal"
-                />
+                  @mouseenter="toggleRefreshButtonAnimation"
+                  @mouseleave="toggleRefreshButtonAnimation"
+                >
+                  <img
+                    v-if="actionButtonsHoverState.isMouseOverTheRefreshButton"
+                    class="app-sidebar__action-icon"
+                    src="@/assets/gifs/refresh-animated.gif"
+                    :alt="$t('app-sidebar.alt-for-action-button-icon')"
+                  />
+                  <icon
+                    v-else
+                    class="app-sidebar__action-icon"
+                    :name="$icons.refresh"
+                  />
+                  <span class="app-sidebar__action-text">
+                    {{ $t('app-sidebar.refresh-button') }}
+                  </span>
+                </app-button>
               </li>
             </ul>
           </div>
@@ -112,7 +142,7 @@
             scheme="default"
             size="default"
             :icon-left="$icons.logout"
-            @click="logout"
+            @click="platformLogout"
           />
         </div>
       </aside>
@@ -121,7 +151,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, reactive } from 'vue'
 import { AppLogo, Icon, AppButton } from '@/common'
 import { useAuthStore } from '@/store'
 import { UnverifiedModuleUser, VerifiedUser } from '@/types'
@@ -147,6 +177,10 @@ const unverifiedUsersCount = ref(0)
 const adminInfo = ref<VerifiedUser | null>(null)
 const asideElement = ref<HTMLElement | null>(null)
 const isVisible = ref(false)
+const actionButtonsHoverState = reactive({
+  isMouseOverTheStatusButton: false,
+  isMouseOverTheRefreshButton: false,
+})
 
 const isLessThanMediumScreen = computed(
   () => windowWidth.value <= WINDOW_BREAKPOINTS.medium,
@@ -190,6 +224,24 @@ const openStatusModal = () => {
 const openRefreshModal = () => {
   toggleSidebar()
   emit('open-refresh-modal')
+}
+
+const toggleStatusButtonAnimation = () => {
+  actionButtonsHoverState.isMouseOverTheStatusButton =
+    !actionButtonsHoverState.isMouseOverTheStatusButton
+}
+
+const toggleRefreshButtonAnimation = () => {
+  actionButtonsHoverState.isMouseOverTheRefreshButton =
+    !actionButtonsHoverState.isMouseOverTheRefreshButton
+}
+
+const platformLogout = async () => {
+  try {
+    await logout()
+  } catch (e) {
+    ErrorHandler.process(e)
+  }
 }
 
 const init = async () => {

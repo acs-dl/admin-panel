@@ -4,7 +4,7 @@
       <app-button
         color="default"
         class="module-tree-item__name"
-        :disabled="!item.deployable || isWasFound"
+        :disabled="isTreeToggleDisabled"
         @click="toggleTree"
       >
         <icon
@@ -145,6 +145,10 @@ const currentPage = ref(FIRST_PAGE)
 const branchesCount = ref(0)
 
 const pagesCount = computed(() => Math.ceil(branchesCount.value / PAGE_LIMIT))
+
+const isTreeToggleDisabled = computed(
+  () => !props.item.deployable || props.isWasFound || isProcessing.value,
+)
 
 const isPaginationButtonViewed = computed(
   () => pagesCount.value - 1 >= currentPage.value,

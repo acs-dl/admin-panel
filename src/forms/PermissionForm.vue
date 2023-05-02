@@ -63,25 +63,6 @@
         </div>
       </template>
       <template v-else>
-        <div
-          v-if="accessList && isAccessLevelRequired"
-          class="permission-form__field"
-        >
-          <h5 class="permission-form__field-title">
-            {{ $t('permission-form.access-level-lbl') }}
-          </h5>
-          <select-field
-            v-model="form.accessLevel"
-            scheme="secondary"
-            class="permission-form__field-select"
-            :value-options="accessNameList"
-            :placeholder="$t('permission-form.access-level-placeholder')"
-            :error-message="getFieldErrorMessage('accessLevel')"
-            :disabled="isFormDisabled"
-            @blur="touchField('accessLevel')"
-          />
-        </div>
-
         <div class="permission-form__field">
           <h5 class="permission-form__field-title">
             {{ $t('permission-form.link-lbl') }}
@@ -120,6 +101,22 @@
             @blur="touchField('username')"
           />
         </div>
+
+        <div v-if="!isTelegramModule" class="permission-form__field">
+          <h5 class="permission-form__field-title">
+            {{ $t('permission-form.access-level-lbl') }}
+          </h5>
+          <select-field
+            v-model="form.accessLevel"
+            scheme="secondary"
+            class="permission-form__field-access-select"
+            :value-options="accessNameList"
+            :placeholder="$t('permission-form.access-level-placeholder')"
+            :error-message="getFieldErrorMessage('accessLevel')"
+            :disabled="isFormDisabled || !(accessList && isAccessLevelRequired)"
+            @blur="touchField('accessLevel')"
+          />
+        </div>
       </template>
       <template v-if="!isModulePrefix && !isEmailModule">
         <div class="permission-form__field">
@@ -153,11 +150,22 @@
 
     <div class="permission-form__loading-modules-info">
       <template v-if="isLoadingPermissionsError && !isEmailModule">
-        <span class="permission-form__loading-modules-info-error">
-          {{ $t('permission-form.modules-loading-error') }}
-        </span>
+        <div class="permission-form__loading-error">
+          <icon
+            class="permission-form__loading-error-icon"
+            :name="$icons.informationCircle"
+          />
+          <span class="permission-form__loading-error-text">
+            {{ $t('permission-form.modules-loading-error') }}
+          </span>
+        </div>
       </template>
-      <loader class="permission-form__loader" v-if="isLoadingPermissions" />
+      <div v-if="isLoadingPermissions" class="permission-form__loader-wrapper">
+        <loader class="permission-form__loader" />
+        <span class="permission-form__loader-text">
+          {{ $t('permission-form.loader-text') }}
+        </span>
+      </div>
     </div>
 
     <div class="permission-form__actions">
@@ -185,7 +193,7 @@
 
 <script setup lang="ts">
 import { reactive, computed, ref, watch } from 'vue'
-import { AppButton, Loader } from '@/common'
+import { AppButton, Loader, Icon } from '@/common'
 import { api } from '@/api'
 import { InputField, SelectField } from '@/fields'
 import { useContext, useForm, useFormValidation } from '@/composables'
@@ -202,7 +210,7 @@ import { MAX_LENGTH, MODULES } from '@/enums'
 import { requiredIf } from '@vuelidate/validators'
 import { debounce } from 'lodash-es'
 
-const DEBOUNCE_TIMEOUT = 3000 //ms
+const DEBOUNCE_TIMEOUT = 2000 //ms
 
 const props = withDefaults(
   defineProps<{
@@ -245,6 +253,8 @@ const moduleId = computed(
 )
 
 const isEmailModule = computed(() => moduleId.value === MODULES.email)
+
+const isTelegramModule = computed(() => moduleId.value === MODULES.telegram)
 
 // TODO: EDIT WHEN BACKEND WILL BE READY
 const isModulePrefix = computed(() => prefix.value !== '+380')
@@ -298,8 +308,13 @@ const form = reactive({
 
 const { isFormDisabled, disableForm, enableForm } = useForm()
 
-const { isFormValid, getFieldErrorMessage, touchField, isFieldsValid } =
-  useFormValidation(form, validationRules)
+const {
+  isFormValid,
+  getFieldErrorMessage,
+  touchField,
+  isFieldsValid,
+  cleanErrors,
+} = useFormValidation(form, validationRules)
 
 const submit = async () => {
   if (!isFormValid()) return
@@ -351,6 +366,18 @@ const cancelForm = () => {
   emit('cancel')
 }
 
+const clearForm = () => {
+  form.username = ''
+  form.link = ''
+  form.accessLevel = ''
+  form.phoneNumber = ''
+  form.name = ''
+  form.surname = ''
+  form.email = ''
+  accessList.value = []
+  cleanErrors()
+}
+
 const getAccessLevelList = async () => {
   if (!isAccessLevelCanBeChosen.value) return
   isLoadingPermissions.value = true
@@ -373,6 +400,10 @@ const getAccessLevelList = async () => {
     )
     isAccessLevelRequired.value = data.req
     accessList.value = data.list
+
+    if (isTelegramModule.value && accessList.value.length) {
+      form.accessLevel = accessList.value[0].name
+    }
 
     if (props.module) {
       const currentAccessLevel = accessList.value
@@ -397,6 +428,8 @@ const deboucedAccessList = debounce(
 watch([() => form.link, () => form.phoneNumber, () => form.username], () => {
   deboucedAccessList()
 })
+
+watch(moduleId, clearForm)
 
 getAccessLevelList()
 </script>
@@ -469,6 +502,18 @@ getAccessLevelList()
   }
 }
 
+.permission-form__field-access-select {
+  &:deep(.select-field__select-dropdown) {
+    max-height: toRem(80);
+  }
+}
+
+.permission-form__loader-wrapper {
+  display: flex;
+  gap: toRem(10);
+  align-items: center;
+}
+
 .permission-form__loader {
   width: toRem(20);
   height: toRem(20);
@@ -486,12 +531,33 @@ getAccessLevelList()
   }
 }
 
-.permission-form__loading-modules-info-error {
+.permission-form__loader-text {
+  font-size: toRem(14);
+  color: var(--text-primary-light);
+}
+
+.permission-form__loading-error-text {
   color: var(--error-main);
-  font-size: toRem(12);
+  font-size: toRem(14);
+  line-height: 1.2;
 }
 
 .permission-form__loading-modules-info {
-  padding: toRem(12) 0;
+  padding: toRem(24) 0;
+}
+
+.permission-form__loading-error {
+  display: flex;
+  align-items: center;
+  gap: toRem(10);
+  border-radius: toRem(12);
+  padding: toRem(16);
+  background: var(--background-primary-dark);
+}
+
+.permission-form__loading-error-icon {
+  max-width: toRem(15);
+  max-height: toRem(15);
+  color: var(--error-main);
 }
 </style>

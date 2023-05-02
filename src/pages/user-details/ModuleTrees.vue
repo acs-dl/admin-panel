@@ -31,6 +31,7 @@
           class="module-trees__item"
           :key="idx"
           :module="item"
+          :submodule-names="submoduleNames"
           @update-list="emit('updateList', $event)"
         />
       </div>
@@ -48,12 +49,13 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { NoDataMessage } from '@/common'
-import { ModuleTree, UserModuleSearch } from '@/types'
+import { ModuleTree, SubmoduleName, UserModuleSearch } from '@/types'
 import ModuleTreeMain from './ModuleTreeMain.vue'
 
 defineProps<{
   id: string
   moduleTreesList: ModuleTree[]
+  submoduleNames: SubmoduleName[]
 }>()
 
 const emit = defineEmits<{

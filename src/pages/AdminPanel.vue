@@ -20,10 +20,9 @@ import {
   TransitionModal,
   RefreshModal,
 } from '@/common'
-import { useAuthStore, usePlatformStore } from '@/store'
+import { usePlatformStore } from '@/store'
 import { ErrorHandler } from '@/helpers'
 
-const { logout } = useAuthStore()
 const { getAllPositions, getAllModules, getAllRoles } = usePlatformStore()
 const isStatusModalOpened = ref(false)
 const isRefreshModalOpened = ref(false)
@@ -40,7 +39,6 @@ const init = async () => {
   try {
     await Promise.all([getAllPositions(), getAllModules(), getAllRoles()])
   } catch (e) {
-    logout()
     ErrorHandler.process(e)
   }
 }

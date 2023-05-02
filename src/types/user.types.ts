@@ -1,4 +1,4 @@
-import { REQUEST_STATUSES } from '@/enums'
+import { REQUEST_STATUSES, USER_REQUEST_STATUSES } from '@/enums'
 
 export type VerifiedUser = {
   id: string
@@ -34,6 +34,8 @@ export type ModuleInfo = {
   username: string
   module: string
   avatar: string
+  submodule: string
+  access_level: string
 }
 
 export type PositionsResponse = {
@@ -106,7 +108,7 @@ export type UserRequest = {
     id: number
   }
   payload?: {
-    action: string
+    action: USER_REQUEST_STATUSES
     user_id: string
     username: string
     phone: string
@@ -118,4 +120,10 @@ export type UserRequest = {
 export type UserModuleSearch = {
   searchValue: string
   moduleName: string
+}
+
+export type SubmoduleName = {
+  submodule?: string
+  module: string
+  accessLevel?: string
 }

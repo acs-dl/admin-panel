@@ -41,8 +41,8 @@ withDefaults(
 }
 
 .no-data-message__icon {
-  width: toRem(300);
-  height: toRem(250);
+  max-width: toRem(300);
+  max-height: toRem(250);
   color: var(--background-primary-light);
 }
 

@@ -26,6 +26,8 @@ for further information about branching and tagging conventions.
 - User details page
 
 #### Fixed
+- Refresh estimate
+- Search by input in submodules
 - `SelectField` logic
 - Design for unverified page
 - Refresh tokens flow

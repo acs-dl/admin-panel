@@ -69,7 +69,7 @@ const deleteUser = () => {
 
 <style lang="scss" scoped>
 .delete-modal__inner {
-  width: toRem(400);
+  max-width: toRem(600);
 
   @include respond-to(medium) {
     width: 100%;

@@ -34,7 +34,11 @@ export function attachStaleTokenHandler(axios: AxiosInstance): void {
         await restoreSession()
         return axios(config)
       } catch (_error) {
-        logout()
+        try {
+          await logout()
+        } catch (logoutError) {
+          return Promise.reject(logoutError)
+        }
         return Promise.reject(_error)
       }
     },

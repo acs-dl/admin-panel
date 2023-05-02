@@ -88,7 +88,7 @@ const getModulePermissions = async () => {
         },
       },
     )
-    if (data?.submodule[0]?.length) {
+    if (!data?.submodule?.length) {
       return
     }
     submoduleName.value = isGitModules.value
@@ -116,6 +116,7 @@ getModulePermissions()
 
 .verify-module-item__icon {
   max-width: toRem(32);
+  margin-left: toRem(12);
 }
 
 .verify-module-item__buttons {
