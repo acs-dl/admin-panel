@@ -67,8 +67,8 @@
                   modification="border-rounded"
                   size="small"
                   @click="openStatusModal"
-                  @mouseover="toggleStatusButtonAnimation"
                   @mouseenter="toggleStatusButtonAnimation"
+                  @mouseleave="toggleStatusButtonAnimation"
                 >
                   <img
                     v-if="actionButtonsHoverState.isMouseOverTheStatusButton"

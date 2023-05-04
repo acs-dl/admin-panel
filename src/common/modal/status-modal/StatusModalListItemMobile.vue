@@ -125,11 +125,7 @@ const requestStatusIcon = computed(() => {
 }
 
 .status-modal-list-item-mobile__accordion {
-  width: toRem(400);
-
-  @include respond-to(small) {
-    width: 100%;
-  }
+  width: 100%;
 }
 
 .status-modal-list-item-mobile__accordion-button {
@@ -149,6 +145,10 @@ const requestStatusIcon = computed(() => {
       padding-bottom: toRem(12);
       border-bottom: toRem(1) solid var(--border-primary-light);
     }
+  }
+
+  @include respond-to(xsmall) {
+    grid-template-columns: toRem(30) minmax(toRem(70), 1fr) toRem(30) toRem(30);
   }
 }
 
@@ -206,6 +206,8 @@ const requestStatusIcon = computed(() => {
   text-align: left;
   font-size: toRem(14);
   font-weight: 400;
+
+  @include text-ellipsis;
 }
 
 .status-modal-list-item-mobile__name-icon {

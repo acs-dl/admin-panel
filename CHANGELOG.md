@@ -26,6 +26,9 @@ for further information about branching and tagging conventions.
 - User details page
 
 #### Fixed
+- Refresh modules flow
+- `StatusModal` height
+- Text in `PermissionModal`
 - Refresh estimate
 - Search by input in submodules
 - `SelectField` logic

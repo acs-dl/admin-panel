@@ -8,7 +8,8 @@
     <span
       class="verify-module-item__submodule"
       :class="{
-        'verify-module-item__submodule--error': isSubmoduleLoadingError,
+        'verify-module-item__submodule--error': isLoadingSubmoduleError,
+        'verify-module-item__submodule--loading': isLoadingSubmodule,
       }"
       :title="submoduleText"
     >
@@ -55,7 +56,8 @@ const emit = defineEmits<{
 const { $t, $filter } = useContext()
 const { modules } = storeToRefs(usePlatformStore())
 const submoduleName = ref('')
-const isSubmoduleLoadingError = ref(false)
+const isLoadingSubmoduleError = ref(false)
+const isLoadingSubmodule = ref(false)
 
 const moduleImage = computed(
   () => modules.value.find(item => item.id === props.currentModule)?.icon ?? '',
@@ -68,16 +70,20 @@ const isGitModules = computed(
 )
 
 const submoduleText = computed(() => {
-  if (isSubmoduleLoadingError.value) {
-    return $t('verify-module-item.submodule-loading-error')
+  switch (true) {
+    case isLoadingSubmodule.value:
+      return $t('verify-module-item.submodule-loading')
+    case isLoadingSubmoduleError.value:
+      return $t('verify-module-item.submodule-loading-error')
+    case !submoduleName.value:
+      return $t('verify-module-item.no-submodule-info')
+    default:
+      return submoduleName.value
   }
-  if (!submoduleName.value) {
-    return $t('verify-module-item.no-submodule-info')
-  }
-  return submoduleName.value
 })
 
 const getModulePermissions = async () => {
+  isLoadingSubmodule.value = true
   try {
     const { data } = await api.get<UnverifiedModuleUser>(
       '/integrations/unverified-svc/user',
@@ -95,9 +101,10 @@ const getModulePermissions = async () => {
       ? $filter.module(data?.submodule[0])
       : data?.submodule[0]
   } catch (e) {
-    isSubmoduleLoadingError.value = true
+    isLoadingSubmoduleError.value = true
     ErrorHandler.process(e)
   }
+  isLoadingSubmodule.value = false
 }
 getModulePermissions()
 </script>
@@ -139,6 +146,10 @@ getModulePermissions()
 
   &--error {
     color: var(--error-main);
+  }
+
+  &--loading {
+    color: var(--text-primary-light);
   }
 }
 

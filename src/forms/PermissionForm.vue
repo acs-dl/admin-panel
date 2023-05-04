@@ -379,11 +379,10 @@ const clearForm = () => {
 }
 
 const getAccessLevelList = async () => {
-  if (!isAccessLevelCanBeChosen.value) return
+  if (!isAccessLevelCanBeChosen.value || !form.module || !form.link) return
   isLoadingPermissions.value = true
   isLoadingPermissionsError.value = false
   try {
-    if (!form.module || !form.link) return
     isAccessLevelRequired.value = false
     accessList.value = []
     const { data } = await api.get<ModulePermissionsResponse>(

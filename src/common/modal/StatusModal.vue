@@ -1,5 +1,10 @@
 <template>
-  <modal is-close-by-click-outside is-center @click-outside="emit('close')">
+  <modal
+    class="status-modal"
+    is-close-by-click-outside
+    is-center
+    @click-outside="emit('close')"
+  >
     <div class="status-modal__inner">
       <div class="status-modal__header">
         <h4 class="status-modal__title">
@@ -33,7 +38,22 @@ const currentStatus = ref(REQUEST_STATUSES.all)
 </script>
 
 <style lang="scss" scoped>
+.status-modal {
+  &:deep(.modal__pane) {
+    height: calc(100% - #{toRem(30)});
+  }
+
+  @include respond-to(medium) {
+    &:deep(.modal__pane) {
+      height: auto;
+    }
+  }
+}
+
 .status-modal__inner {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
   padding: toRem(32);
 
   @include respond-to(medium) {
@@ -42,6 +62,7 @@ const currentStatus = ref(REQUEST_STATUSES.all)
 
   @include respond-to(small) {
     min-width: auto;
+    padding: toRem(12);
   }
 }
 

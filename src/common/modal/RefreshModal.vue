@@ -276,17 +276,28 @@ const init = async () => {
 const refresh = async () => {
   isLoaded.value = false
   isLoadFailed.value = false
+
+  const endpoint = module.value
+    ? '/integrations/orchestrator/requests'
+    : '/integrations/orchestrator/refresh'
+
   try {
-    await api.post('/integrations/orchestrator/requests', {
+    await api.post(endpoint, {
       data: {
         attributes: {
-          module: currentModuleId.value,
-          payload: {
-            action: submodules.value.length
-              ? REFRESH_ACTIONS.refreshSubmodule
-              : REFRESH_ACTIONS.refreshModule,
-            ...(submodules.value.length ? { links: submodules.value } : {}),
-          },
+          ...(module.value ? { module: currentModuleId.value } : {}),
+          ...(module.value
+            ? {
+                payload: {
+                  action: submodules.value.length
+                    ? REFRESH_ACTIONS.refreshSubmodule
+                    : REFRESH_ACTIONS.refreshModule,
+                  ...(submodules.value.length
+                    ? { links: submodules.value }
+                    : {}),
+                },
+              }
+            : {}),
           from_user: currentUserId?.toString(),
           to_user: currentUserId?.toString(),
         },

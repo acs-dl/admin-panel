@@ -136,6 +136,7 @@ watch(
 .status-modal-list {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   min-width: toRem(1000);
   position: relative;
   min-height: toRem(300);
@@ -146,6 +147,7 @@ watch(
 
   @include respond-to(medium) {
     min-width: auto;
+    flex-grow: initial;
   }
 }
 
