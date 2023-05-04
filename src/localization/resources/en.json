@@ -11,7 +11,8 @@
   "permission-modal": {
     "main-title": "Add new module",
     "edit-main-title": "Edit module",
-    "secondary-title": "To add, select a module and its details"
+    "secondary-create-title": "To add, select a module and its details",
+    "secondary-edit-title": "To edit the access level, change it below."
   },
   "permission-form": {
     "cancel-btn": "Cancel",
@@ -241,6 +242,7 @@
     "verify-btn": "Verify",
     "success-delete": "Request for remove user from module sent successfully",
     "submodule-loading-error": "Error while loading",
+    "submodule-loading": "Loading...",
     "no-submodule-info": "No info"
   },
   "unverified-users-item-mobile": {

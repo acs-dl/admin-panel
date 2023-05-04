@@ -7,14 +7,14 @@
   >
     <div class="permission-modal__inner">
       <div class="permission-modal__icon-wrapper">
-        <icon class="permission-modal__icon" :name="$icons.plusCircle" />
+        <icon class="permission-modal__icon" :name="titleIconName" />
       </div>
       <div class="permission-modal__title-wrapper">
         <h2 class="permission-modal__title">
-          {{ mainTitle }}
+          {{ title }}
         </h2>
         <h3 class="permission-modal__title-secondary">
-          {{ $t('permission-modal.secondary-title') }}
+          {{ subtitle }}
         </h3>
       </div>
       <permission-form
@@ -36,6 +36,7 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePlatformStore } from '@/store'
 import { useContext } from '@/composables'
+import { ICON_NAMES } from '@/enums'
 
 const props = withDefaults(
   defineProps<{
@@ -61,10 +62,20 @@ const foundModuleName = computed(
   () => modules.value.find(el => el.id === props.moduleName)?.name ?? '',
 )
 
-const mainTitle = computed(() =>
+const titleIconName = computed(() =>
+  props.moduleName ? ICON_NAMES.pencil : ICON_NAMES.plusCircle,
+)
+
+const title = computed(() =>
   props.moduleName
     ? $t('permission-modal.edit-main-title')
     : $t('permission-modal.main-title'),
+)
+
+const subtitle = computed(() =>
+  props.moduleName
+    ? $t('permission-modal.secondary-edit-title')
+    : $t('permission-modal.secondary-create-title'),
 )
 
 const cancelForm = () => {

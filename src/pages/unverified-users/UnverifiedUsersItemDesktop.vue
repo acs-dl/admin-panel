@@ -1,6 +1,6 @@
 <template>
-  <div class="unverified-users-item-desktop" :title="usersName">
-    <span class="unverified-users-item-desktop__text">
+  <div class="unverified-users-item-desktop">
+    <span class="unverified-users-item-desktop__text" :title="usersName">
       {{ usersName }}
     </span>
     <span class="unverified-users-item-desktop__text" :title="user.username">

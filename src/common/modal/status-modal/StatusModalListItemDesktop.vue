@@ -8,7 +8,7 @@
     <span class="status-modal-list-item-desktop__username">
       {{ request.payload.username || request.payload.phone }}
     </span>
-    <span class="status-modal-list-item-desktop__info">
+    <span class="status-modal-list-item-desktop__info" :title="requestAction">
       {{ requestAction }}
     </span>
     <span class="status-modal-list-item-desktop__info">
@@ -143,6 +143,7 @@ const closeTooltip = () => {
 .status-modal-list-item-desktop__info {
   color: var(--text-secondary-light);
   line-height: 1.2;
+  cursor: default;
 
   @include text-ellipsis;
 }
