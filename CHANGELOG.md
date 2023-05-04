@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
-## [0.3.0]
+## [0.3.0] - 2023-05-04
 #### Added
 - Disabled permissions editing for Telegram tree
 - Refresh modal
