@@ -22,6 +22,7 @@
         v-if="item.access_level"
         class="module-tree-item__item-btn"
         color="blue"
+        :disabled="isTelegramModule"
         :text="item.access_level?.name"
         @click="togglePermissionModal"
       />
@@ -113,12 +114,13 @@ import {
   DeleteModal,
   TransitionModal,
 } from '@/common'
+import ModuleTreesItem from '@/pages/user-details/ModuleTreesItem.vue'
 import { ErrorHandler } from '@/helpers'
 import { UserPermissionInfo, UserMeta } from '@/types'
 import { Bus } from '@/helpers'
 import { useContext } from '@/composables'
-import ModuleTreesItem from '@/pages/user-details/ModuleTreesItem.vue'
 import { useAuthStore } from '@/store'
+import { MODULES } from '@/enums'
 
 const FIRST_PAGE = 0
 const PAGE_LIMIT = 10
@@ -157,6 +159,8 @@ const isPaginationButtonViewed = computed(
 const branchName = computed(() =>
   props.isWasFound ? props.item.link : props.item.path,
 )
+
+const isTelegramModule = computed(() => props.moduleName === MODULES.telegram)
 
 const loadNextLevelTree = async () => {
   isProcessing.value = true

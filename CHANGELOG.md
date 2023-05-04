@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
-## [Unreleased]
+## [0.3.0]
 #### Added
+- Disabled permissions editing for Telegram tree
 - Refresh modal
 - `AppTooltip` component
 - Multiple verify modules for user
@@ -62,6 +63,7 @@ for further information about branching and tagging conventions.
 #### Under the hood changes
 - Initiated and setup project
 
-[Unreleased]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/compare/0.2.0...main
+[Unreleased]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/compare/0.3.0...main
+[0.3.0]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/compare/0.2.0...0.3.0
 [0.2.0]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/compare/0.1.0...0.2.0
 [0.1.0]: https://gitlab.com/distributed_lab/acs/acs-admin-panel/tags/0.1.0
