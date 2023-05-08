@@ -98,6 +98,7 @@ const pageCount = computed(() =>
 
 const loadRequests = async () => {
   isLoaded.value = false
+  isErrored.value = false
   try {
     const { data, meta } = await api.get<UserRequest[], UserMeta>(
       '/integrations/orchestrator/requests',
@@ -124,7 +125,15 @@ const loadRequests = async () => {
 }
 
 watch(
-  [currentPage, () => props.status, pageLimit],
+  () => props.status,
+  async () => {
+    currentPage.value = MIN_PAGE_AMOUNT
+    await loadRequests()
+  },
+)
+
+watch(
+  [currentPage, pageLimit],
   async () => {
     await loadRequests()
   },
