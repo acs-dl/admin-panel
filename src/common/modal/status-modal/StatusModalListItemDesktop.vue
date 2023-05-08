@@ -62,7 +62,11 @@ const currentModule = computed(() =>
 
 const iconLink = computed(() => currentModule.value?.icon ?? '')
 
-const requestedSubmoduleLink = computed(() => props.request.payload?.link)
+const requestedSubmoduleLink = computed(() => {
+  const linksArr = props.request.payload?.links
+  const linkText = props.request.payload?.link
+  return linksArr?.length ? linksArr[0] : linkText
+})
 
 const statusModifier = computed(() => props.request.status.split(' ').join('-'))
 
@@ -90,6 +94,12 @@ const requestAction = computed(() => {
       })
     case USER_REQUEST_STATUSES.verifyUser:
       return $t('status-modal-list-item.verifying-request', {
+        submodule: infoMessageAboutModule.value,
+      })
+    case USER_REQUEST_STATUSES.refreshModule:
+      return $t('status-modal-list-item.refresh-module')
+    case USER_REQUEST_STATUSES.refreshSubmodule:
+      return $t('status-modal-list-item.refresh-submodule', {
         submodule: infoMessageAboutModule.value,
       })
     default:

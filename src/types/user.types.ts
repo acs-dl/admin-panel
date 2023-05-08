@@ -112,6 +112,7 @@ export type UserRequest = {
     user_id: string
     username: string
     phone: string
+    links?: string[]
     link?: string
     access_level?: number
   }

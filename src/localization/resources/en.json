@@ -216,7 +216,9 @@
     "adding-request": "Added to the {submodule} submodule",
     "updating-request": "Changed access level in {submodule} submodule",
     "verifying-request": "Verified in {submodule} module",
-    "deleting-request": "Deleted from {submodule} module"
+    "deleting-request": "Deleted from {submodule} module",
+    "refresh-module": "Update of the module",
+    "refresh-submodule": "Update of the submodule {submodule}"
   },
   "collection-loader": {
     "button-text": "View more"

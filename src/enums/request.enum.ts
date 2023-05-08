@@ -17,4 +17,6 @@ export enum USER_REQUEST_STATUSES {
   removeUser = 'remove_user',
   verifyUser = 'verify_user',
   deleteUser = 'delete_user',
+  refreshModule = 'refresh_module',
+  refreshSubmodule = 'refresh_submodule',
 }
