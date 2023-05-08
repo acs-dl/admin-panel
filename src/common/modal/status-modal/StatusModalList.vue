@@ -124,7 +124,7 @@ const loadRequests = async () => {
 }
 
 watch(
-  [currentPage, () => props.status],
+  [currentPage, () => props.status, pageLimit],
   async () => {
     await loadRequests()
   },
