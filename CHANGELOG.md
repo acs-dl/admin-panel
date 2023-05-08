@@ -9,6 +9,7 @@ for further information about branching and tagging conventions.
 
 ## [Unrealised]
 #### Fixed
+- `StatusModal` current page number
 - Status modal request statuses
 
 ## [0.3.0] - 2023-05-04
