@@ -125,7 +125,15 @@ const loadRequests = async () => {
 }
 
 watch(
-  [currentPage, () => props.status, pageLimit],
+  () => props.status,
+  async () => {
+    currentPage.value = MIN_PAGE_AMOUNT
+    await loadRequests()
+  },
+)
+
+watch(
+  [currentPage, pageLimit],
   async () => {
     await loadRequests()
   },
