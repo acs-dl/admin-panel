@@ -16,8 +16,8 @@
       v-model="tablePage"
       :max="pageCount"
       :min="MIN_PAGES_AMOUNT"
-      @keydown.enter="emit('update:currentPage', tablePage || pageCount)"
-      @blur="emit('update:currentPage', tablePage || pageCount)"
+      @keydown.enter="emit('update:currentPage', +tablePage || pageCount)"
+      @blur="emit('update:currentPage', +tablePage || pageCount)"
     />
     <span class="table-navigation__text">
       <span class="table-navigation__page-number">

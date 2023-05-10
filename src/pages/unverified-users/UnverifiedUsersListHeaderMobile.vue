@@ -48,16 +48,13 @@
           </app-button>
         </template>
       </select-field>
-      <div class="unverified-users-list__pagination">
-        <table-navigation
-          class="filters-list-section__navigation"
-          v-if="pageCount > minPageAmount"
-          :current-page="currentPage"
-          :page-count="pageCount"
-          :total-amount="totalAmount"
-          @update:current-page="emit('update:currentPage', $event)"
-        />
-      </div>
+      <table-navigation
+        v-if="pageCount > minPageAmount"
+        :current-page="currentPage"
+        :page-count="pageCount"
+        :total-amount="totalAmount"
+        @update:current-page="emit('update:currentPage', $event)"
+      />
     </div>
   </div>
 </template>

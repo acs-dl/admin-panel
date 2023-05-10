@@ -49,7 +49,6 @@
         <table-navigation
           v-if="pageCount > MIN_PAGE_AMOUNT"
           v-model:current-page="currentPage"
-          class="filters-list-section__navigation"
           :page-count="pageCount"
           :total-amount="unverifiedUsersCount"
         />
@@ -132,21 +131,14 @@ const getUnverifiedUsersList = async () => {
   isLoaded.value = true
 }
 
-watch(
-  [currentPage, currentSortingType, currentOrder, currentModuleFilter],
-  async () => {
-    await getUnverifiedUsersList()
-  },
-  { immediate: true },
-)
+watch([currentPage, currentSortingType, currentOrder], getUnverifiedUsersList, {
+  immediate: true,
+})
 
-watch(
-  () => [props.searchText, currentModuleFilter],
-  async () => {
-    currentPage.value = 1
-    await getUnverifiedUsersList()
-  },
-)
+watch([() => props.searchText, currentModuleFilter], async () => {
+  currentPage.value = 1
+  await getUnverifiedUsersList()
+})
 
 defineExpose({
   getUnverifiedUsersList,

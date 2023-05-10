@@ -82,7 +82,6 @@
         <table-navigation
           v-if="pageCount > MIN_PAGE_AMOUNT && isLoaded"
           v-model:current-page="currentPage"
-          class="filters-list-section__navigation"
           :page-count="pageCount"
           :total-amount="verifiedUsersCount"
         />
@@ -125,7 +124,6 @@
       <table-navigation
         v-if="pageCount > MIN_PAGE_AMOUNT"
         v-model:current-page="currentPage"
-        class="filters-list-section__navigation"
         :page-count="pageCount"
         :total-amount="verifiedUsersCount"
       />
@@ -149,7 +147,7 @@ import {
 import { ErrorHandler, Bus } from '@/helpers'
 import { VerifiedUser, UserMeta } from '@/types'
 import { MIN_PAGE_AMOUNT, PAGE_LIMIT } from '@/consts'
-import { usePlatformStore } from '@/store'
+import { useAuthStore, usePlatformStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import VerifiedUsersItem from './VerifiedUsersItem.vue'
 import { useContext } from '@/composables'
@@ -161,6 +159,7 @@ const props = defineProps<{
 }>()
 
 const { $t } = useContext()
+const { currentUserId } = useAuthStore()
 const { positions } = storeToRefs(usePlatformStore())
 const isLoadFailed = ref(false)
 const isLoaded = ref(false)
@@ -216,7 +215,14 @@ const getUserList = async () => {
 
 const deleteUser = async (id: string) => {
   try {
-    await api.delete(`/integrations/identity-svc/users/${id}`)
+    await api.delete(`/integrations/identity-svc/users/${id}`, {
+      data: {
+        attributes: {
+          from_user: String(currentUserId),
+          to_user: id,
+        },
+      },
+    })
     await getUserList()
     Bus.success($t('verified-users-list.success-deleting'))
   } catch (e) {
