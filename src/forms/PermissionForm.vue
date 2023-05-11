@@ -212,9 +212,9 @@ import { debounce } from 'lodash-es'
 import { HTTP_STATUS_CODES } from '@distributedlab/json-api-client'
 
 type ParsedErr = {
-  originalError: {
-    response: {
-      status: number
+  originalError?: {
+    response?: {
+      status?: number
     }
   }
 }
@@ -222,22 +222,6 @@ type ParsedErr = {
 const NO_ACCESS_INDEX = 0
 
 const DEBOUNCE_TIMEOUT = 2000 //ms
-
-// TODO: REMODVE MOCKED DATA WHEN BACKEND WILL BE READY
-// const MOCKED_TELEGRAM_CHATS_DATA = [
-//   {
-//     icon: 'https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/shape_circle.png',
-//     followers: 1,
-//   },
-//   {
-//     icon: 'https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/shape_circle.png',
-//     followers: 4,
-//   },
-//   {
-//     icon: 'https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/shape_circle.png',
-//     followers: 66,
-//   },
-// ]
 
 const props = withDefaults(
   defineProps<{
@@ -456,9 +440,9 @@ const getAccessLevelList = async () => {
     }
   } catch (e) {
     // TODO: REWRITE ERROR HANDLING
-    loadingPermissionErrorCode.value = (
-      e as ParsedErr
-    ).originalError.response.status
+    loadingPermissionErrorCode.value =
+      (e as ParsedErr)?.originalError?.response?.status ||
+      HTTP_STATUS_CODES.NOT_FOUND
     isLoadingPermissionsError.value = true
     ErrorHandler.processWithoutFeedback(e)
   }

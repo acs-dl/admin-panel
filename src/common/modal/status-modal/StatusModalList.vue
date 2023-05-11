@@ -138,13 +138,6 @@ watch(
   },
   { immediate: true },
 )
-
-watch(
-  () => props.status,
-  () => {
-    currentPage.value = MIN_PAGE_AMOUNT
-  },
-)
 </script>
 
 <style lang="scss" scoped>

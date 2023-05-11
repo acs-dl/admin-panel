@@ -8,7 +8,11 @@ Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
 ## [Unrealised]
+#### Added
+- Checking is user already exist in submodule
+
 #### Fixed
+- Deleting for verified user
 - `StatusModal` current page number
 - Status modal request statuses
 
