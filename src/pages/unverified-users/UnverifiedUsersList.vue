@@ -135,9 +135,9 @@ watch([currentPage, currentSortingType, currentOrder], getUnverifiedUsersList, {
   immediate: true,
 })
 
-watch([() => props.searchText, currentModuleFilter], async () => {
+watch([() => props.searchText, currentModuleFilter], () => {
   currentPage.value = 1
-  await getUnverifiedUsersList()
+  getUnverifiedUsersList()
 })
 
 defineExpose({

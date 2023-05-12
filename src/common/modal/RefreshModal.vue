@@ -237,7 +237,6 @@ const checkIsSubmoduleLinkValid = async () => {
         ...(submoduleToSearch.value
           ? {
               submodule:
-                submoduleToSearch.value &&
                 submoduleToSearch.value.charAt(0) === '/'
                   ? submoduleToSearch.value.slice(1)
                   : submoduleToSearch.value,
