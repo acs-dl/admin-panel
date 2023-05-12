@@ -245,7 +245,7 @@ const { modules } = storeToRefs(usePlatformStore())
 const { currentUserId } = useAuthStore()
 const isLoadingPermissions = ref(false)
 const isLoadingPermissionsError = ref(false)
-const loadingPermissionErrorCode = ref(HTTP_STATUS_CODES.OK)
+const loadingPermissionsResponseErrorCode = ref<HTTP_STATUS_CODES | null>(null)
 const isAccessLevelRequired = ref(false)
 const accessList = ref<ModulePermissions[]>([])
 const modulesNames = computed(() => modules.value.map(item => item.name))
@@ -280,7 +280,7 @@ const isAccessLevelCanBeChosen = computed(
 )
 
 const isLoadingPermissionsErrorText = computed(() =>
-  loadingPermissionErrorCode.value === HTTP_STATUS_CODES.CONFLICT
+  loadingPermissionsResponseErrorCode.value === HTTP_STATUS_CODES.CONFLICT
     ? $t('permission-form.user-already-exist')
     : $t('permission-form.modules-loading-error'),
 )
@@ -407,7 +407,7 @@ const getAccessLevelList = async () => {
   if (!isAccessLevelCanBeChosen.value || !form.module || !form.link) return
   isLoadingPermissions.value = true
   isLoadingPermissionsError.value = false
-  loadingPermissionErrorCode.value = HTTP_STATUS_CODES.OK
+  loadingPermissionsResponseErrorCode.value = null
   try {
     isAccessLevelRequired.value = false
     accessList.value = []
@@ -440,7 +440,7 @@ const getAccessLevelList = async () => {
     }
   } catch (e) {
     // TODO: REWRITE ERROR HANDLING
-    loadingPermissionErrorCode.value =
+    loadingPermissionsResponseErrorCode.value =
       (e as ParsedErr)?.originalError?.response?.status ||
       HTTP_STATUS_CODES.NOT_FOUND
     isLoadingPermissionsError.value = true
