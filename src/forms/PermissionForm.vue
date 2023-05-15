@@ -245,7 +245,7 @@ const { modules } = storeToRefs(usePlatformStore())
 const { currentUserId } = useAuthStore()
 const isLoadingPermissions = ref(false)
 const isLoadingPermissionsError = ref(false)
-const loadingPermissionsResponseErrorCode = ref<HTTP_STATUS_CODES | null>(null)
+const loadingPermissionsResponseErrorCode = ref<HTTP_STATUS_CODES | ''>('')
 const isAccessLevelRequired = ref(false)
 const accessList = ref<ModulePermissions[]>([])
 const modulesNames = computed(() => modules.value.map(item => item.name))
@@ -407,7 +407,7 @@ const getAccessLevelList = async () => {
   if (!isAccessLevelCanBeChosen.value || !form.module || !form.link) return
   isLoadingPermissions.value = true
   isLoadingPermissionsError.value = false
-  loadingPermissionsResponseErrorCode.value = null
+  loadingPermissionsResponseErrorCode.value = ''
   try {
     isAccessLevelRequired.value = false
     accessList.value = []
