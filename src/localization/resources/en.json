@@ -32,6 +32,7 @@
     "access-level-lbl": "Access level",
     "access-level-placeholder": "Select access level",
     "modules-loading-error": "Entered username or submodule was not found.",
+    "user-already-exist": "Entered user already exist in such module.",
     "loader-text": "Please wait, we are checking the data."
   },
   "delete-modal": {
@@ -218,7 +219,8 @@
     "verifying-request": "Verified in {submodule} module",
     "deleting-request": "Deleted from {submodule} module",
     "refresh-module": "Update of the module",
-    "refresh-submodule": "Update of the submodule {submodule}"
+    "refresh-submodule": "Update of the submodule {submodule}",
+    "invited-state-tooltip": "User was added via invite link"
   },
   "collection-loader": {
     "button-text": "View more"

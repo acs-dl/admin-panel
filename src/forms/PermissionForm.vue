@@ -156,7 +156,7 @@
             :name="$icons.informationCircle"
           />
           <span class="permission-form__loading-error-text">
-            {{ $t('permission-form.modules-loading-error') }}
+            {{ isLoadingPermissionsErrorText }}
           </span>
         </div>
       </template>
@@ -209,6 +209,17 @@ import { storeToRefs } from 'pinia'
 import { MAX_LENGTH, MODULES } from '@/enums'
 import { requiredIf } from '@vuelidate/validators'
 import { debounce } from 'lodash-es'
+import { HTTP_STATUS_CODES } from '@distributedlab/json-api-client'
+
+type ParsedErr = {
+  originalError?: {
+    response?: {
+      status?: number
+    }
+  }
+}
+
+const NO_ACCESS_INDEX = 0
 
 const DEBOUNCE_TIMEOUT = 2000 //ms
 
@@ -234,6 +245,7 @@ const { modules } = storeToRefs(usePlatformStore())
 const { currentUserId } = useAuthStore()
 const isLoadingPermissions = ref(false)
 const isLoadingPermissionsError = ref(false)
+const loadingPermissionsResponseErrorCode = ref<HTTP_STATUS_CODES | ''>('')
 const isAccessLevelRequired = ref(false)
 const accessList = ref<ModulePermissions[]>([])
 const modulesNames = computed(() => modules.value.map(item => item.name))
@@ -248,6 +260,10 @@ const isUsernameInputDisabled = computed(() => Boolean(form.phoneNumber))
 
 const isPhoneInputDisabled = computed(() => Boolean(form.username))
 
+const isNoAccessPermission = computed(
+  () => props.module.access_level.value === NO_ACCESS_INDEX,
+)
+
 const moduleId = computed(
   () => modules.value.find(el => el.name === form.module)?.id,
 )
@@ -261,6 +277,12 @@ const isModulePrefix = computed(() => prefix.value !== '+380')
 
 const isAccessLevelCanBeChosen = computed(
   () => form.link && (form.username || form.phoneNumber),
+)
+
+const isLoadingPermissionsErrorText = computed(() =>
+  loadingPermissionsResponseErrorCode.value === HTTP_STATUS_CODES.CONFLICT
+    ? $t('permission-form.user-already-exist')
+    : $t('permission-form.modules-loading-error'),
 )
 
 const validationRules = computed(() => ({
@@ -331,7 +353,10 @@ const submit = async () => {
           from_user: String(currentUserId),
           to_user: String(props.id),
           payload: {
-            action: isEditForm.value ? 'update_user' : 'add_user',
+            action:
+              isEditForm.value && !isNoAccessPermission.value
+                ? 'update_user'
+                : 'add_user',
             user_id: String(props.id),
             link: form.link,
             access_level: accessLevelValue?.value,
@@ -382,6 +407,7 @@ const getAccessLevelList = async () => {
   if (!isAccessLevelCanBeChosen.value || !form.module || !form.link) return
   isLoadingPermissions.value = true
   isLoadingPermissionsError.value = false
+  loadingPermissionsResponseErrorCode.value = ''
   try {
     isAccessLevelRequired.value = false
     accessList.value = []
@@ -413,6 +439,10 @@ const getAccessLevelList = async () => {
       form.accessLevel = currentAccessLevel?.name ?? ''
     }
   } catch (e) {
+    // TODO: REWRITE ERROR HANDLING
+    loadingPermissionsResponseErrorCode.value =
+      (e as ParsedErr)?.originalError?.response?.status ||
+      HTTP_STATUS_CODES.NOT_FOUND
     isLoadingPermissionsError.value = true
     ErrorHandler.processWithoutFeedback(e)
   }

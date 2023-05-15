@@ -4,4 +4,5 @@ export enum REQUEST_STATUSES {
   inProgress = 'in progress',
   pending = 'pending',
   failed = 'failed',
+  invited = 'invited',
 }
