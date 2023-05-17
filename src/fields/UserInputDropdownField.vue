@@ -1,28 +1,28 @@
 <template>
-  <div class="input-dropdown-field" ref="rootEl">
+  <div class="user-input-dropdown-field" ref="rootEl">
     <input-field
       v-model="searchValue"
       v-bind="$attrs"
-      class="input-dropdown-field__search"
+      class="user-input-dropdown-field__search"
       autocomplete="off"
       :placeholder="placeholder"
       :label="label"
       @input="debounceSearchUsers"
       @focus="toggleDropdown"
     />
-    <transition name="input-dropdown-field">
-      <div v-if="isDropdownOpened" class="input-dropdown-field__inner">
+    <transition name="user-input-dropdown-field">
+      <div v-if="isDropdownOpened" class="user-input-dropdown-field__inner">
         <template v-if="isLoadFailed">
-          <div class="input-dropdown-field__message">
-            {{ $t('input-dropdown-field.error-message') }}
+          <div class="user-input-dropdown-field__message">
+            {{ $t('user-input-dropdown-field.error-message') }}
           </div>
         </template>
         <template v-else>
           <template v-if="users.length">
-            <div class="input-dropdown-field__inner-list">
+            <div class="user-input-dropdown-field__inner-list">
               <button
                 v-for="item in users"
-                class="input-dropdown-field__inner-list-item"
+                class="user-input-dropdown-field__inner-list-item"
                 :key="item.id"
                 type="button"
                 @click="toggleCurrentUser(item)"
@@ -32,8 +32,8 @@
             </div>
           </template>
           <template v-else>
-            <div class="input-dropdown-field__message">
-              {{ $t('input-dropdown-field.empty-message') }}
+            <div class="user-input-dropdown-field__message">
+              {{ $t('user-input-dropdown-field.empty-message') }}
             </div>
           </template>
         </template>
@@ -150,11 +150,11 @@ watch(
 <style lang="scss" scoped>
 $custom-z-index: 1;
 
-.input-dropdown-field {
+.user-input-dropdown-field {
   position: relative;
 }
 
-.input-dropdown-field__inner {
+.user-input-dropdown-field__inner {
   position: absolute;
   left: 0;
   width: 100%;
@@ -168,20 +168,20 @@ $custom-z-index: 1;
   border-radius: toRem(8);
 }
 
-.input-dropdown-field-enter-active,
-.input-dropdown-field-leave-active {
+.user-input-dropdown-field-enter-active,
+.user-input-dropdown-field-leave-active {
   transition: 0.25s ease;
   transition-property: opacity, transform;
 }
 
-.input-dropdown-field-enter-from,
-.input-dropdown-field-leave-to {
+.user-input-dropdown-field-enter-from,
+.user-input-dropdown-field-leave-to {
   opacity: 0;
   transform: scale(0.8);
 }
 
-.input-dropdown-field__inner-list-item,
-.input-dropdown-field__message {
+.user-input-dropdown-field__inner-list-item,
+.user-input-dropdown-field__message {
   padding: toRem(12) var(--field-padding-right) toRem(12)
     var(--field-padding-left);
   font-weight: 400;
@@ -191,7 +191,7 @@ $custom-z-index: 1;
   width: 100%;
 }
 
-.input-dropdown-field__inner-list-item {
+.user-input-dropdown-field__inner-list-item {
   font-size: toRem(16);
   font-weight: 400;
   text-align: left;

@@ -194,7 +194,7 @@
     "login-title": "Log In",
     "submit-btn": "Submit"
   },
-  "input-dropdown-field": {
+  "user-input-dropdown-field": {
     "empty-message": "No users",
     "error-message": "Something went wrong"
   },
@@ -265,7 +265,7 @@
   },
   "refresh-modal": {
     "title": "Refresh",
-    "subtitle": "To edit the access level, change it below.",
+    "subtitle": "To refresh the system, choose the necessary option below.",
     "error-message": "Error while loading. Please, try again.",
     "module-title": "Module",
     "submodule-title": "Submodule",
@@ -273,6 +273,7 @@
     "submodule-placeholder": "Enter submodule name",
     "add-submodule-button": "Add",
     "submodule-search-error": "This submodule doesn't exist. Try another one.",
+    "submodule-exist-error": "Such submodule already exist.",
     "submodule-clear-module-error": "Module field must be filled.",
     "success-sent-refresh": "Modules update request successfully sent!"
   },

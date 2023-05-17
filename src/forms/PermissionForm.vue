@@ -67,7 +67,19 @@
           <h5 class="permission-form__field-title">
             {{ $t('permission-form.link-lbl') }}
           </h5>
+          <user-input-dropdown-field
+            v-if="isTelegramModule"
+            v-model="form.link"
+            scheme="secondary"
+            class="permission-form__field-input"
+            :class="`permission-form__field-input--${moduleId}`"
+            :placeholder="$t('permission-form.link-placeholder')"
+            :error-message="getFieldErrorMessage('link')"
+            :disabled="isFormDisabled || isEditForm"
+            @blur="touchField('link')"
+          />
           <input-field
+            v-else
             v-model="form.link"
             scheme="secondary"
             class="permission-form__field-input"
@@ -195,7 +207,7 @@
 import { reactive, computed, ref, watch } from 'vue'
 import { AppButton, Loader, Icon } from '@/common'
 import { api } from '@/api'
-import { InputField, SelectField } from '@/fields'
+import { InputField, SelectField, UserInputDropdownField } from '@/fields'
 import { useContext, useForm, useFormValidation } from '@/composables'
 import { maxLength, required, email } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
@@ -247,6 +259,10 @@ const prefix = computed(
 const isUsernameInputDisabled = computed(() => Boolean(form.phoneNumber))
 
 const isPhoneInputDisabled = computed(() => Boolean(form.username))
+
+const parsedUsername = computed(() =>
+  form.username.charAt(0) === '@' ? form.username.slice(1) : form.username,
+)
 
 const moduleId = computed(
   () => modules.value.find(el => el.name === form.module)?.id,
@@ -335,7 +351,11 @@ const submit = async () => {
             user_id: String(props.id),
             link: form.link,
             access_level: accessLevelValue?.value,
-            ...(form.username ? { username: form.username } : {}),
+            ...(form.username
+              ? {
+                  username: parsedUsername.value,
+                }
+              : {}),
             ...(form.phoneNumber
               ? { phone: prefix.value + form.phoneNumber.split(' ').join('') }
               : {}),
@@ -390,7 +410,11 @@ const getAccessLevelList = async () => {
       {
         filter: {
           link: form.link,
-          ...(form.username ? { username: form.username } : {}),
+          ...(form.username
+            ? {
+                username: parsedUsername.value,
+              }
+            : {}),
           ...(form.phoneNumber
             ? { phone: prefix.value + form.phoneNumber.split(' ').join('') }
             : {}),
