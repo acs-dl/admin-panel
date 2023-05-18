@@ -8,6 +8,9 @@ Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
 ## [Unrealised]
+#### Added
+- Telegram chats dropdown
+
 #### Fixed
 - `StatusModal` current page number
 - Status modal request statuses

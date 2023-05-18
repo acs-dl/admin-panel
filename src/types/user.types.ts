@@ -81,6 +81,8 @@ export type UserPermissionInfo = {
   username: string
   level: number
   phone?: string
+  submodule_access_hash?: string | null
+  submodule_id?: string | null
   children: UserPermissionInfo[]
 }
 
@@ -127,4 +129,19 @@ export type SubmoduleName = {
   submodule?: string
   module: string
   accessLevel?: string
+}
+
+export type TelegramChats = {
+  submodules: TelegramChat[]
+}
+
+export type TelegramChat = {
+  id: string
+  attributes: {
+    members_amount: number
+    submodule_access_hash: string | null
+    submodule_id: string | null
+    title: string
+    photo?: string | null
+  }
 }

@@ -195,8 +195,9 @@
     "submit-btn": "Submit"
   },
   "user-input-dropdown-field": {
-    "empty-message": "No users",
-    "error-message": "Something went wrong"
+    "empty-message": "Nothing found.",
+    "error-message": "Something went wrong",
+    "followers-count": "{count} followers"
   },
   "status-modal": {
     "title": "Status of requests"

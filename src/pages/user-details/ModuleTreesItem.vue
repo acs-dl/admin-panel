@@ -217,6 +217,12 @@ const deleteUserFromModule = async () => {
             user_id: String(props.id),
             link: props.item.link,
             username: props.item.username,
+            ...(isTelegramModule.value
+              ? { submodule_access_hash: props.item.submodule_access_hash }
+              : {}),
+            ...(isTelegramModule.value
+              ? { submodule_id: props.item.submodule_id }
+              : {}),
           },
         },
         relationships: {

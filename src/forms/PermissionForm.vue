@@ -67,11 +67,16 @@
           <h5 class="permission-form__field-title">
             {{ $t('permission-form.link-lbl') }}
           </h5>
-          <user-input-dropdown-field
+          <input-dropdown-field
             v-if="isTelegramModule"
-            v-model="form.link"
+            v-model="currentTelegramChatId"
+            v-model:search-value="form.link"
             scheme="secondary"
+            dropdown-scheme="secondary"
             class="permission-form__field-input"
+            :pick-options="telegramChatsForPick"
+            :is-loaded="isTelegramChatsLoaded"
+            :is-load-failed="isTelegramChatsLoadingError"
             :class="`permission-form__field-input--${moduleId}`"
             :placeholder="$t('permission-form.link-placeholder')"
             :error-message="getFieldErrorMessage('link')"
@@ -207,7 +212,7 @@
 import { reactive, computed, ref, watch } from 'vue'
 import { AppButton, Loader, Icon } from '@/common'
 import { api } from '@/api'
-import { InputField, SelectField, UserInputDropdownField } from '@/fields'
+import { InputField, SelectField, InputDropdownField } from '@/fields'
 import { useContext, useForm, useFormValidation } from '@/composables'
 import { maxLength, required, email } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
@@ -215,6 +220,9 @@ import {
   ModulePermissionsResponse,
   UserPermissionInfo,
   ModulePermissions,
+  TelegramChat,
+  InputDropdownPickOption,
+  TelegramChats,
 } from '@/types'
 import { useAuthStore, usePlatformStore } from '@/store'
 import { storeToRefs } from 'pinia'
@@ -223,6 +231,8 @@ import { requiredIf } from '@vuelidate/validators'
 import { debounce } from 'lodash-es'
 
 const DEBOUNCE_TIMEOUT = 2000 //ms
+
+const DEBOUNCE_TELEGRAM_TIMEOUT = 200 //ms
 
 const props = withDefaults(
   defineProps<{
@@ -248,6 +258,10 @@ const isLoadingPermissions = ref(false)
 const isLoadingPermissionsError = ref(false)
 const isAccessLevelRequired = ref(false)
 const accessList = ref<ModulePermissions[]>([])
+const telegramChats = ref<TelegramChat[]>([])
+const isTelegramChatsLoaded = ref(false)
+const isTelegramChatsLoadingError = ref(false)
+const currentTelegramChatId = ref(NaN)
 const modulesNames = computed(() => modules.value.map(item => item.name))
 const accessNameList = computed(() => accessList.value.map(item => item.name))
 const isEditForm = computed(() => Boolean(props.module))
@@ -277,6 +291,21 @@ const isModulePrefix = computed(() => prefix.value !== '+380')
 
 const isAccessLevelCanBeChosen = computed(
   () => form.link && (form.username || form.phoneNumber),
+)
+
+const telegramChatsForPick = computed<InputDropdownPickOption[]>(() =>
+  telegramChats.value.map(chat => ({
+    id: Number(chat.id),
+    text: chat.attributes.title,
+    image: chat.attributes.photo,
+    followersCount: chat.attributes.members_amount,
+  })),
+)
+
+const selectedTelegramChat = computed(() =>
+  telegramChats.value.find(
+    chat => Number(chat.id) === currentTelegramChatId.value,
+  ),
 )
 
 const validationRules = computed(() => ({
@@ -362,6 +391,21 @@ const submit = async () => {
             ...(form.name ? { name: form.name } : {}),
             ...(form.surname ? { surname: form.surname } : {}),
             ...(form.email ? { email: form.email } : {}),
+            ...(isTelegramModule.value
+              ? {
+                  submodule_access_hash: selectedTelegramChat.value
+                    ? selectedTelegramChat.value.attributes
+                        .submodule_access_hash
+                    : null,
+                }
+              : {}),
+            ...(isTelegramModule.value
+              ? {
+                  submodule_id: selectedTelegramChat.value
+                    ? selectedTelegramChat.value.attributes.submodule_id
+                    : null,
+                }
+              : {}),
           },
         },
         relationships: {
@@ -443,14 +487,50 @@ const getAccessLevelList = async () => {
   isLoadingPermissions.value = false
 }
 
+const loadTelegramChats = async () => {
+  if (!form.link) {
+    telegramChats.value = []
+    return
+  }
+  isTelegramChatsLoadingError.value = false
+  isTelegramChatsLoaded.value = false
+  try {
+    const { data } = await api.get<TelegramChats>(
+      '/integrations/telegram/submodule',
+      {
+        filter: {
+          link: form.link,
+        },
+      },
+    )
+    telegramChats.value = data.submodules
+  } catch (e) {
+    isTelegramChatsLoadingError.value = false
+    ErrorHandler.processWithoutFeedback(e)
+  }
+  isTelegramChatsLoaded.value = true
+}
+
+const debouncedChats = debounce(loadTelegramChats, DEBOUNCE_TELEGRAM_TIMEOUT)
+
 const deboucedAccessList = debounce(
   async () => await getAccessLevelList(),
   DEBOUNCE_TIMEOUT,
 )
 
-watch([() => form.link, () => form.phoneNumber, () => form.username], () => {
+watch([() => form.phoneNumber, () => form.username], () => {
   deboucedAccessList()
 })
+
+watch(
+  () => form.link,
+  () => {
+    if (isTelegramModule.value) {
+      debouncedChats()
+    }
+    deboucedAccessList()
+  },
+)
 
 watch(moduleId, clearForm)
 
@@ -500,6 +580,10 @@ getAccessLevelList()
 }
 
 .permission-form__field-input {
+  :deep(.user-input-dropdown-field__inner) {
+    max-height: toRem(171);
+  }
+
   &--phone {
     &:deep(.input-field__input) {
       padding-left: toRem(70);

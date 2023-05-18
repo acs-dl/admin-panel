@@ -7,13 +7,16 @@
             {{ $t('verify-user-form.user-lbl') }}
           </h5>
           <input-dropdown-field
-            v-model="form.name"
-            v-model:user="selectedUser"
+            v-model="selectedUserId"
+            v-model:search-value="form.name"
             scheme="secondary"
             class="verify-user-form__field-input"
             :placeholder="$t('verify-user-form.user-placeholder')"
             :error-message="getFieldErrorMessage('name')"
             :disabled="isFormDisabled"
+            :is-loaded="isLoaded"
+            :is-load-failed="isLoadFailed"
+            :pick-options="optionsToPick"
             @blur="touchField('name')"
           />
         </div>
@@ -58,15 +61,22 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { AppButton } from '@/common'
 import { api } from '@/api'
 import { InputField, InputDropdownField } from '@/fields'
 import { useContext, useForm, useFormValidation } from '@/composables'
 import { required } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
-import { UnverifiedModuleUser, VerifiedUser } from '@/types'
+import {
+  UnverifiedModuleUser,
+  VerifiedUser,
+  InputDropdownPickOption,
+} from '@/types'
 import { useAuthStore } from '@/store'
+import { debounce } from 'lodash-es'
+
+const LOAD_USERS_TIMEOUT = 200 //ms
 
 const props = withDefaults(
   defineProps<{
@@ -86,7 +96,10 @@ const emit = defineEmits<{
 
 const { $t } = useContext()
 const { currentUserId } = useAuthStore()
-const selectedUser = ref<VerifiedUser | null>(null)
+const users = ref<VerifiedUser[]>([])
+const selectedUserId = ref(NaN)
+const isLoadFailed = ref(false)
+const isLoaded = ref(false)
 const form = reactive({
   name: '',
   module: props.currentModule ?? '',
@@ -104,9 +117,40 @@ const { isFormValid, getFieldErrorMessage, touchField } = useFormValidation(
   },
 )
 
+const selectedUser = computed(() =>
+  users.value.find(user => Number(user.id) === selectedUserId.value),
+)
+
+const optionsToPick = computed<InputDropdownPickOption[]>(() =>
+  users.value.map(user => ({
+    id: Number(user.id),
+    text: user.name + ' ' + user.surname,
+  })),
+)
+
 const cancelForm = () => {
   emit('cancel')
 }
+
+const loadUsers = async () => {
+  try {
+    const { data } = await api.get<VerifiedUser[]>(
+      '/integrations/identity-svc/users',
+      {
+        filter: {
+          ...(form.name ? { search: form.name } : {}),
+        },
+      },
+    )
+    users.value = data
+  } catch (e) {
+    isLoadFailed.value = false
+    ErrorHandler.processWithoutFeedback(e)
+  }
+  isLoaded.value = true
+}
+
+const debouncedUsersLoad = debounce(loadUsers, LOAD_USERS_TIMEOUT)
 
 const submit = async () => {
   if (!isFormValid() || !selectedUser.value?.id) return
@@ -141,6 +185,8 @@ const submit = async () => {
   }
   enableForm()
 }
+
+watch(() => form.name, debouncedUsersLoad, { immediate: true })
 </script>
 
 <style lang="scss" scoped>
