@@ -610,7 +610,7 @@ getAccessLevelList()
 }
 
 .permission-form__field-input {
-  :deep(.user-input-dropdown-field__inner) {
+  &:deep(.user-input-dropdown-field__inner) {
     max-height: toRem(171);
   }
 

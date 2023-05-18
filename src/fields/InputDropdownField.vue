@@ -1,56 +1,53 @@
 <template>
-  <div class="user-input-dropdown-field" ref="rootEl">
+  <div class="input-dropdown-field" ref="rootEl">
     <input-field
       :model-value="searchValue"
       v-bind="$attrs"
-      class="user-input-dropdown-field__search"
+      class="input-dropdown-field__search"
       autocomplete="off"
       :placeholder="placeholder"
       :label="label"
       @update:model-value="search"
       @focus="toggleDropdown"
     />
-    <transition name="user-input-dropdown-field">
-      <div v-if="isDropdownOpened" class="user-input-dropdown-field__inner">
+    <transition name="input-dropdown-field">
+      <div v-if="isDropdownOpened" class="input-dropdown-field__inner">
         <template v-if="isLoadFailed">
-          <div class="user-input-dropdown-field__message">
-            {{ $t('user-input-dropdown-field.error-message') }}
+          <div class="input-dropdown-field__message">
+            {{ $t('input-dropdown-field.error-message') }}
           </div>
         </template>
         <template v-else>
           <template v-if="pickOptions.length">
-            <div class="user-input-dropdown-field__list">
+            <div class="input-dropdown-field__list">
               <button
                 v-for="item in pickOptions"
-                class="user-input-dropdown-field__list-item"
+                class="input-dropdown-field__list-item"
                 type="button"
                 :key="item.id"
-                :class="[
-                  `user-input-dropdown-field__list-item--${dropdownScheme}`,
-                ]"
+                :class="`input-dropdown-field__list-item--${dropdownScheme}`"
                 @click="selectCurrentUser(item)"
               >
-                <!--TODO: REMOVE-->
                 <img
                   v-if="item.image"
-                  class="user-input-dropdown-field__list-item-image"
+                  class="input-dropdown-field__list-item-image"
                   :src="item.image"
                   :alt="item.text"
                 />
                 <icon
                   v-else-if="Number.isInteger(item.followersCount)"
-                  class="user-input-dropdown-field__list-item-image"
+                  class="input-dropdown-field__list-item-image"
                   :name="$icons.ban"
                 />
-                <span class="user-input-dropdown-field__list-item-text">
+                <span class="input-dropdown-field__list-item-text">
                   {{ item.text }}
                 </span>
                 <span
                   v-if="Number.isInteger(item.followersCount)"
-                  class="user-input-dropdown-field__list-second-item-text"
+                  class="input-dropdown-field__list-second-item-text"
                 >
                   {{
-                    $t('user-input-dropdown-field.followers-count', {
+                    $t('input-dropdown-field.followers-count', {
                       count: item.followersCount,
                     })
                   }}
@@ -59,8 +56,8 @@
             </div>
           </template>
           <template v-else>
-            <div class="user-input-dropdown-field__message">
-              {{ $t('user-input-dropdown-field.empty-message') }}
+            <div class="input-dropdown-field__message">
+              {{ $t('input-dropdown-field.empty-message') }}
             </div>
           </template>
         </template>
@@ -112,14 +109,6 @@ const closeDropdown = () => {
   isDropdownOpened.value = false
 }
 
-onMounted(async () => {
-  if (rootEl.value) {
-    onClickOutside(rootEl, () => {
-      if (isDropdownOpened.value) closeDropdown()
-    })
-  }
-})
-
 const search = (searchValue: string) => {
   emit('update:searchValue', searchValue)
 }
@@ -129,16 +118,24 @@ const selectCurrentUser = (currentUser: InputDropdownPickOption) => {
   emit('update:modelValue', currentUser.id)
   emit('update:searchValue', currentUser.text)
 }
+
+onMounted(async () => {
+  if (rootEl.value) {
+    onClickOutside(rootEl, () => {
+      if (isDropdownOpened.value) closeDropdown()
+    })
+  }
+})
 </script>
 
 <style lang="scss" scoped>
 $custom-z-index: 10;
 
-.user-input-dropdown-field {
+.input-dropdown-field {
   position: relative;
 }
 
-.user-input-dropdown-field__inner {
+.input-dropdown-field__inner {
   position: absolute;
   left: 0;
   width: 100%;
@@ -152,8 +149,8 @@ $custom-z-index: 10;
   border-radius: toRem(8);
 }
 
-.user-input-dropdown-field__list-item,
-.user-input-dropdown-field__message {
+.input-dropdown-field__list-item,
+.input-dropdown-field__message {
   padding: toRem(12) var(--field-padding-right) toRem(12)
     var(--field-padding-left);
   font-weight: 400;
@@ -163,7 +160,7 @@ $custom-z-index: 10;
   width: 100%;
 }
 
-.user-input-dropdown-field__list-item {
+.input-dropdown-field__list-item {
   font-size: toRem(16);
   font-weight: 400;
   text-align: left;
@@ -182,32 +179,32 @@ $custom-z-index: 10;
   }
 }
 
-.user-input-dropdown-field__list-item-image {
+.input-dropdown-field__list-item-image {
   grid-column: 1;
   grid-row: 1 / span 2;
   max-width: toRem(30);
   max-height: toRem(30);
 }
 
-.user-input-dropdown-field__list-item-text-wrapper {
+.input-dropdown-field__list-item-text-wrapper {
   display: flex;
   flex-direction: column;
   gap: toRem(5);
 }
 
-.user-input-dropdown-field__list-second-item-text {
+.input-dropdown-field__list-second-item-text {
   font-size: toRem(12);
   color: var(--text-primary-light);
 }
 
-.user-input-dropdown-field-enter-active,
-.user-input-dropdown-field-leave-active {
+.input-dropdown-field-enter-active,
+.input-dropdown-field-leave-active {
   transition: 0.25s ease;
   transition-property: opacity, transform;
 }
 
-.user-input-dropdown-field-enter-from,
-.user-input-dropdown-field-leave-to {
+.input-dropdown-field-enter-from,
+.input-dropdown-field-leave-to {
   opacity: 0;
   transform: scale(0.8);
 }
