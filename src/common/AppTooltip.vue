@@ -25,11 +25,12 @@ $custom-z-index: 1;
   z-index: $custom-z-index;
   position: absolute;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: toRem(150);
-  top: calc(100% - #{toRem(35)});
+  max-height: toRem(150);
+  padding-top: toRem(10);
+  top: toRem(24);
   left: 50%;
   transform: translateX(-50%);
 }
@@ -37,12 +38,13 @@ $custom-z-index: 1;
 .app-tooltip__message-wrapper {
   padding: toRem(12);
   border-radius: toRem(8);
-  width: toRem(200);
+  width: toRem(230);
   word-break: break-word;
   max-height: toRem(100);
   overflow-y: auto;
   background: var(--black);
   color: var(--text-primary-invert-main);
+  font-size: toRem(14);
 }
 
 .app-tooltip__triangle {

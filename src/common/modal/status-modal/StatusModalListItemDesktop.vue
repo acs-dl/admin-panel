@@ -29,8 +29,10 @@
       />
       <app-tooltip
         :is-shown="isTooltipShown"
-        :message="request.error"
-        @mouseover="openTooltip"
+        :message="
+          request.error || $t('status-modal-list-item.invited-state-tooltip')
+        "
+        @mouseenter="openTooltip"
         @mouseleave="closeTooltip"
       />
     </div>
@@ -38,7 +40,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Icon, AppTooltip } from '@/common'
+import { AppTooltip, Icon } from '@/common'
 import { usePlatformStore } from '@/store'
 import { UserRequest } from '@/types'
 import { computed, ref } from 'vue'
@@ -115,15 +117,17 @@ const requestStatusIcon = computed(() => {
       return ICON_NAMES.dotsCircleHorizontal
     case REQUEST_STATUSES.failed:
       return ICON_NAMES.exclamationCircle
+    case REQUEST_STATUSES.invited:
+      return ICON_NAMES.link
     default:
       return ICON_NAMES.loading
   }
 })
 
 const openTooltip = () => {
-  if (props.request.status === REQUEST_STATUSES.failed) {
-    isTooltipShown.value = true
-  }
+  isTooltipShown.value =
+    props.request.status === REQUEST_STATUSES.failed ||
+    props.request.status === REQUEST_STATUSES.invited
 }
 
 const closeTooltip = () => {
@@ -186,6 +190,10 @@ const closeTooltip = () => {
   &--success {
     background: var(--success-light);
     color: var(--success-main);
+  }
+
+  &--invited {
+    background: var(--white);
   }
 }
 

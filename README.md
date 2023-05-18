@@ -1,4 +1,6 @@
-# ViteJS + Vue 3 + Typescript + Vue-Router + PiniaJS
+# Admin panel
+
+Admin panel for Access Control System. Simple UI for managing users, modules, permissions and requests.
 
 # Eslint + Stylelint
 

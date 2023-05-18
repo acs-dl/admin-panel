@@ -28,7 +28,6 @@
           <table-navigation
             v-if="pageCount > MIN_PAGE_AMOUNT"
             v-model:current-page="currentPage"
-            class="filters-list-section__navigation"
             :page-count="pageCount"
             :total-amount="userRequestsCount"
           />
@@ -138,13 +137,6 @@ watch(
     await loadRequests()
   },
   { immediate: true },
-)
-
-watch(
-  () => props.status,
-  () => {
-    currentPage.value = MIN_PAGE_AMOUNT
-  },
 )
 </script>
 

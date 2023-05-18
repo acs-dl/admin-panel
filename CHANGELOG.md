@@ -10,8 +10,10 @@ for further information about branching and tagging conventions.
 ## [Unrealised]
 #### Added
 - Telegram chats dropdown
+- Checking is user already exist in submodule
 
 #### Fixed
+- Deleting for verified user
 - `StatusModal` current page number
 - Status modal request statuses
 

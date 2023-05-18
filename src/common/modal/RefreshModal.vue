@@ -55,6 +55,7 @@
                           class="refresh-modal__search-submodule-button"
                           color="primary"
                           :text="$t('refresh-modal.add-submodule-button')"
+                          :disabled="!submoduleToSearch"
                           @click="searchSubmodule"
                         />
                       </div>
@@ -250,7 +251,10 @@ const checkIsSubmoduleLinkValid = async () => {
           : {}),
         ...(submoduleToSearch.value
           ? {
-              submodule: submoduleName.value,
+              submodule:
+                submoduleToSearch.value.charAt(0) === '/'
+                  ? submoduleToSearch.value.slice(1)
+                  : submoduleToSearch.value,
             }
           : {}),
       },
