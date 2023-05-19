@@ -119,7 +119,7 @@ const selectCurrentUser = (currentUser: InputDropdownPickOption) => {
   emit('update:searchValue', currentUser.text)
 }
 
-onMounted(async () => {
+onMounted(() => {
   if (rootEl.value) {
     onClickOutside(rootEl, () => {
       if (isDropdownOpened.value) closeDropdown()
