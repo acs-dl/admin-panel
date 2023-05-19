@@ -33,7 +33,8 @@
     "access-level-placeholder": "Select access level",
     "modules-loading-error": "Entered username or submodule was not found.",
     "user-already-exist": "Entered user already exist in such module.",
-    "loader-text": "Please wait, we are checking the data."
+    "loader-text": "Please wait, we are checking the data.",
+    "request-timeout-error": "There was no answer for too long. Try again."
   },
   "delete-modal": {
     "main-title": "Delete",

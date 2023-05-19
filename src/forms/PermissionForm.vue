@@ -273,7 +273,7 @@ const accessList = ref<ModulePermissions[]>([])
 const telegramChats = ref<TelegramChat[]>([])
 const isTelegramChatsLoaded = ref(false)
 const isTelegramChatsLoadingError = ref(false)
-const currentTelegramChatId = ref(NaN)
+const currentTelegramChatId = ref<number>()
 const modulesNames = computed(() => modules.value.map(item => item.name))
 const accessNameList = computed(() => accessList.value.map(item => item.name))
 const isEditForm = computed(() => Boolean(props.module))
@@ -324,11 +324,16 @@ const selectedTelegramChat = computed(() =>
   ),
 )
 
-const isLoadingPermissionsErrorText = computed(() =>
-  loadingPermissionsResponseErrorCode.value === HTTP_STATUS_CODES.CONFLICT
-    ? $t('permission-form.user-already-exist')
-    : $t('permission-form.modules-loading-error'),
-)
+const isLoadingPermissionsErrorText = computed(() => {
+  switch (loadingPermissionsResponseErrorCode.value) {
+    case HTTP_STATUS_CODES.CONFLICT:
+      return $t('permission-form.user-already-exist')
+    case HTTP_STATUS_CODES.BAD_GATEWAY:
+      return $t('permission-form.request-timeout-error')
+    default:
+      return $t('permission-form.modules-loading-error')
+  }
+})
 
 const validationRules = computed(() => ({
   module: { required },
@@ -469,6 +474,7 @@ const clearForm = () => {
 
 const getAccessLevelList = async () => {
   if (!isAccessLevelCanBeChosen.value || !form.module || !form.link) return
+  disableForm()
   isLoadingPermissions.value = true
   isLoadingPermissionsError.value = false
   loadingPermissionsResponseErrorCode.value = ''
@@ -487,6 +493,20 @@ const getAccessLevelList = async () => {
             : {}),
           ...(form.phoneNumber
             ? { phone: prefix.value + form.phoneNumber.split(' ').join('') }
+            : {}),
+          ...(isTelegramModule.value
+            ? {
+                submodule_access_hash: selectedTelegramChat.value
+                  ? selectedTelegramChat.value.attributes.submodule_access_hash
+                  : null,
+              }
+            : {}),
+          ...(isTelegramModule.value
+            ? {
+                submodule_id: selectedTelegramChat.value
+                  ? selectedTelegramChat.value.attributes.submodule_id
+                  : null,
+              }
             : {}),
         },
       },
@@ -515,6 +535,7 @@ const getAccessLevelList = async () => {
     ErrorHandler.processWithoutFeedback(e)
   }
   isLoadingPermissions.value = false
+  enableForm()
 }
 
 const loadTelegramChats = async () => {

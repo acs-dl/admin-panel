@@ -77,7 +77,6 @@ type SCHEMES = 'default' | 'secondary'
 
 withDefaults(
   defineProps<{
-    modelValue: number
     searchValue: string
     isLoadFailed: boolean
     isLoaded: boolean
@@ -85,11 +84,13 @@ withDefaults(
     placeholder?: string
     label?: string
     dropdownScheme?: SCHEMES
+    modelValue?: number
   }>(),
   {
     label: '',
     placeholder: '',
     dropdownScheme: 'default',
+    modelValue: undefined,
   },
 )
 
