@@ -1,13 +1,13 @@
 <template>
   <div class="input-dropdown-field" ref="rootEl">
     <input-field
-      :model-value="searchValue"
+      :model-value="displayValue"
       v-bind="$attrs"
       class="input-dropdown-field__search"
       autocomplete="off"
       :placeholder="placeholder"
       :label="label"
-      @update:model-value="search"
+      @update:model-value="loadOptions"
       @focus="toggleDropdown"
     />
     <transition name="input-dropdown-field">
@@ -26,7 +26,7 @@
                 type="button"
                 :key="item.id"
                 :class="`input-dropdown-field__list-item--${dropdownScheme}`"
-                @click="selectCurrentUser(item)"
+                @click="selectCurrentOption(item)"
               >
                 <img
                   v-if="item.image"
@@ -67,7 +67,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { InputField } from '@/fields'
 import { onClickOutside } from '@vueuse/core'
 import { InputDropdownPickOption } from '@/types'
@@ -75,16 +75,15 @@ import { Icon } from '@/common'
 
 type SCHEMES = 'default' | 'secondary'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
-    searchValue: string
     isLoadFailed: boolean
     isLoaded: boolean
     pickOptions: InputDropdownPickOption[]
     placeholder?: string
     label?: string
     dropdownScheme?: SCHEMES
-    modelValue?: number
+    modelValue?: number | string
   }>(),
   {
     label: '',
@@ -95,12 +94,12 @@ withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: number): void
-  (e: 'update:searchValue', value: string): void
+  (e: 'update:modelValue', value: number | string): void
 }>()
 
 const rootEl = ref<HTMLElement | null>(null)
 const isDropdownOpened = ref(false)
+const displayValue = ref(props.modelValue)
 
 const toggleDropdown = () => {
   isDropdownOpened.value = !isDropdownOpened.value
@@ -110,14 +109,14 @@ const closeDropdown = () => {
   isDropdownOpened.value = false
 }
 
-const search = (searchValue: string) => {
-  emit('update:searchValue', searchValue)
+const loadOptions = (searchValue: string) => {
+  emit('update:modelValue', searchValue)
 }
 
-const selectCurrentUser = (currentUser: InputDropdownPickOption) => {
+const selectCurrentOption = (option: InputDropdownPickOption) => {
   toggleDropdown()
-  emit('update:modelValue', currentUser.id)
-  emit('update:searchValue', currentUser.text)
+  emit('update:modelValue', option.id)
+  displayValue.value = option.text
 }
 
 onMounted(() => {
@@ -127,6 +126,15 @@ onMounted(() => {
     })
   }
 })
+
+watch(
+  () => props.modelValue,
+  () => {
+    displayValue.value =
+      props.pickOptions.find(({ id }) => id === props.modelValue)?.text ??
+      props.modelValue
+  },
+)
 </script>
 
 <style lang="scss" scoped>

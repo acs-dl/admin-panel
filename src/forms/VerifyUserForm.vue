@@ -7,17 +7,16 @@
             {{ $t('verify-user-form.user-lbl') }}
           </h5>
           <input-dropdown-field
-            v-model="selectedUserId"
-            v-model:search-value="form.name"
+            v-model="form.nameId"
             scheme="secondary"
             class="verify-user-form__field-input"
             :placeholder="$t('verify-user-form.user-placeholder')"
-            :error-message="getFieldErrorMessage('name')"
+            :error-message="getFieldErrorMessage('nameId')"
             :disabled="isFormDisabled"
             :is-loaded="isLoaded"
             :is-load-failed="isLoadFailed"
             :pick-options="optionsToPick"
-            @blur="touchField('name')"
+            @blur="touchField('nameId')"
           />
         </div>
         <div class="verify-user-form__field">
@@ -54,7 +53,7 @@
         scheme="filled"
         type="submit"
         :text="$t('verify-user-form.submit-btn')"
-        :disabled="isFormDisabled"
+        :disabled="isFormDisabled || !selectedUser"
       />
     </div>
   </form>
@@ -75,6 +74,7 @@ import {
 } from '@/types'
 import { useAuthStore } from '@/store'
 import { debounce } from 'lodash-es'
+import { helpers } from '@vuelidate/validators'
 
 const LOAD_USERS_TIMEOUT = 200 //ms
 
@@ -97,28 +97,39 @@ const emit = defineEmits<{
 const { $t } = useContext()
 const { currentUserId } = useAuthStore()
 const users = ref<VerifiedUser[]>([])
-const selectedUserId = ref<number>()
 const isLoadFailed = ref(false)
 const isLoaded = ref(false)
-const form = reactive({
-  name: '',
+const form = reactive<{
+  nameId: string | number
+  module: string
+  nickname: string
+}>({
+  nameId: '',
   module: props.currentModule ?? '',
   nickname: props.user?.username ?? '',
 })
 
 const { isFormDisabled, disableForm, enableForm } = useForm()
 
+const isUserSelected = () => Number.isInteger(form.nameId)
+
 const { isFormValid, getFieldErrorMessage, touchField } = useFormValidation(
   form,
   {
-    name: { required },
+    nameId: {
+      required,
+      requiredSelect: helpers.withMessage(
+        $t('validations.field-error_requiredSelect'),
+        isUserSelected,
+      ),
+    },
     module: { required },
     nickname: { required },
   },
 )
 
 const selectedUser = computed(() =>
-  users.value.find(user => Number(user.id) === selectedUserId.value),
+  users.value.find(user => Number(user.id) === form.nameId),
 )
 
 const optionsToPick = computed<InputDropdownPickOption[]>(() =>
@@ -138,7 +149,13 @@ const loadUsers = async () => {
       '/integrations/identity-svc/users',
       {
         filter: {
-          ...(form.name ? { search: form.name } : {}),
+          ...(form.nameId
+            ? {
+                search: Number.isInteger(form.nameId)
+                  ? `${selectedUser.value?.name} ${selectedUser.value?.surname}`
+                  : form.nameId,
+              }
+            : {}),
         },
       },
     )
@@ -186,7 +203,7 @@ const submit = async () => {
   enableForm()
 }
 
-watch(() => form.name, debouncedUsersLoad, { immediate: true })
+watch(() => form.nameId, debouncedUsersLoad, { immediate: true })
 </script>
 
 <style lang="scss" scoped>

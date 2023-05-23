@@ -69,8 +69,7 @@
           </h5>
           <input-dropdown-field
             v-if="isTelegramModule"
-            v-model="currentTelegramChatId"
-            v-model:search-value="form.link"
+            v-model="form.link"
             scheme="secondary"
             dropdown-scheme="secondary"
             class="permission-form__field-input"
@@ -130,7 +129,7 @@
             :value-options="accessNameList"
             :placeholder="$t('permission-form.access-level-placeholder')"
             :error-message="getFieldErrorMessage('accessLevel')"
-            :disabled="isFormDisabled || !(accessList && isAccessLevelRequired)"
+            :disabled="isAccessLevelDisabled"
             @blur="touchField('accessLevel')"
           />
         </div>
@@ -230,6 +229,18 @@ import { MAX_LENGTH, MODULES } from '@/enums'
 import { requiredIf } from '@vuelidate/validators'
 import { debounce } from 'lodash-es'
 import { HTTP_STATUS_CODES } from '@distributedlab/json-api-client'
+import { helpers } from '@vuelidate/validators'
+
+type FormFields = {
+  module: string
+  username: string
+  link: string | number
+  accessLevel: string
+  phoneNumber: string
+  name: string
+  surname: string
+  email: string
+}
 
 type ParsedErr = {
   originalError?: {
@@ -273,10 +284,16 @@ const accessList = ref<ModulePermissions[]>([])
 const telegramChats = ref<TelegramChat[]>([])
 const isTelegramChatsLoaded = ref(false)
 const isTelegramChatsLoadingError = ref(false)
-const currentTelegramChatId = ref<number>()
 const modulesNames = computed(() => modules.value.map(item => item.name))
 const accessNameList = computed(() => accessList.value.map(item => item.name))
 const isEditForm = computed(() => Boolean(props.module))
+
+const isAccessLevelDisabled = computed(
+  () =>
+    isFormDisabled.value ||
+    !(accessList.value && isAccessLevelRequired.value) ||
+    !accessList.value.length,
+)
 
 const prefix = computed(
   () => modules.value.find(el => el.id === form.module.toLowerCase())?.prefix,
@@ -286,12 +303,10 @@ const isUsernameInputDisabled = computed(() => Boolean(form.phoneNumber))
 
 const isPhoneInputDisabled = computed(() => Boolean(form.username))
 
-const parsedUsername = computed(() =>
-  form.username.charAt(0) === '@' ? form.username.slice(1) : form.username,
-)
+const parsedUsername = computed(() => form.username.replace(/^@/, ''))
 
 const isNoAccessPermission = computed(
-  () => props.module.access_level.value === NO_ACCESS_INDEX,
+  () => props.module?.access_level?.value === NO_ACCESS_INDEX,
 )
 
 const moduleId = computed(
@@ -319,9 +334,7 @@ const telegramChatsForPick = computed<InputDropdownPickOption[]>(() =>
 )
 
 const selectedTelegramChat = computed(() =>
-  telegramChats.value.find(
-    chat => Number(chat.id) === currentTelegramChatId.value,
-  ),
+  telegramChats.value.find(chat => Number(chat.id) === form.link),
 )
 
 const isLoadingPermissionsErrorText = computed(() => {
@@ -335,9 +348,20 @@ const isLoadingPermissionsErrorText = computed(() => {
   }
 })
 
+const isValidLinkForTelegram = () => {
+  if (!isTelegramModule.value) return true
+  return Boolean(selectedTelegramChat.value)
+}
+
 const validationRules = computed(() => ({
   module: { required },
-  link: { required: requiredIf(() => !isEmailModule.value) },
+  link: {
+    required: requiredIf(() => !isEmailModule.value),
+    requiredSelect: helpers.withMessage(
+      $t('validations.field-error_requiredSelect'),
+      isValidLinkForTelegram,
+    ),
+  },
   username: {
     required: requiredIf(
       () => !isEmailModule.value && !isUsernameInputDisabled.value,
@@ -367,7 +391,7 @@ const validationRules = computed(() => ({
   email: { email, required: requiredIf(() => isEmailModule.value) },
 }))
 
-const form = reactive({
+const form = reactive<FormFields>({
   module: props.moduleName ?? '',
   username: props.module?.username ?? '',
   link: props.module?.link ?? '',
@@ -408,7 +432,9 @@ const submit = async () => {
                 ? 'update_user'
                 : 'add_user',
             user_id: String(props.id),
-            link: form.link,
+            link: isTelegramModule.value
+              ? selectedTelegramChat.value?.attributes.title
+              : form.link,
             access_level: accessLevelValue?.value,
             ...(form.username
               ? {
@@ -416,24 +442,18 @@ const submit = async () => {
                 }
               : {}),
             ...(form.phoneNumber
-              ? { phone: prefix.value + form.phoneNumber.split(' ').join('') }
+              ? { phone: prefix.value + form.phoneNumber.replaceAll(' ', '') }
               : {}),
             ...(form.name ? { name: form.name } : {}),
             ...(form.surname ? { surname: form.surname } : {}),
             ...(form.email ? { email: form.email } : {}),
             ...(isTelegramModule.value
               ? {
-                  submodule_access_hash: selectedTelegramChat.value
-                    ? selectedTelegramChat.value.attributes
-                        .submodule_access_hash
-                    : null,
-                }
-              : {}),
-            ...(isTelegramModule.value
-              ? {
-                  submodule_id: selectedTelegramChat.value
-                    ? selectedTelegramChat.value.attributes.submodule_id
-                    : null,
+                  submodule_access_hash:
+                    selectedTelegramChat.value?.attributes
+                      .submodule_access_hash ?? null,
+                  submodule_id:
+                    selectedTelegramChat.value?.attributes.submodule_id ?? null,
                 }
               : {}),
           },
@@ -485,27 +505,24 @@ const getAccessLevelList = async () => {
       `/integrations/${moduleId.value}/get_available_roles`,
       {
         filter: {
-          link: form.link,
+          link: isTelegramModule.value
+            ? selectedTelegramChat.value?.attributes.title
+            : form.link,
           ...(form.username
             ? {
                 username: parsedUsername.value,
               }
             : {}),
           ...(form.phoneNumber
-            ? { phone: prefix.value + form.phoneNumber.split(' ').join('') }
+            ? { phone: prefix.value + form.phoneNumber.replaceAll(' ', '') }
             : {}),
           ...(isTelegramModule.value
             ? {
-                submodule_access_hash: selectedTelegramChat.value
-                  ? selectedTelegramChat.value.attributes.submodule_access_hash
-                  : null,
-              }
-            : {}),
-          ...(isTelegramModule.value
-            ? {
-                submodule_id: selectedTelegramChat.value
-                  ? selectedTelegramChat.value.attributes.submodule_id
-                  : null,
+                submodule_access_hash:
+                  selectedTelegramChat.value?.attributes
+                    .submodule_access_hash ?? null,
+                submodule_id:
+                  selectedTelegramChat.value?.attributes.submodule_id ?? null,
               }
             : {}),
         },
@@ -550,7 +567,9 @@ const loadTelegramChats = async () => {
       '/integrations/telegram/submodule',
       {
         filter: {
-          link: form.link,
+          link: Number.isInteger(form.link)
+            ? selectedTelegramChat.value?.attributes.title
+            : form.link,
         },
       },
     )

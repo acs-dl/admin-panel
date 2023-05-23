@@ -179,11 +179,7 @@ const isSubmoduleStepRefreshCanBeShown = computed(
     Boolean(submodules.value.length),
 )
 
-const submoduleName = computed(() =>
-  submoduleToSearch.value.charAt(0) === '/'
-    ? submoduleToSearch.value.slice(1)
-    : submoduleToSearch.value,
-)
+const submoduleName = computed(() => submoduleToSearch.value.replace(/^\//, ''))
 
 const isRefreshButtonDisabled = computed(
   () =>
@@ -251,10 +247,7 @@ const checkIsSubmoduleLinkValid = async () => {
           : {}),
         ...(submoduleToSearch.value
           ? {
-              submodule:
-                submoduleToSearch.value.charAt(0) === '/'
-                  ? submoduleToSearch.value.slice(1)
-                  : submoduleToSearch.value,
+              submodule: submoduleName.value,
             }
           : {}),
       },
