@@ -80,6 +80,7 @@
             :error-message="getFieldErrorMessage('link')"
             :disabled="isFormDisabled || isEditForm"
             @update:model-value="touchTelegramLink"
+            @blur="touchField('link')"
           />
           <input-field
             v-else
