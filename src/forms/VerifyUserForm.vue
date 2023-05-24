@@ -13,9 +13,8 @@
             :placeholder="$t('verify-user-form.user-placeholder')"
             :error-message="getFieldErrorMessage('nameId')"
             :disabled="isFormDisabled"
-            :is-loaded="isLoaded"
-            :is-load-failed="isLoadFailed"
             :pick-options="optionsToPick"
+            :load-pick-options="loadUsers"
             @blur="touchField('nameId')"
           />
         </div>
@@ -60,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { AppButton } from '@/common'
 import { api } from '@/api'
 import { InputField, InputDropdownField } from '@/fields'
@@ -73,10 +72,7 @@ import {
   InputDropdownPickOption,
 } from '@/types'
 import { useAuthStore } from '@/store'
-import { debounce } from 'lodash-es'
 import { helpers } from '@vuelidate/validators'
-
-const LOAD_USERS_TIMEOUT = 200 //ms
 
 const props = withDefaults(
   defineProps<{
@@ -97,8 +93,6 @@ const emit = defineEmits<{
 const { $t } = useContext()
 const { currentUserId } = useAuthStore()
 const users = ref<VerifiedUser[]>([])
-const isLoadFailed = ref(false)
-const isLoaded = ref(false)
 const form = reactive<{
   nameId: string | number
   module: string
@@ -135,7 +129,7 @@ const selectedUser = computed(() =>
 const optionsToPick = computed<InputDropdownPickOption[]>(() =>
   users.value.map(user => ({
     id: Number(user.id),
-    text: user.name + ' ' + user.surname,
+    text: `${user.name} ${user.surname}`,
   })),
 )
 
@@ -143,31 +137,17 @@ const cancelForm = () => {
   emit('cancel')
 }
 
-const loadUsers = async () => {
-  try {
-    const { data } = await api.get<VerifiedUser[]>(
-      '/integrations/identity-svc/users',
-      {
-        filter: {
-          ...(form.nameId
-            ? {
-                search: Number.isInteger(form.nameId)
-                  ? `${selectedUser.value?.name} ${selectedUser.value?.surname}`
-                  : form.nameId,
-              }
-            : {}),
-        },
+const loadUsers = async (searchValue: string) => {
+  const { data } = await api.get<VerifiedUser[]>(
+    '/integrations/identity-svc/users',
+    {
+      filter: {
+        search: searchValue,
       },
-    )
-    users.value = data
-  } catch (e) {
-    isLoadFailed.value = false
-    ErrorHandler.processWithoutFeedback(e)
-  }
-  isLoaded.value = true
+    },
+  )
+  users.value = data
 }
-
-const debouncedUsersLoad = debounce(loadUsers, LOAD_USERS_TIMEOUT)
 
 const submit = async () => {
   if (!isFormValid() || !selectedUser.value?.id) return
@@ -202,8 +182,6 @@ const submit = async () => {
   }
   enableForm()
 }
-
-watch(() => form.nameId, debouncedUsersLoad, { immediate: true })
 </script>
 
 <style lang="scss" scoped>

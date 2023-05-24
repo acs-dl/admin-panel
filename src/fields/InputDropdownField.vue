@@ -1,13 +1,12 @@
 <template>
   <div class="input-dropdown-field" ref="rootEl">
     <input-field
-      :model-value="displayValue"
+      v-model="searchValue"
       v-bind="$attrs"
       class="input-dropdown-field__search"
       autocomplete="off"
       :placeholder="placeholder"
       :label="label"
-      @update:model-value="loadOptions"
       @focus="toggleDropdown"
     />
     <transition name="input-dropdown-field">
@@ -72,14 +71,18 @@ import { InputField } from '@/fields'
 import { onClickOutside } from '@vueuse/core'
 import { InputDropdownPickOption } from '@/types'
 import { Icon } from '@/common'
+import { debounce } from 'lodash-es'
+import { DEBOUNCE_DEFAULT_TIMEOUT } from '@/consts'
+import { ErrorHandler } from '@/helpers'
+
+type LoadPickOptions = (searchValue: string) => Promise<void>
 
 type SCHEMES = 'default' | 'secondary'
 
 const props = withDefaults(
   defineProps<{
-    isLoadFailed: boolean
-    isLoaded: boolean
     pickOptions: InputDropdownPickOption[]
+    loadPickOptions: LoadPickOptions
     placeholder?: string
     label?: string
     dropdownScheme?: SCHEMES
@@ -97,9 +100,11 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: number | string): void
 }>()
 
+const searchValue = ref('')
 const rootEl = ref<HTMLElement | null>(null)
 const isDropdownOpened = ref(false)
-const displayValue = ref(props.modelValue)
+const isLoadFailed = ref(false)
+const isLoaded = ref(true)
 
 const toggleDropdown = () => {
   isDropdownOpened.value = !isDropdownOpened.value
@@ -109,15 +114,28 @@ const closeDropdown = () => {
   isDropdownOpened.value = false
 }
 
-const loadOptions = (searchValue: string) => {
-  emit('update:modelValue', searchValue)
+const loadOptions = async () => {
+  isLoadFailed.value = false
+  isLoaded.value = false
+  try {
+    await props.loadPickOptions(searchValue.value)
+  } catch (e) {
+    isLoadFailed.value = true
+    ErrorHandler.process(e)
+  }
+  isLoaded.value = true
 }
+
+const debouncedLoadOptions = debounce(loadOptions, DEBOUNCE_DEFAULT_TIMEOUT)
 
 const selectCurrentOption = (option: InputDropdownPickOption) => {
   toggleDropdown()
+  searchValue.value =
+    props.pickOptions.find(({ id }) => id === option.id)?.text ?? ''
   emit('update:modelValue', option.id)
-  displayValue.value = option.text
 }
+
+watch(searchValue, debouncedLoadOptions, { immediate: true })
 
 onMounted(() => {
   if (rootEl.value) {
@@ -126,15 +144,6 @@ onMounted(() => {
     })
   }
 })
-
-watch(
-  () => props.modelValue,
-  () => {
-    displayValue.value =
-      props.pickOptions.find(({ id }) => id === props.modelValue)?.text ??
-      props.modelValue
-  },
-)
 </script>
 
 <style lang="scss" scoped>
