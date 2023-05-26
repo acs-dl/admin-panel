@@ -225,7 +225,7 @@ const deleteUserFromModule = async () => {
                           props.item?.submodule_access_hash,
                       }
                     : {}),
-                  submodule_id: props.item.submodule_id,
+                  submodule_id: props.item?.submodule_id ?? null,
                 }
               : {}),
           },

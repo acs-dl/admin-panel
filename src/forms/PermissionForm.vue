@@ -522,7 +522,7 @@ const getAccessLevelList = async () => {
                     }
                   : {}),
                 submodule_id:
-                  selectedTelegramChat.value?.attributes.submodule_id ?? null,
+                  selectedTelegramChat.value?.attributes?.submodule_id ?? null,
               }
             : {}),
         },
