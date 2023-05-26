@@ -440,11 +440,17 @@ const submit = async () => {
             ...(form.email ? { email: form.email } : {}),
             ...(isTelegramModule.value
               ? {
-                  submodule_access_hash:
-                    selectedTelegramChat.value?.attributes
-                      .submodule_access_hash ?? null,
+                  ...(selectedTelegramChat.value?.attributes
+                    ?.submodule_access_hash
+                    ? {
+                        submodule_access_hash:
+                          selectedTelegramChat.value?.attributes
+                            .submodule_access_hash,
+                      }
+                    : {}),
                   submodule_id:
-                    selectedTelegramChat.value?.attributes.submodule_id ?? null,
+                    selectedTelegramChat.value?.attributes?.submodule_id ??
+                    null,
                 }
               : {}),
           },
@@ -507,9 +513,14 @@ const getAccessLevelList = async () => {
             : {}),
           ...(isTelegramModule.value
             ? {
-                submodule_access_hash:
-                  selectedTelegramChat.value?.attributes
-                    .submodule_access_hash ?? null,
+                ...(selectedTelegramChat.value?.attributes
+                  ?.submodule_access_hash
+                  ? {
+                      submodule_access_hash:
+                        selectedTelegramChat.value?.attributes
+                          .submodule_access_hash,
+                    }
+                  : {}),
                 submodule_id:
                   selectedTelegramChat.value?.attributes.submodule_id ?? null,
               }
