@@ -67,14 +67,13 @@
           <h5 class="permission-form__field-title">
             {{ $t('permission-form.link-lbl') }}
           </h5>
-          <input-dropdown-field
+          <combo-box-field
             v-if="isTelegramModule"
             v-model="selectedTelegramUserId"
             scheme="secondary"
             dropdown-scheme="secondary"
             class="permission-form__field-input"
             :load-pick-options="loadTelegramChats"
-            :pick-options="telegramChatsForPick"
             :class="`permission-form__field-input--${moduleId}`"
             :placeholder="$t('permission-form.link-placeholder')"
             :error-message="getFieldErrorMessage('link')"
@@ -211,7 +210,7 @@
 import { reactive, computed, ref, watch } from 'vue'
 import { AppButton, Loader, Icon } from '@/common'
 import { api } from '@/api'
-import { InputField, SelectField, InputDropdownField } from '@/fields'
+import { InputField, SelectField, ComboBoxField } from '@/fields'
 import { useContext, useForm, useFormValidation } from '@/composables'
 import { maxLength, required, email } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
@@ -220,7 +219,6 @@ import {
   UserPermissionInfo,
   ModulePermissions,
   TelegramChat,
-  InputDropdownPickOption,
   TelegramChats,
 } from '@/types'
 import { useAuthStore, usePlatformStore } from '@/store'
@@ -319,15 +317,6 @@ const isModulePrefix = computed(() => prefix.value !== '+380')
 
 const isAccessLevelCanBeChosen = computed(
   () => form.link && (form.username || form.phoneNumber),
-)
-
-const telegramChatsForPick = computed<InputDropdownPickOption[]>(() =>
-  telegramChats.value.map(chat => ({
-    id: Number(chat.id),
-    text: chat.attributes.title,
-    image: chat.attributes.photo,
-    followersCount: chat.attributes.members_amount,
-  })),
 )
 
 const selectedTelegramChat = computed(() =>
@@ -569,6 +558,13 @@ const loadTelegramChats = async (searchValue: string) => {
     },
   )
   telegramChats.value = data.submodules
+
+  return data.submodules.map(submodule => ({
+    id: Number(submodule.id),
+    text: submodule.attributes.title,
+    image: submodule.attributes.photo,
+    followersCount: submodule.attributes.members_amount,
+  }))
 }
 
 const deboucedAccessList = debounce(getAccessLevelList, DEBOUNCE_TIMEOUT)

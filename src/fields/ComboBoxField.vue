@@ -1,52 +1,52 @@
 <template>
-  <div class="input-dropdown-field" ref="rootEl">
+  <div class="combo-box-field" ref="rootEl">
     <input-field
       v-model="searchValue"
       v-bind="$attrs"
-      class="input-dropdown-field__search"
+      class="combo-box-field__search"
       autocomplete="off"
       :placeholder="placeholder"
       :label="label"
       @focus="toggleDropdown"
     />
-    <transition name="input-dropdown-field">
-      <div v-if="isDropdownOpened" class="input-dropdown-field__inner">
+    <transition name="combo-box-field">
+      <div v-if="isDropdownOpened" class="combo-box-field__inner">
         <template v-if="isLoadFailed">
-          <div class="input-dropdown-field__message">
-            {{ $t('input-dropdown-field.error-message') }}
+          <div class="combo-box-field__message">
+            {{ $t('combo-box-field.error-message') }}
           </div>
         </template>
         <template v-else>
           <template v-if="pickOptions.length">
-            <div class="input-dropdown-field__list">
+            <div class="combo-box-field__list">
               <button
                 v-for="item in pickOptions"
-                class="input-dropdown-field__list-item"
+                class="combo-box-field__list-item"
                 type="button"
                 :key="item.id"
-                :class="`input-dropdown-field__list-item--${dropdownScheme}`"
+                :class="`combo-box-field__list-item--${dropdownScheme}`"
                 @click="selectCurrentOption(item)"
               >
                 <img
                   v-if="item.image"
-                  class="input-dropdown-field__list-item-image"
+                  class="combo-box-field__list-item-image"
                   :src="item.image"
                   :alt="item.text"
                 />
                 <icon
                   v-else-if="Number.isInteger(item.followersCount)"
-                  class="input-dropdown-field__list-item-image"
+                  class="combo-box-field__list-item-image"
                   :name="$icons.ban"
                 />
-                <span class="input-dropdown-field__list-item-text">
+                <span class="combo-box-field__list-item-text">
                   {{ item.text }}
                 </span>
                 <span
                   v-if="Number.isInteger(item.followersCount)"
-                  class="input-dropdown-field__list-second-item-text"
+                  class="combo-box-field__list-second-item-text"
                 >
                   {{
-                    $t('input-dropdown-field.followers-count', {
+                    $t('combo-box-field.followers-count', {
                       count: item.followersCount,
                     })
                   }}
@@ -55,8 +55,8 @@
             </div>
           </template>
           <template v-else>
-            <div class="input-dropdown-field__message">
-              {{ $t('input-dropdown-field.empty-message') }}
+            <div class="combo-box-field__message">
+              {{ $t('combo-box-field.empty-message') }}
             </div>
           </template>
         </template>
@@ -75,13 +75,16 @@ import { debounce } from 'lodash-es'
 import { DEBOUNCE_DEFAULT_TIMEOUT } from '@/consts'
 import { ErrorHandler } from '@/helpers'
 
-type LoadPickOptions = (searchValue: string) => Promise<void>
+type LoadPickOptions = (
+  searchValue: string,
+) => Promise<InputDropdownPickOption[]>
 
 type SCHEMES = 'default' | 'secondary'
 
+// TODO: modelValue generic
+
 const props = withDefaults(
   defineProps<{
-    pickOptions: InputDropdownPickOption[]
     loadPickOptions: LoadPickOptions
     placeholder?: string
     label?: string
@@ -101,6 +104,7 @@ const emit = defineEmits<{
 }>()
 
 const searchValue = ref('')
+const pickOptions = ref<InputDropdownPickOption[]>([])
 const rootEl = ref<HTMLElement | null>(null)
 const isDropdownOpened = ref(false)
 const isLoadFailed = ref(false)
@@ -118,7 +122,7 @@ const loadOptions = async () => {
   isLoadFailed.value = false
   isLoaded.value = false
   try {
-    await props.loadPickOptions(searchValue.value)
+    pickOptions.value = await props.loadPickOptions(searchValue.value)
   } catch (e) {
     isLoadFailed.value = true
     ErrorHandler.process(e)
@@ -131,7 +135,7 @@ const debouncedLoadOptions = debounce(loadOptions, DEBOUNCE_DEFAULT_TIMEOUT)
 const selectCurrentOption = (option: InputDropdownPickOption) => {
   toggleDropdown()
   searchValue.value =
-    props.pickOptions.find(({ id }) => id === option.id)?.text ?? ''
+    pickOptions.value.find(({ id }) => id === option.id)?.text ?? ''
   emit('update:modelValue', option.id)
 }
 
@@ -149,11 +153,11 @@ onMounted(() => {
 <style lang="scss" scoped>
 $custom-z-index: 10;
 
-.input-dropdown-field {
+.combo-box-field {
   position: relative;
 }
 
-.input-dropdown-field__inner {
+.combo-box-field__inner {
   position: absolute;
   left: 0;
   width: 100%;
@@ -167,8 +171,8 @@ $custom-z-index: 10;
   border-radius: toRem(8);
 }
 
-.input-dropdown-field__list-item,
-.input-dropdown-field__message {
+.combo-box-field__list-item,
+.combo-box-field__message {
   padding: toRem(12) var(--field-padding-right) toRem(12)
     var(--field-padding-left);
   font-weight: 400;
@@ -178,7 +182,7 @@ $custom-z-index: 10;
   width: 100%;
 }
 
-.input-dropdown-field__list-item {
+.combo-box-field__list-item {
   font-size: toRem(16);
   font-weight: 400;
   text-align: left;
@@ -197,32 +201,32 @@ $custom-z-index: 10;
   }
 }
 
-.input-dropdown-field__list-item-image {
+.combo-box-field__list-item-image {
   grid-column: 1;
   grid-row: 1 / span 2;
   max-width: toRem(30);
   max-height: toRem(30);
 }
 
-.input-dropdown-field__list-item-text-wrapper {
+.combo-box-field__list-item-text-wrapper {
   display: flex;
   flex-direction: column;
   gap: toRem(5);
 }
 
-.input-dropdown-field__list-second-item-text {
+.combo-box-field__list-second-item-text {
   font-size: toRem(12);
   color: var(--text-primary-light);
 }
 
-.input-dropdown-field-enter-active,
-.input-dropdown-field-leave-active {
+.combo-box-field-enter-active,
+.combo-box-field-leave-active {
   transition: 0.25s ease;
   transition-property: opacity, transform;
 }
 
-.input-dropdown-field-enter-from,
-.input-dropdown-field-leave-to {
+.combo-box-field-enter-from,
+.combo-box-field-leave-to {
   opacity: 0;
   transform: scale(0.8);
 }

@@ -6,14 +6,13 @@
           <h5 class="verify-user-form__field-title">
             {{ $t('verify-user-form.user-lbl') }}
           </h5>
-          <input-dropdown-field
+          <combo-box-field
             v-model="form.nameId"
             scheme="secondary"
             class="verify-user-form__field-input"
             :placeholder="$t('verify-user-form.user-placeholder')"
             :error-message="getFieldErrorMessage('nameId')"
             :disabled="isFormDisabled"
-            :pick-options="optionsToPick"
             :load-pick-options="loadUsers"
             @blur="touchField('nameId')"
           />
@@ -62,15 +61,11 @@
 import { computed, reactive, ref } from 'vue'
 import { AppButton } from '@/common'
 import { api } from '@/api'
-import { InputField, InputDropdownField } from '@/fields'
+import { InputField, ComboBoxField } from '@/fields'
 import { useContext, useForm, useFormValidation } from '@/composables'
 import { required } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
-import {
-  UnverifiedModuleUser,
-  VerifiedUser,
-  InputDropdownPickOption,
-} from '@/types'
+import { UnverifiedModuleUser, VerifiedUser } from '@/types'
 import { useAuthStore } from '@/store'
 import { helpers } from '@vuelidate/validators'
 
@@ -126,13 +121,6 @@ const selectedUser = computed(() =>
   users.value.find(user => Number(user.id) === form.nameId),
 )
 
-const optionsToPick = computed<InputDropdownPickOption[]>(() =>
-  users.value.map(user => ({
-    id: Number(user.id),
-    text: `${user.name} ${user.surname}`,
-  })),
-)
-
 const cancelForm = () => {
   emit('cancel')
 }
@@ -147,6 +135,11 @@ const loadUsers = async (searchValue: string) => {
     },
   )
   users.value = data
+
+  return data.map(user => ({
+    id: Number(user.id),
+    text: `${user.name} ${user.surname}`,
+  }))
 }
 
 const submit = async () => {

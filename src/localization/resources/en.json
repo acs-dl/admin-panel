@@ -197,7 +197,7 @@
     "login-title": "Log In",
     "submit-btn": "Submit"
   },
-  "input-dropdown-field": {
+  "combo-box-field": {
     "empty-message": "Nothing found.",
     "error-message": "Something went wrong",
     "followers-count": "{count} followers"
