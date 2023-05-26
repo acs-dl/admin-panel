@@ -49,6 +49,7 @@
                           :placeholder="
                             $t('refresh-modal.submodule-placeholder')
                           "
+                          @keyup.enter="searchSubmodule"
                         />
                         <app-button
                           class="refresh-modal__search-submodule-button"
@@ -59,7 +60,7 @@
                         />
                       </div>
                       <p
-                        v-if="!isSubmoduleValid"
+                        v-if="isSubmoduleInputError"
                         class="refresh-modal__submodule-input-error"
                       >
                         {{ submoduleErrorMessage }}
@@ -142,6 +143,7 @@ const estimatedTime = ref('')
 const currentStep = ref(REFRESH_MODULE_STEPS.all)
 const submodules = ref<string[]>([])
 const isSubmoduleValid = ref(true)
+const isSuchSubmoduleExistError = ref(false)
 
 const module = ref('')
 const submoduleToSearch = ref('')
@@ -177,6 +179,8 @@ const isSubmoduleStepRefreshCanBeShown = computed(
     Boolean(submodules.value.length),
 )
 
+const submoduleName = computed(() => submoduleToSearch.value.replace(/^\//, ''))
+
 const isRefreshButtonDisabled = computed(
   () =>
     (isSubmoduleStep.value && (!module.value || !submodules.value.length)) ||
@@ -190,14 +194,21 @@ const isRefreshTimeCanBeLoaded = computed(
     isSubmoduleStepRefreshCanBeShown.value,
 )
 
-const submoduleErrorMessage = computed(() =>
-  module.value
+const submoduleErrorMessage = computed(() => {
+  if (isSuchSubmoduleExistError.value) {
+    return $t('refresh-modal.submodule-exist-error')
+  }
+  return module.value
     ? $t('refresh-modal.submodule-search-error')
-    : $t('refresh-modal.submodule-clear-module-error'),
-)
+    : $t('refresh-modal.submodule-clear-module-error')
+})
 
 const isRefreshTimeShown = computed(
   () => isRefreshTimeCanBeLoaded.value && Boolean(estimatedTime.value),
+)
+
+const isSubmoduleInputError = computed(
+  () => isSuchSubmoduleExistError.value || !isSubmoduleValid.value,
 )
 
 const closeModal = () => {
@@ -236,10 +247,7 @@ const checkIsSubmoduleLinkValid = async () => {
           : {}),
         ...(submoduleToSearch.value
           ? {
-              submodule:
-                submoduleToSearch.value.charAt(0) === '/'
-                  ? submoduleToSearch.value.slice(1)
-                  : submoduleToSearch.value,
+              submodule: submoduleName.value,
             }
           : {}),
       },
@@ -249,6 +257,14 @@ const checkIsSubmoduleLinkValid = async () => {
 }
 
 const searchSubmodule = async () => {
+  if (!submoduleName.value) return
+  const isSubmoduleWithThisNameExist = submodules.value.some(
+    item => item === submoduleName.value,
+  )
+  if (isSubmoduleWithThisNameExist) {
+    isSuchSubmoduleExistError.value = true
+    return
+  }
   if (!module.value) {
     isSubmoduleValid.value = false
     return
@@ -256,8 +272,8 @@ const searchSubmodule = async () => {
   isSubmoduleLoaded.value = false
   try {
     await checkIsSubmoduleLinkValid()
-    if (isSubmoduleValid.value) {
-      submodules.value.push(submoduleToSearch.value)
+    if (isSubmoduleValid.value && submoduleName.value) {
+      submodules.value.push(submoduleName.value)
       submoduleToSearch.value = ''
     }
   } catch (e) {
@@ -324,7 +340,12 @@ watch(currentStep, () => {
 
 watch(module, () => {
   submoduleToSearch.value = ''
-  submodules.value.length = 0
+  submodules.value = []
+  isSubmoduleValid.value = true
+})
+
+watch(submoduleToSearch, () => {
+  isSuchSubmoduleExistError.value = false
   isSubmoduleValid.value = true
 })
 

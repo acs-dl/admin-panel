@@ -2,7 +2,8 @@
   "validations": {
     "field-error_required": "Please fill out this field",
     "field-error_email": "Field must be a valid email",
-    "field-error_maxLength": "Field should be less than {max} characters"
+    "field-error_maxLength": "Field should be less than {max} characters",
+    "field-error_requiredSelect": "You should choose an option."
   },
   "create-user-modal": {
     "main-title": "Add new member",
@@ -33,7 +34,8 @@
     "access-level-placeholder": "Select access level",
     "modules-loading-error": "Entered username or submodule was not found.",
     "user-already-exist": "Entered user already exist in such module.",
-    "loader-text": "Please wait, we are checking the data."
+    "loader-text": "Please wait, we are checking the data.",
+    "request-timeout-error": "There was no answer for too long. Try again."
   },
   "delete-modal": {
     "main-title": "Delete",
@@ -195,9 +197,10 @@
     "login-title": "Log In",
     "submit-btn": "Submit"
   },
-  "input-dropdown-field": {
-    "empty-message": "No users",
-    "error-message": "Something went wrong"
+  "combo-box-field": {
+    "empty-message": "Nothing found.",
+    "error-message": "Something went wrong",
+    "followers-count": "{count} followers"
   },
   "status-modal": {
     "title": "Status of requests"
@@ -267,7 +270,7 @@
   },
   "refresh-modal": {
     "title": "Refresh",
-    "subtitle": "To edit the access level, change it below.",
+    "subtitle": "To refresh the system, choose the necessary option below.",
     "error-message": "Error while loading. Please, try again.",
     "module-title": "Module",
     "submodule-title": "Submodule",
@@ -275,6 +278,7 @@
     "submodule-placeholder": "Enter submodule name",
     "add-submodule-button": "Add",
     "submodule-search-error": "This submodule doesn't exist. Try another one.",
+    "submodule-exist-error": "Such submodule already exist.",
     "submodule-clear-module-error": "Module field must be filled.",
     "success-sent-refresh": "Modules update request successfully sent!"
   },

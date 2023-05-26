@@ -102,7 +102,7 @@ import {
 } from 'vue'
 import { useRouter } from '@/router'
 import { onClickOutside } from '@vueuse/core'
-import { SELECT_FIELD_VALUE } from '@/types'
+import { SelectFieldValue } from '@/types'
 
 type SCHEMES = 'primary' | 'secondary'
 
@@ -110,7 +110,7 @@ const props = withDefaults(
   defineProps<{
     scheme?: SCHEMES
     modelValue: string | number
-    valueOptions?: string[] | number[] | SELECT_FIELD_VALUE[]
+    valueOptions?: string[] | number[] | SelectFieldValue[]
     label?: string
     placeholder?: string
     errorMessage?: string
@@ -193,7 +193,7 @@ const closeDropdown = () => {
   isDropdownOpen.value = false
 }
 
-const select = (option: string | number | SELECT_FIELD_VALUE) => {
+const select = (option: string | number | SelectFieldValue) => {
   if (isDisabled.value || isReadonly.value) return
 
   emit('update:modelValue', option?.value ?? option)

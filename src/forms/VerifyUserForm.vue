@@ -6,15 +6,15 @@
           <h5 class="verify-user-form__field-title">
             {{ $t('verify-user-form.user-lbl') }}
           </h5>
-          <input-dropdown-field
-            v-model="form.name"
-            v-model:user="selectedUser"
+          <combo-box-field
+            v-model="form.nameId"
             scheme="secondary"
             class="verify-user-form__field-input"
             :placeholder="$t('verify-user-form.user-placeholder')"
-            :error-message="getFieldErrorMessage('name')"
+            :error-message="getFieldErrorMessage('nameId')"
             :disabled="isFormDisabled"
-            @blur="touchField('name')"
+            :load-pick-options="loadUsers"
+            @blur="touchField('nameId')"
           />
         </div>
         <div class="verify-user-form__field">
@@ -51,22 +51,23 @@
         scheme="filled"
         type="submit"
         :text="$t('verify-user-form.submit-btn')"
-        :disabled="isFormDisabled"
+        :disabled="isFormDisabled || !selectedUser"
       />
     </div>
   </form>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { AppButton } from '@/common'
 import { api } from '@/api'
-import { InputField, InputDropdownField } from '@/fields'
+import { InputField, ComboBoxField } from '@/fields'
 import { useContext, useForm, useFormValidation } from '@/composables'
 import { required } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
 import { UnverifiedModuleUser, VerifiedUser } from '@/types'
 import { useAuthStore } from '@/store'
+import { helpers } from '@vuelidate/validators'
 
 const props = withDefaults(
   defineProps<{
@@ -86,26 +87,59 @@ const emit = defineEmits<{
 
 const { $t } = useContext()
 const { currentUserId } = useAuthStore()
-const selectedUser = ref<VerifiedUser | null>(null)
-const form = reactive({
-  name: '',
+const users = ref<VerifiedUser[]>([])
+const form = reactive<{
+  nameId: string | number
+  module: string
+  nickname: string
+}>({
+  nameId: '',
   module: props.currentModule ?? '',
   nickname: props.user?.username ?? '',
 })
 
 const { isFormDisabled, disableForm, enableForm } = useForm()
 
+const isUserSelected = () => Number.isInteger(form.nameId)
+
 const { isFormValid, getFieldErrorMessage, touchField } = useFormValidation(
   form,
   {
-    name: { required },
+    nameId: {
+      required,
+      requiredSelect: helpers.withMessage(
+        $t('validations.field-error_requiredSelect'),
+        isUserSelected,
+      ),
+    },
     module: { required },
     nickname: { required },
   },
 )
 
+const selectedUser = computed(() =>
+  users.value.find(user => Number(user.id) === form.nameId),
+)
+
 const cancelForm = () => {
   emit('cancel')
+}
+
+const loadUsers = async (searchValue: string) => {
+  const { data } = await api.get<VerifiedUser[]>(
+    '/integrations/identity-svc/users',
+    {
+      filter: {
+        search: searchValue,
+      },
+    },
+  )
+  users.value = data
+
+  return data.map(user => ({
+    id: Number(user.id),
+    text: `${user.name} ${user.surname}`,
+  }))
 }
 
 const submit = async () => {
