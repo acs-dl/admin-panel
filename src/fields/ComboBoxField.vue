@@ -134,8 +134,7 @@ const debouncedLoadOptions = debounce(loadOptions, DEBOUNCE_DEFAULT_TIMEOUT)
 
 const selectCurrentOption = (option: InputDropdownPickOption) => {
   toggleDropdown()
-  searchValue.value =
-    pickOptions.value.find(({ id }) => id === option.id)?.text ?? ''
+  searchValue.value = option.text
   emit('update:modelValue', option.id)
 }
 
