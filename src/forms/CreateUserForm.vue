@@ -45,21 +45,6 @@
       />
     </div>
 
-    <div class="create-user-form__field">
-      <h5 class="create-user-form__field-title">
-        {{ $t('create-user-form.email-lbl') }}
-      </h5>
-      <input-field
-        v-model="form.emailAddress"
-        scheme="secondary"
-        class="create-user-form__field-input"
-        :placeholder="$t('create-user-form.email-lbl')"
-        :error-message="getFieldErrorMessage('emailAddress')"
-        :disabled="isFormDisabled"
-        @blur="touchField('emailAddress')"
-      />
-    </div>
-
     <div class="create-user-form__actions">
       <app-button
         class="create-user-form__submit-btn"
@@ -89,7 +74,7 @@ import { AppButton } from '@/common'
 import { api } from '@/api'
 import { InputField, SelectField } from '@/fields'
 import { useForm, useFormValidation } from '@/composables'
-import { email, maxLength, required } from '@/validators'
+import { maxLength, required } from '@/validators'
 import { Bus, ErrorHandler } from '@/helpers'
 import { DateUtil } from '@/utils'
 import { UnverifiedModuleUser, VerifiedUser } from '@/types'
@@ -121,7 +106,6 @@ const { currentUserId } = useAuthStore()
 const form = reactive({
   name: '',
   surname: '',
-  emailAddress: '',
   position: '',
 })
 
@@ -131,7 +115,6 @@ const { isFormValid, getFieldErrorMessage, touchField, isFieldsValid } =
   useFormValidation(form, {
     name: { required, maxLength: maxLength(MAX_LENGTH.name) },
     surname: { required, maxLength: maxLength(MAX_LENGTH.surname) },
-    emailAddress: { email, required },
     position: { required },
   })
 
@@ -178,7 +161,6 @@ const submit = async () => {
             name: form.name,
             surname: form.surname,
             position: form.position,
-            email: form.emailAddress,
           },
         },
       },
