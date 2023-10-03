@@ -62,7 +62,7 @@ import { ref, computed, watch } from 'vue'
 import { api } from '@/api'
 import { Loader, ErrorMessage, NoDataMessage, TableNavigation } from '@/common'
 import { ErrorHandler } from '@/helpers'
-import { UnverifiedModuleUser, UserMeta } from '@/types'
+import { UnverifiedModuleUser, UserMeta, UserPermissionInfo } from '@/types'
 import { MIN_PAGE_AMOUNT, PAGE_LIMIT } from '@/consts'
 import UnverifiedUsersItem from './UnverifiedUsersItem.vue'
 import { REQUEST_ORDER, UNVERIFIED_USER_SORTING_PARAMS } from '@/enums'
@@ -70,6 +70,13 @@ import { storeToRefs } from 'pinia'
 import { usePlatformStore } from '@/store'
 import { useContext } from '@/composables'
 import UnverifiedUsersListHeader from '@/pages/unverified-users/UnverifiedUsersListHeader.vue'
+
+type ModuleInfo = {
+  module: string
+  permissions: UserPermissionInfo
+}
+
+type PermissionsMap = Record<UnverifiedModuleUser['username'], ModuleInfo[]>
 
 const props = defineProps<{
   searchText: string
@@ -89,6 +96,7 @@ const moduleNames = computed(() => [
   ...modules.value.map(el => el.name),
 ])
 const currentModuleFilter = ref(moduleNames.value[0])
+const permissionsMap = ref<PermissionsMap | null>(null)
 
 const moduleId = computed(
   () => modules.value.find(el => el.name === currentModuleFilter.value)?.id,
@@ -102,8 +110,6 @@ const isPaginationShown = computed(
 )
 
 const getUnverifiedUsersList = async () => {
-  isLoaded.value = false
-  isLoadFailed.value = false
   try {
     const { data, meta } = await api.get<UnverifiedModuleUser[], UserMeta>(
       '/integrations/unverified-svc/users',
@@ -128,16 +134,68 @@ const getUnverifiedUsersList = async () => {
     isLoadFailed.value = true
     ErrorHandler.processWithoutFeedback(e)
   }
+}
+
+const getModulePermissions = async (moduleName: string, username: string) => {
+  let res = [] as UserPermissionInfo[]
+  try {
+    const { data } = await api.get<UserPermissionInfo[]>(
+      `/integrations/${moduleName}/permissions`,
+      { filter: { username } },
+    )
+    res = data
+  } catch (e) {
+    isLoadFailed.value = true
+    ErrorHandler.processWithoutFeedback(e)
+  }
+  return res
+}
+
+const getPermissionsMap = async (): Promise<void> => {
+  try {
+    const dataList = await Promise.all(
+      unverifiedUsers.value
+        .map(user =>
+          user.module.map(async module => ({
+            username: user.username,
+            module,
+            permissions: await getModulePermissions(module, user.username),
+          })),
+        )
+        .flat(),
+    )
+
+    permissionsMap.value = dataList.reduce(
+      (acc, data) => ({
+        ...acc,
+        [data.username]: [
+          ...((acc as PermissionsMap)[data.username] ?? []),
+          { module: data.module, permissions: data.permissions },
+        ],
+      }),
+      {},
+    )
+  } catch (e) {
+    isLoadFailed.value = true
+    ErrorHandler.processWithoutFeedback(e)
+  }
+}
+
+const onChange = async () => {
+  isLoadFailed.value = false
+  isLoaded.value = false
+  await getUnverifiedUsersList()
+  await getPermissionsMap()
   isLoaded.value = true
 }
 
-watch([currentPage, currentSortingType, currentOrder], getUnverifiedUsersList, {
+watch([currentPage, currentSortingType, currentOrder], onChange, {
   immediate: true,
 })
 
-watch([() => props.searchText, currentModuleFilter], () => {
+watch([() => props.searchText, currentModuleFilter], async () => {
   currentPage.value = 1
-  getUnverifiedUsersList()
+  await onChange()
 })
 
 defineExpose({
