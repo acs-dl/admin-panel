@@ -63,13 +63,14 @@ import { api } from '@/api'
 import { Loader, ErrorMessage, NoDataMessage, TableNavigation } from '@/common'
 import { ErrorHandler } from '@/helpers'
 import { UnverifiedModuleUser, UserMeta, UserPermissionInfo } from '@/types'
-import { MIN_PAGE_AMOUNT, PAGE_LIMIT } from '@/consts'
+import { DEBOUNCE_DEFAULT_TIMEOUT, MIN_PAGE_AMOUNT, PAGE_LIMIT } from '@/consts'
 import UnverifiedUsersItem from './UnverifiedUsersItem.vue'
 import { REQUEST_ORDER, UNVERIFIED_USER_SORTING_PARAMS } from '@/enums'
 import { storeToRefs } from 'pinia'
 import { usePlatformStore } from '@/store'
 import { useContext } from '@/composables'
 import UnverifiedUsersListHeader from '@/pages/unverified-users/UnverifiedUsersListHeader.vue'
+import { debounce } from 'lodash-es'
 
 type ModuleInfo = {
   module: string
@@ -189,14 +190,19 @@ const onChange = async () => {
   isLoaded.value = true
 }
 
-watch([currentPage, currentSortingType, currentOrder], onChange, {
-  immediate: true,
-})
+watch(
+  [currentPage, currentSortingType, currentOrder],
+  debounce(onChange, DEBOUNCE_DEFAULT_TIMEOUT),
+  { immediate: true },
+)
 
-watch([() => props.searchText, currentModuleFilter], async () => {
-  currentPage.value = 1
-  await onChange()
-})
+watch(
+  [() => props.searchText, currentModuleFilter],
+  debounce(async () => {
+    await onChange()
+    currentPage.value = 1
+  }, DEBOUNCE_DEFAULT_TIMEOUT),
+)
 
 defineExpose({
   getUnverifiedUsersList,
