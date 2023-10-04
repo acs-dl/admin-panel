@@ -45,12 +45,11 @@
         @click="deleteMember"
       />
     </div>
-    <div v-if="isOpenTree" class="unverified-users-item-desktop__modules">
-      <div
-        v-for="(module, idx) in user.module"
-        :key="idx"
-        class="unverified-users-item-desktop__module"
-      >
+    <div
+      v-if="isOpenTree && user.module.length"
+      class="unverified-users-item-desktop__modules"
+    >
+      <div v-for="(module, idx) in user.module" :key="idx">
         <unverified-user-module-item :module-name="module" :user="user" />
       </div>
     </div>

@@ -13,7 +13,10 @@
         :alt="moduleName"
       />
     </app-button>
-    <template v-if="isOpenTree && permissionsInfoList.length">
+    <div
+      v-if="isOpenTree && permissionsInfoList.length"
+      class="unverified-user-module-item__tree"
+    >
       <module-trees-item
         v-for="(permissionInfo, index) in permissionsInfoList"
         :key="index"
@@ -21,7 +24,7 @@
         :item="permissionInfo"
         :module-name="moduleName"
       />
-    </template>
+    </div>
   </div>
 </template>
 
@@ -92,11 +95,20 @@ const onTreeBtnClick = async (): Promise<void> => {
       transform: rotate(-180deg);
     }
   }
+
+  @include respond-to(medium) {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 
 .unverified-user-module-item__img {
   width: toRem(24);
   height: toRem(24);
   border-radius: 50%;
+}
+
+.unverified-user-module-item__tree {
+  padding: toRem(16) 0 0 toRem(12);
 }
 </style>
