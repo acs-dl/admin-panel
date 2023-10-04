@@ -247,7 +247,7 @@ const deleteUserFromModule = async () => {
 .module-tree-item {
   line-height: 1.5em;
   position: relative;
-  padding-left: 1.2em;
+  padding-left: 1.8em;
 
   &:not(:last-child) {
     border-left: toRem(1) solid var(--border-primary-light);
@@ -259,7 +259,7 @@ const deleteUserFromModule = async () => {
     top: -0.1em;
     left: 0;
     width: 0.5em;
-    height: 1.4em;
+    height: 1.48em;
     border-bottom: toRem(1) solid var(--border-primary-light);
     border-bottom-left-radius: 50%;
   }

@@ -119,9 +119,8 @@ const getModuleImage = (moduleName: string) =>
 }
 
 .unverified-users-item-desktop__modules-btn {
-  gap: toRem(8);
-
   :deep(.icon) {
+    margin-left: toRem(8);
     color: var(--text-primary-main);
     transition: linear 0.1s;
     height: toRem(10);
