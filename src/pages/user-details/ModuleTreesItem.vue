@@ -128,12 +128,12 @@ const PAGE_LIMIT = 10
 const props = withDefaults(
   defineProps<{
     moduleName: string
-    id: string
     item: UserPermissionInfo
+    id?: string
     searchValue?: string
     isWasFound?: boolean
   }>(),
-  { isWasFound: false, searchValue: '' },
+  { id: '', isWasFound: false, searchValue: '' },
 )
 
 const { $t } = useContext()
@@ -173,7 +173,8 @@ const loadNextLevelTree = async () => {
           number: currentPage.value,
         },
         filter: {
-          userId: props.id,
+          ...(props.id && { userId: props.id }),
+          username: props.item.username,
           parentLink: props.item.link,
         },
       },
