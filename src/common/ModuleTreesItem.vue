@@ -1,6 +1,6 @@
 <template>
-  <ul class="module-tree-item__wrapper">
-    <li class="module-tree-item">
+  <ul class="module-tree-item">
+    <li class="module-tree-item__list-item">
       <app-button
         color="default"
         class="module-tree-item__name"
@@ -244,10 +244,10 @@ const deleteUserFromModule = async () => {
 </script>
 
 <style scoped lang="scss">
-.module-tree-item__wrapper {
+.module-tree-item {
   line-height: 1.5em;
   position: relative;
-  padding-left: 0.8em;
+  padding-left: 1.2em;
 
   &:not(:last-child) {
     border-left: toRem(1) solid var(--border-primary-light);
@@ -259,7 +259,7 @@ const deleteUserFromModule = async () => {
     top: -0.1em;
     left: 0;
     width: 0.5em;
-    height: 1em;
+    height: 1.4em;
     border-bottom: toRem(1) solid var(--border-primary-light);
     border-bottom-left-radius: 50%;
   }
@@ -269,7 +269,7 @@ const deleteUserFromModule = async () => {
   }
 }
 
-.module-tree-item {
+.module-tree-item__list-item {
   display: grid;
   grid-template-columns:
     minmax(toRem(100), 1fr)
@@ -277,6 +277,8 @@ const deleteUserFromModule = async () => {
     toRem(100);
   gap: toRem(10);
   min-height: toRem(24);
+  padding: toRem(8) 0;
+  margin-left: toRem(-4);
 
   @include respond-to(tablet) {
     grid-template-columns:
