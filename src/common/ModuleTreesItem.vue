@@ -107,20 +107,16 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { api } from '@/api'
-import {
-  AppButton,
-  Icon,
-  PermissionModal,
-  DeleteModal,
-  TransitionModal,
-} from '@/common'
-import ModuleTreesItem from '@/pages/user-details/ModuleTreesItem.vue'
 import { ErrorHandler } from '@/helpers'
 import { UserPermissionInfo, UserMeta } from '@/types'
 import { Bus } from '@/helpers'
 import { useContext } from '@/composables'
 import { useAuthStore } from '@/store'
 import { MODULES } from '@/enums'
+import { DeleteModal, PermissionModal, TransitionModal } from './modal'
+import AppButton from './AppButton.vue'
+import Icon from './Icon.vue'
+import ModuleTreesItem from './ModuleTreesItem.vue'
 
 const FIRST_PAGE = 0
 const PAGE_LIMIT = 10

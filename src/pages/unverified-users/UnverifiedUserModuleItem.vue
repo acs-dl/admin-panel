@@ -14,7 +14,7 @@
       />
     </app-button>
     <template v-if="isOpenTree && permissionsInfoList.length">
-      <modules-trees-item
+      <module-trees-item
         v-for="(permissionInfo, index) in permissionsInfoList"
         :key="index"
         :item="permissionInfo"
@@ -26,13 +26,12 @@
 
 <script lang="ts" setup>
 import { api } from '@/api'
-import { AppButton } from '@/common'
+import { AppButton, ModuleTreesItem } from '@/common'
 import { ErrorHandler } from '@/helpers'
 import { usePlatformStore } from '@/store'
 import { UnverifiedModuleUser, UserPermissionInfo } from '@/types'
 import { storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
-import ModulesTreesItem from '../user-details/ModuleTreesItem.vue'
 
 const props = defineProps<{
   username: UnverifiedModuleUser['username']

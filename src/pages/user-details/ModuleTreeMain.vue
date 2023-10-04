@@ -100,14 +100,19 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { AppButton, Icon, DeleteModal, TransitionModal } from '@/common'
+import {
+  AppButton,
+  DeleteModal,
+  Icon,
+  ModuleTreesItem,
+  TransitionModal,
+} from '@/common'
 import { ModuleTree, SubmoduleName, UserModuleSearch } from '@/types'
 import { api } from '@/api'
 import { ErrorHandler, Bus } from '@/helpers'
 import { useContext } from '@/composables'
 import { useAuthStore, usePlatformStore } from '@/store'
 import { InputField } from '@/fields'
-import ModuleTreesItem from './ModuleTreesItem.vue'
 import { ICON_NAMES } from '@/enums'
 
 const props = defineProps<{
