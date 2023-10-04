@@ -75,6 +75,11 @@ const onTreeBtnClick = async (): Promise<void> => {
 .unverified-user-module-item__btn {
   gap: toRem(8);
 
+  &[disabled] {
+    filter: unset;
+    opacity: unset;
+  }
+
   :deep(.icon) {
     color: var(--text-primary-main);
     transition: linear 0.1s;
