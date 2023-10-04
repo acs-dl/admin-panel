@@ -51,10 +51,7 @@
         :key="idx"
         class="unverified-users-item-desktop__module"
       >
-        <unverified-user-module-item
-          :module-name="module"
-          :username="user.username"
-        />
+        <unverified-user-module-item :module-name="module" :user="user" />
       </div>
     </div>
   </div>

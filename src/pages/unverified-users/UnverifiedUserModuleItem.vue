@@ -17,6 +17,7 @@
       <module-trees-item
         v-for="(permissionInfo, index) in permissionsInfoList"
         :key="index"
+        :id="user.id"
         :item="permissionInfo"
         :module-name="moduleName"
       />
@@ -34,7 +35,7 @@ import { storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 
 const props = defineProps<{
-  username: UnverifiedModuleUser['username']
+  user: UnverifiedModuleUser
   moduleName: string
 }>()
 
@@ -53,7 +54,7 @@ const loadModulePermissions = async (): Promise<void> => {
   try {
     const { data } = await api.get<UserPermissionInfo[]>(
       `/integrations/${props.moduleName}/permissions`,
-      { filter: { username: props.username } },
+      { filter: { username: props.user.username } },
     )
 
     permissionsInfoList.value = data
