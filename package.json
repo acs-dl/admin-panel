@@ -1,6 +1,5 @@
 {
   "name": "access-control-system",
-  "version": "0.5.0",
   "gitHooks": {
     "pre-commit": "yarn lint",
     "pre-push": "yarn test && yarn rsc"
