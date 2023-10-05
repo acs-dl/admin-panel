@@ -61,14 +61,14 @@ for further information about branching and tagging conventions.
 - Request modal fields
 - Validation for user creating
 
-## [0.2.0] - 2023-02-14
+## 0.2.0 - 2023-02-14
 #### Changed
 - Login Page design
 
 #### Fixed
 - Release check with wrong link
 
-## [0.1.0] - 2023-02-06
+## 0.1.0 - 2023-02-06
 #### Added
 - Authorization
 - Users list
