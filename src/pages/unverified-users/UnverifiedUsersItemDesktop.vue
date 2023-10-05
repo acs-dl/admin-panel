@@ -7,13 +7,22 @@
       {{ user.username }}
     </span>
     <span class="unverified-users-item-desktop__text">
-      <img
-        v-for="(module, idx) in user.module"
-        :key="idx"
-        class="unverified-users-item-desktop__img"
-        :src="getModuleImage(module)"
-        :alt="user.module[idx]"
-      />
+      <app-button
+        class="unverified-users-item-desktop__modules-btn"
+        :class="{
+          'unverified-users-item-desktop__modules-btn--open': isOpenTree,
+        }"
+        :icon-right="$icons.chevronFullDown"
+        @click="isOpenTree = !isOpenTree"
+      >
+        <img
+          v-for="(module, idx) in user.module"
+          :key="idx"
+          class="unverified-users-item-desktop__img"
+          :src="getModuleImage(module)"
+          :alt="user.module[idx]"
+        />
+      </app-button>
     </span>
     <span
       class="unverified-users-item-desktop__text"
@@ -36,17 +45,26 @@
         @click="deleteMember"
       />
     </div>
+    <div
+      v-if="isOpenTree && user.module.length"
+      class="unverified-users-item-desktop__modules"
+    >
+      <div v-for="(module, idx) in user.module" :key="idx">
+        <unverified-user-module-item :module-name="module" :user="user" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { AppButton } from '@/common'
 import { UnverifiedModuleUser } from '@/types'
 import { formatDMYHM } from '@/helpers'
 import { usePlatformStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { useContext } from '@/composables'
+import UnverifiedUserModuleItem from './UnverifiedUserModuleItem.vue'
 
 const props = defineProps<{
   user: UnverifiedModuleUser
@@ -59,6 +77,7 @@ const emit = defineEmits<{
 
 const { $t } = useContext()
 const { modules } = storeToRefs(usePlatformStore())
+const isOpenTree = ref(false)
 const usersName = computed(
   () => props.user.name ?? $t('unverified-users-item.unverified-name'),
 )
@@ -78,11 +97,10 @@ const getModuleImage = (moduleName: string) =>
 <style lang="scss" scoped>
 .unverified-users-item-desktop {
   display: grid;
-  grid-column-gap: toRem(10);
+  grid-gap: toRem(10);
   grid-template-columns: repeat(4, minmax(toRem(50), 1fr)) toRem(190);
   padding: toRem(24);
   align-items: center;
-  max-height: toRem(72);
   height: 100%;
   background: var(--background-secondary-main);
   margin-bottom: toRem(8);
@@ -98,6 +116,22 @@ const getModuleImage = (moduleName: string) =>
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+}
+
+.unverified-users-item-desktop__modules-btn {
+  :deep(.icon) {
+    margin-left: toRem(8);
+    color: var(--text-primary-main);
+    transition: linear 0.1s;
+    height: toRem(10);
+    width: toRem(10);
+  }
+
+  &--open {
+    :deep(.icon) {
+      transform: rotate(-180deg);
+    }
+  }
 }
 
 .unverified-users-item-desktop__buttons {
@@ -126,5 +160,12 @@ const getModuleImage = (moduleName: string) =>
     left: toRem(-5);
     border: toRem(1) solid var(--border-primary-main-inverted);
   }
+}
+
+.unverified-users-item-desktop__modules {
+  display: grid;
+  grid-gap: inherit;
+  grid-row: 2;
+  grid-column: 3 / 6;
 }
 </style>

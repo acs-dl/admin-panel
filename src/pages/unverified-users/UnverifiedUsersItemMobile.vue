@@ -31,15 +31,29 @@
             {{ $t('unverified-users-item-mobile.modules-text') }}
           </span>
           <div class="unverified-users-item-mobile__img-wrapper">
-            <img
-              v-for="(module, idx) in user.module"
-              :key="idx"
-              class="unverified-users-item-mobile__img"
-              :src="getModuleImage(module)"
-              :alt="user.module[idx]"
-            />
+            <app-button
+              class="unverified-users-item-mobile__modules-btn"
+              :class="{
+                'unverified-users-item-mobile__modules-btn--open': isOpenTree,
+              }"
+              :icon-right="$icons.chevronFullDown"
+              @click="isOpenTree = !isOpenTree"
+            >
+              <img
+                v-for="(module, idx) in user.module"
+                :key="idx"
+                class="unverified-users-item-mobile__img"
+                :src="getModuleImage(module)"
+                :alt="user.module[idx]"
+              />
+            </app-button>
           </div>
         </div>
+        <template v-if="isOpenTree && user.module.length">
+          <div v-for="(module, idx) in user.module" :key="idx">
+            <unverified-user-module-item :module-name="module" :user="user" />
+          </div>
+        </template>
         <div class="unverified-users-item-mobile__accordion-content">
           <span class="unverified-users-item-mobile__accordion-content-text">
             {{ $t('unverified-users-item-mobile.date-text') }}
@@ -68,13 +82,14 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { AppButton, AppAccordion, Icon } from '@/common'
 import { UnverifiedModuleUser } from '@/types'
 import { formatDMYHM } from '@/helpers'
 import { usePlatformStore } from '@/store'
 import { storeToRefs } from 'pinia'
 import { useContext } from '@/composables'
+import UnverifiedUserModuleItem from './UnverifiedUserModuleItem.vue'
 
 const props = defineProps<{
   user: UnverifiedModuleUser
@@ -87,6 +102,7 @@ const emit = defineEmits<{
 
 const { $t } = useContext()
 const { modules } = storeToRefs(usePlatformStore())
+const isOpenTree = ref(false)
 const usersName = computed(
   () => props.user.name ?? $t('unverified-users-item.unverified-name'),
 )
@@ -132,7 +148,7 @@ const getModuleImage = (moduleName: string) =>
 .unverified-users-item-mobile__accordion-body {
   display: flex;
   flex-direction: column;
-  gap: toRem(4);
+  gap: toRem(16);
   border-top: toRem(1) solid var(--border-primary-light);
   padding: toRem(12);
 }
@@ -140,7 +156,6 @@ const getModuleImage = (moduleName: string) =>
 .unverified-users-item-mobile__accordion-content {
   display: flex;
   justify-content: space-between;
-  padding: toRem(6) toRem(12);
 }
 
 .unverified-users-item-mobile__accordion-content-text {
@@ -157,6 +172,22 @@ const getModuleImage = (moduleName: string) =>
   font-size: toRem(14);
   font-weight: 400;
   flex: 1;
+}
+
+.unverified-users-item-mobile__modules-btn {
+  :deep(.icon) {
+    margin-left: toRem(4);
+    color: var(--text-primary-main);
+    transition: linear 0.1s;
+    height: toRem(10);
+    width: toRem(10);
+  }
+
+  &--open {
+    :deep(.icon) {
+      transform: rotate(-180deg);
+    }
+  }
 }
 
 .unverified-users-item-mobile__img {
@@ -203,6 +234,6 @@ const getModuleImage = (moduleName: string) =>
 
 .unverified-users-item-mobile__actions {
   display: flex;
-  margin-top: toRem(20);
+  margin-top: toRem(4);
 }
 </style>
