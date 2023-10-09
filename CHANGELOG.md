@@ -7,23 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
-## [0.5.0] - 2023-10-09
-#### Added
-- Modules trees for unverified users
-- `UnverifiedUserModuleItem` component
-
-#### Fixed
-- `ModuleTreesItem` component
-
-## [0.4.0] - 2023-07-05
+## [0.4.0] - 2023-10-09
 #### Added
 - Telegram chats dropdown
 - Checking is user already exist in submodule
+- Modules trees for unverified users
+- `UnverifiedUserModuleItem` component
 
 #### Fixed
 - Deleting for verified user
 - `StatusModal` current page number
 - Status modal request statuses
+- `ModuleTreesItem` component
 
 ## [0.3.0] - 2023-05-04
 #### Added
@@ -81,7 +76,6 @@ for further information about branching and tagging conventions.
 #### Under the hood changes
 - Initiated and setup project
 
-[0.5.0]: https://github.com/acs-dl/admin-panel/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/acs-dl/admin-panel/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/acs-dl/admin-panel/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/acs-dl/admin-panel/compare/v0.1.0...v0.2.0
