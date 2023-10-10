@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
-## [0.4.0] - 2023-07-05
+## [0.4.0] - 2023-10-10
 #### Added
 - Telegram chats dropdown
 - Checking is user already exist in submodule
