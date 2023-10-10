@@ -67,7 +67,7 @@ function validateChangelogHasVersionOnTop () {
 }
 
 function validateChangelogAnchorsLegend () {
-  const baseRepoUrl = 'https://gitlab.com/distributed_lab/acs/acs-admin-panel'
+  const baseRepoUrl = 'https://github.com/acs-dl/admin-panel'
   const anyReleaseTagRe =
     /## \[\d+\.\d+\.\d+((-rc|-x)\.\d+)?\] - \d{4}-\d{2}-\d{2}/gi
 
@@ -78,7 +78,7 @@ function validateChangelogAnchorsLegend () {
       .map(tag => tag.match(/\[(.*)\]/)[1])
       .map((cur, curId, arr) => {
         return curId === arr.length - 1
-          ? `[${cur}]: ${baseRepoUrl}/tags/${cur}`
+          ? `[${cur}]: ${baseRepoUrl}/tree/${cur}`
           : `[${cur}]: ${baseRepoUrl}/compare/${arr[curId + 1]}...${cur}`
       })
       .join('\n')
