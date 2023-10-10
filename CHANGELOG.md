@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## [0.5.0] - 2023-10-10
+#### Added
+- Modules trees for unverified users
+- `UnverifiedUserModuleItem` component
+
+#### Fixed
+- `ModuleTreesItem` component
+
 ## [0.4.0] - 2023-10-10
 #### Added
 - Telegram chats dropdown
@@ -73,7 +81,8 @@ for further information about branching and tagging conventions.
 #### Under the hood changes
 - Initiated and setup project
 
-[Unreleased]: https://github.com/acs-dl/admin-panel/compare/0.4.0...main
+[Unreleased]: https://github.com/acs-dl/admin-panel/compare/0.5.0...main
+[0.5.0]: https://github.com/acs-dl/admin-panel/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/acs-dl/admin-panel/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/acs-dl/admin-panel/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/acs-dl/admin-panel/compare/0.1.0...0.2.0
