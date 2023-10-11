@@ -8,8 +8,8 @@ Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
 ## [0.5.1] - 2023-10-11
-#### Fixed
-- Removed "v" of tag in regexp for GitLab CI
+#### Removed
+- "v" of tag in regexp for GitLab CI
 
 ## [0.5.0] - 2023-10-10
 #### Added
