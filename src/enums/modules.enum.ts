@@ -3,6 +3,7 @@ export enum MODULES {
   github = 'github',
   email = 'mail',
   telegram = 'telegram',
+  slack = 'slack',
 }
 
 export enum REFRESH_MODULE_STEPS {
