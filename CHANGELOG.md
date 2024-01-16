@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Please check our [developers guide](https://gitlab.com/tokend/developers-guide)
 for further information about branching and tagging conventions.
 
+## [Unreleased]
+#### Changed
+- Slack permissions are now read-only
+- `Date` column replaced with `Updated at` on the unverified page
+
 ## [0.5.1] - 2023-10-11
 #### Removed
 - "v" of tag in regexp for GitLab CI

@@ -22,7 +22,7 @@
         v-if="item.access_level"
         class="module-tree-item__item-btn"
         color="blue"
-        :disabled="isTelegramModule"
+        :disabled="isTelegramModule || isSlackModule"
         :text="item.access_level?.name"
         @click="togglePermissionModal"
       />
@@ -34,6 +34,7 @@
           'module-tree-item__item-btn--delete',
         ]"
         color="error"
+        :disabled="isSlackModule"
         :text="$t('module-tree-item.delete-btn')"
         @click="toggleDeleteModal"
       />
@@ -157,6 +158,7 @@ const branchName = computed(() =>
 )
 
 const isTelegramModule = computed(() => props.moduleName === MODULES.telegram)
+const isSlackModule = computed(() => props.moduleName === MODULES.slack)
 
 const loadNextLevelTree = async () => {
   isProcessing.value = true
